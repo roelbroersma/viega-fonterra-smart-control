@@ -1,6 +1,6 @@
 # Bronnen en licenties
 
-Deze integratie bouwt voort op [Viega Fonterra Smart Control van mikefogel](https://github.com/mikefogel/homeassistant-viega-fonterra-modbus), versie 1.3.5, commit `820c51bc02aaa6f471d1d8853db52c55d1099829`, onder de MIT-licentie. De bestaande Modbusclient, klimaatbediening, kamerontdekking en overige platformen zijn opgenomen in deze ene integratie.
+Deze integratie bouwt voort op [Viega Fonterra Smart Control van mikefogel](https://github.com/mikefogel/homeassistant-viega-fonterra-modbus), commit `820c51bc02aaa6f471d1d8853db52c55d1099829`, onder de MIT-licentie. De bestaande Modbusclient, klimaatbediening, kamerontdekking en overige platformen zijn opgenomen in deze ene integratie.
 
 De oorspronkelijke copyright- en MIT-vermelding blijft behouden in `LICENSE` en in de integratiemap. De eigen Connect-aanvullingen vallen eveneens onder MIT. De wiretests gebruiken de daadwerkelijk meegeleverde Modbusclient.
 

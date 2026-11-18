@@ -14,7 +14,6 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory, UnitOfTemperature, UnitOfTime
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.util import dt as dt_util
 
@@ -47,33 +46,8 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities,
 ) -> None:
-    """Set up the sensor entities from a config entry.
-
-    Does *not* instantiate `REGISTER_DEFINITIONS` (temperature_flow/return/
-    room, system_pressure, pump_state) as live entities: those addresses
-    (1000/1001/1002/1010/1020) are illustrative placeholders from spec.md 9's
-    initial/example register schema, not real Viega registers - the actual
-    device map (confirmed against `Fonterra Smart Control-de-DE.pdf`) only
-    spans roughly PDU 0-285. Creating entities at those addresses against
-    real hardware reads undefined registers, producing wrong or unavailable
-    values. `ViegaRegisterSensor`/`REGISTER_DEFINITIONS` remain available for
-    genuinely mapped registers to be added later.
-    """
+    """Create sensors for documented base-unit, room and actuator registers."""
     entities: list[SensorEntity] = []
-
-    # Older test versions exposed a guessed "measurement received" sensor.
-    # Keep its registry ID for upgrades and hide it in favour of native diagnosis.
-    registry = er.async_get(hass)
-    for registered in er.async_entries_for_config_entry(registry, entry.entry_id):
-        if (
-            registered.platform == DOMAIN
-            and registered.translation_key == "source_status"
-            and not registered.disabled
-        ):
-            registry.async_update_entity(
-                registered.entity_id, disabled_by=er.RegistryEntryDisabler.INTEGRATION
-            )
-
     rooms = hass.data.get(DOMAIN, {}).get(entry.entry_id, {}).get("rooms", {})
     identity = hass.data.get(DOMAIN, {}).get(entry.entry_id, {}).get("identity", {})
 
@@ -215,82 +189,6 @@ def _actor_temperature_sensors(
                 )
             )
     return sensors
-
-
-class ViegaRegisterSensor(ViegaCoordinatedEntity, SensorEntity):
-    """Expose a register-backed sensor entity."""
-
-    _attr_has_entity_name = True
-
-    def __init__(
-        self,
-        entry: ConfigEntry,
-        sensor_key: str,
-        name: str,
-        unit: str | None,
-        address: int,
-    ) -> None:
-        self._entry_id = entry.entry_id
-        self._sensor_key = sensor_key
-        self._attr_unique_id = f"{entry.entry_id}_{sensor_key}"
-        self._attr_name = name
-        self._attr_native_unit_of_measurement = unit
-        self._address = address
-        self._attr_native_value = 0
-        self.last_error_message = ""
-
-    async def async_update(self) -> None:
-        """Read the current register value from the Modbus client."""
-
-        client = self.hass.data[DOMAIN].get(self._entry_id, {}).get("client")
-        if client is None:
-            self._attr_native_value = 0
-            self.last_error_message = "error: communication timeout"
-            return
-
-        try:
-            shared = self.hass.data[DOMAIN][self._entry_id].get("polling")
-            values = await (
-                shared.read(self.hass, self._entry_id, "holding", self._address, 1)
-                if shared
-                else client.read_holding_registers(self._address, 1)
-            )
-        except Exception:
-            self.last_error_message = "error: communication timeout"
-            return
-
-        if not values:
-            self.last_error_message = "error: sensor invalid"
-            return
-
-        value = values[0]
-        if value == ViegaModbusClient.ERROR_SENTINEL:
-            self.last_error_message = "error: sensor invalid"
-            return
-
-        self.last_error_message = ""
-        self._attr_native_value = value
-
-    @property
-    def state(self) -> str:
-        """Return the current sensor reading."""
-        return self._attr_native_value
-
-    @property
-    def unique_id(self) -> str:
-        return self._attr_unique_id
-
-    @property
-    def icon(self) -> str:
-        if "temperature" in self._sensor_key:
-            return "mdi:thermometer"
-        if "pressure" in self._sensor_key:
-            return "mdi:gauge"
-        return "mdi:information-outline"
-
-    @property
-    def device_info(self):
-        return build_device_info(self.hass, self._entry_id)
 
 
 class ViegaBaseUnitIdentitySensor(ViegaCoordinatedEntity, SensorEntity, RestoreEntity):

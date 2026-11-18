@@ -26,7 +26,6 @@ SOURCE_DIRS = (
     "requirements",
     "scripts",
     "tests",
-    "validation",
 )
 IGNORED = {"__pycache__", ".pytest_cache", ".ruff_cache", "node_modules"}
 

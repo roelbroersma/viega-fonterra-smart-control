@@ -1,8 +1,6 @@
 # Release en onderhoud
 
-**0.9.0** is de eerste publieke versie. De dashboardkaart ondersteunt vijf talen en gebruikt de diagnose van de Fonterra-basisunit. De aparte bronstatus uit de testversies wordt bij een upgrade uitgeschakeld. Bestaande configuratievermeldingen en sensorselecties blijven in gebruik.
-
-De praktijktest met de oudere kandidaat bevestigde de ontvangst van een externe meetwaarde en het stoppen van de zender bij bronuitval. De verdeler viel tijdens het wachten weg. De volledige firmwaretimeout en het herstel daarna blijven open. De actuele code is gecontroleerd met een lokale Modbus-testserver en een afzonderlijke Home Assistant-testomgeving.
+**0.9.0** is de eerste publieke versie. De dashboardkaart ondersteunt vijf talen en toont de diagnose van de Fonterra-basisunit.
 
 ## Waar staat wat?
 

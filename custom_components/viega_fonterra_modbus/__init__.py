@@ -14,7 +14,7 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.typing import ConfigType
 
 from .address_discovery import async_lookup_if_disconnected
-from .connect.runtime import async_setup_connect, async_stop_connect, merged_options
+from .connect.runtime import async_setup_connect, async_stop_connect
 from .const import DEFAULT_PORT, DOMAIN, PLATFORMS
 from .coordinator import ViegaDataCoordinator
 from .dashboard import async_register_dashboard
@@ -203,7 +203,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # made by the user (see `async_reload_entry`). Stored *before* the
     # update: Home Assistant may run the listener eagerly inside
     # `async_update_entry`.
-    applied_options = {**merged_options(hass, entry), "rooms": rooms, "_identity": identity}
+    applied_options = {**entry.options, "rooms": rooms, "_identity": identity}
     hass.data[DOMAIN][entry.entry_id]["applied_config"] = (
         dict(entry.data),
         applied_options,

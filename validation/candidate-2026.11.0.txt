@@ -1,3 +1,0 @@
-We found a custom integration viega_fonterra_modbus which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
-Translations: nl, en, de, fr, it (195 texts each), loaded by HA Core
-Candidate structure: PASS

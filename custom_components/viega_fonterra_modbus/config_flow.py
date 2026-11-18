@@ -12,13 +12,15 @@ from homeassistant import config_entries
 from homeassistant.components import persistent_notification
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import selector
 from homeassistant.helpers.service_info.dhcp import DhcpServiceInfo
 from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 from homeassistant.helpers.translation import async_get_translations
 
 from .address_discovery import MODBUS_SERVICE, is_viega_service
-from .connect.const import CONF_CONNECT
-from .connect.options import ConnectOptionsMixin
+from .connect.const import CONF_CONNECT, CONF_MAPPINGS, CONF_MAX_AGE, DEFAULT_MAX_AGE
+from .connect.modbus import ModbusError, SharedModbus
+from .connect.runtime import CONF_PIN
 from .const import (
     CONF_DEVICE_NAME,
     CONF_MODBUS_TIMEOUT,
@@ -36,6 +38,7 @@ from .discovery_store import (
 )
 from .identity import read_wlan_serial, saved_wlan_serial
 from .modbus_handler import ModbusClientError, ViegaModbusClient
+from .registers import actor_registers, room_actor_numbers
 
 _LOGGER = logging.getLogger(__name__)
 _WEB_SERVICES = {"_http._tcp.local.", "_https._tcp.local."}
@@ -483,128 +486,22 @@ class ViegaFonterraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
 
-class ViegaFonterraOptionsFlow(ConnectOptionsMixin, config_entries.OptionsFlow):
-    """Handle editable settings for an existing Viega module.
+class ViegaFonterraOptionsFlow(config_entries.OptionsFlow):
+    """Edit the connection and optionally link an external room sensor."""
 
-    Deliberately has no `__init__`/`self.config_entry = config_entry`: since
-    Home Assistant 2024.12, `OptionsFlow.config_entry` is provided by the
-    base class itself (resolved from the flow's `handler`), and assigning it
-    explicitly is deprecated and slated for removal in 2025.12.
-    """
+    def _rooms(self) -> dict[int, dict]:
+        try:
+            return SharedModbus(self.hass, self.config_entry.entry_id).rooms()
+        except ModbusError:
+            return {}
 
-    async def async_step_init(self, user_input=None):
-        return self.async_show_menu(step_id="init", menu_options=["module", "connect"])
-
-    async def async_step_module(
+    async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> config_entries.FlowResult:
-        """Show and save editable module settings."""
-        errors: dict[str, str] = {}
-        current_data = self.config_entry.data
-        current_options = self.config_entry.options
-
-        if user_input is not None:
-            # Validate all inputs
-            host = user_input.get(CONF_HOST)
-            port = user_input.get(CONF_PORT)
-            device_name = user_input.get(CONF_DEVICE_NAME)
-            polling_interval = user_input.get(CONF_POLLING_INTERVAL)
-            modbus_timeout = user_input.get(CONF_MODBUS_TIMEOUT)
-
-            # Validate host
-            if not host or not isinstance(host, str):
-                errors[CONF_HOST] = "invalid_host"
-            else:
-                host = str(host)
-
-            # Validate port
-            if port is None:
-                errors[CONF_PORT] = "required"
-            else:
-                try:
-                    port = int(port)
-                    if port < 1 or port > 65535:
-                        errors[CONF_PORT] = "invalid_port"
-                except ValueError, TypeError:
-                    errors[CONF_PORT] = "invalid_port"
-
-            # Validate device name
-            if not device_name or not isinstance(device_name, str):
-                errors[CONF_DEVICE_NAME] = "required"
-            else:
-                device_name = str(device_name)
-
-            # Validate polling interval
-            if polling_interval is None:
-                errors[CONF_POLLING_INTERVAL] = "required"
-            else:
-                try:
-                    polling_interval = int(polling_interval)
-                    if polling_interval < 5 or polling_interval > 300:
-                        errors[CONF_POLLING_INTERVAL] = "invalid_polling_interval"
-                except ValueError, TypeError:
-                    errors[CONF_POLLING_INTERVAL] = "invalid_polling_interval"
-
-            # Validate timeout
-            if modbus_timeout is None:
-                errors[CONF_MODBUS_TIMEOUT] = "required"
-            else:
-                try:
-                    modbus_timeout = float(modbus_timeout)
-                    if modbus_timeout < 1 or modbus_timeout > 30:
-                        errors[CONF_MODBUS_TIMEOUT] = "invalid_timeout"
-                except ValueError, TypeError:
-                    errors[CONF_MODBUS_TIMEOUT] = "invalid_timeout"
-
-            if not errors:
-                endpoint_changed = (host, port) != (
-                    current_data.get(CONF_HOST),
-                    current_data.get(CONF_PORT),
-                )
-                expected_serial = saved_wlan_serial(current_options) if endpoint_changed else None
-                addresses = {_normalize_host(host)}
-                try:
-                    if expected_serial is not None:
-                        if await _probe_serial(host, port, modbus_timeout) != expected_serial:
-                            errors["base"] = "identity_unverified"
-                    else:
-                        client = ViegaModbusClient(host, port, timeout=modbus_timeout)
-                        try:
-                            await client.connect()
-                        finally:
-                            await client.disconnect()
-                except Exception as err:
-                    _LOGGER.error("Failed to connect to updated device: %s", err)
-                    errors["base"] = "cannot_connect"
-                if not errors and _address_in_use(
-                    self.hass, addresses, port, self.config_entry.entry_id
-                ):
-                    errors["base"] = "address_in_use"
-                if not errors:
-                    if (
-                        self.config_entry.data is not current_data
-                        or self.config_entry.options is not current_options
-                    ):
-                        return self.async_abort(reason="settings_changed")
-                    data = {
-                        **current_data,
-                        CONF_HOST: host,
-                        CONF_PORT: port,
-                        CONF_DEVICE_NAME: device_name,
-                        CONF_POLLING_INTERVAL: polling_interval,
-                        CONF_MODBUS_TIMEOUT: modbus_timeout,
-                    }
-                    _update_entry_data(
-                        self.hass,
-                        self.config_entry,
-                        data=data,
-                        title=device_name,
-                    )
-                    return self.async_create_entry(
-                        title="",
-                        data=dict(current_options),
-                    )
-
+        entry = self.config_entry
+        current_data, current_options = entry.data, entry.options
+        enabled = current_options.get(CONF_CONNECT, current_data.get(CONF_CONNECT, False))
+        rooms = self._rooms()
         schema: dict[vol.Marker, Any] = {
             vol.Required(CONF_HOST, default=current_data.get(CONF_HOST, "")): str,
             vol.Required(CONF_PORT, default=current_data.get(CONF_PORT, DEFAULT_PORT)): vol.All(
@@ -622,9 +519,166 @@ class ViegaFonterraOptionsFlow(ConnectOptionsMixin, config_entries.OptionsFlow):
                 CONF_MODBUS_TIMEOUT,
                 default=current_data.get(CONF_MODBUS_TIMEOUT, DEFAULT_MODBUS_TIMEOUT),
             ): vol.All(vol.Coerce(float), vol.Range(min=1, max=30)),
+            vol.Required(CONF_CONNECT, default=enabled): bool,
         }
+        if rooms:
+            schema[vol.Optional("sensor_room")] = selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=[
+                        {"value": str(room), "label": str(config.get("name", room))}
+                        for room, config in sorted(rooms.items())
+                    ],
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                )
+            )
+
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            values = {**user_input}
+            activate = values.pop(CONF_CONNECT)
+            selected_room = values.pop("sensor_room", None)
+            host, port = values[CONF_HOST].strip(), values[CONF_PORT]
+            values[CONF_HOST] = host
+            values[CONF_DEVICE_NAME] = values[CONF_DEVICE_NAME].strip()
+            if not host:
+                errors[CONF_HOST] = "invalid_host"
+            if not values[CONF_DEVICE_NAME]:
+                errors[CONF_DEVICE_NAME] = "required"
+            if selected_room and not activate:
+                errors["sensor_room"] = "connect_required"
+            if selected_room and selected_room not in {str(room) for room in rooms}:
+                return self.async_abort(reason="no_rooms")
+            if host and _address_in_use(self.hass, {_normalize_host(host)}, port, entry.entry_id):
+                errors["base"] = "address_in_use"
+
+            options = {**current_options, CONF_CONNECT: activate}
+            data = {**current_data, **values}
+            endpoint_changed = (host, port) != (
+                current_data.get(CONF_HOST),
+                current_data.get(CONF_PORT),
+            )
+            if not errors and (endpoint_changed or (activate and not enabled)):
+                if error := await self._validate_endpoint(data, options):
+                    errors["base"] = error
+            if not errors:
+                self._original = (current_data, current_options)
+                if selected_room:
+                    # Keep both connection settings and sensor edits pending until Save.
+                    self._pending = data, options
+                    self._room = int(selected_room)
+                    self._room_name = str(rooms[self._room].get("name", self._room))
+                    if not self._unchanged():
+                        return self.async_abort(reason="settings_changed")
+                    return await self.async_step_source()
+                return self._save(data, options)
+
+        form = vol.Schema(schema)
         return self.async_show_form(
-            step_id="module",
-            data_schema=vol.Schema(schema),
+            step_id="init",
+            data_schema=self.add_suggested_values_to_schema(form, user_input),
             errors=errors,
+        )
+
+    async def _validate_endpoint(
+        self, data: dict[str, Any], options: dict[str, Any], room: dict | None = None
+    ) -> str | None:
+        # A sensor must be tied to the actual unit at the proposed address.
+        expected = options.get(CONF_PIN) or saved_wlan_serial(options)
+        client = ViegaModbusClient(
+            data[CONF_HOST], data[CONF_PORT], timeout=data[CONF_MODBUS_TIMEOUT]
+        )
+        try:
+            await client.connect()
+            if expected or options[CONF_CONNECT]:
+                serial = await read_wlan_serial(client)
+                if expected and serial != expected:
+                    return "identity_unverified"
+                if options[CONF_CONNECT]:
+                    options[CONF_PIN] = serial
+            if room is not None:
+                for actor in room_actor_numbers(room):
+                    address = actor_registers(actor)["room_id"]
+                    if await client.read_input_registers(address, 1) == [self._room]:
+                        break
+                else:
+                    return "room_changed"
+        except ModbusClientError, OSError, ValueError:
+            return "cannot_connect"
+        finally:
+            await client.disconnect()
+        return None
+
+    def _unchanged(self) -> bool:
+        entry = self.config_entry
+        return entry.data is self._original[0] and entry.options is self._original[1]
+
+    def _save(self, data, options) -> config_entries.FlowResult:
+        if not self._unchanged():
+            return self.async_abort(reason="settings_changed")
+        entry = self.config_entry
+        if _address_in_use(
+            self.hass, {_normalize_host(data[CONF_HOST])}, data[CONF_PORT], entry.entry_id
+        ):
+            return self.async_abort(reason="address_in_use")
+        # Update data and options together so the entry reloads with both changes.
+        _update_entry_data(
+            self.hass, entry, data=data, title=data[CONF_DEVICE_NAME], options=options
+        )
+        return self.async_create_entry(title="", data=options)
+
+    async def async_step_source(
+        self, user_input: dict[str, Any] | None = None
+    ) -> config_entries.FlowResult:
+        if not self._unchanged():
+            return self.async_abort(reason="settings_changed")
+        data, options = self._pending
+        mappings = dict(options.get(CONF_MAPPINGS, {}))
+        room_key = str(self._room)
+        current = mappings.get(room_key, {})
+        errors = {}
+        if user_input is not None:
+            if user_input.get("remove"):
+                mappings.pop(room_key, None)
+                return self._save(data, {**options, CONF_MAPPINGS: mappings})
+            entity_id = user_input.get("entity_id")
+            if not user_input.get("external_confirmed"):
+                errors["base"] = "external_required"
+            elif (
+                not entity_id
+                or not entity_id.startswith("sensor.")
+                or not self.hass.states.get(entity_id)
+            ):
+                errors["base"] = "invalid_sensor"
+            else:
+                room = self._rooms().get(self._room)
+                if room is None:
+                    return self.async_abort(reason="no_rooms")
+                if error := await self._validate_endpoint(data, options, room):
+                    errors["base"] = error
+                else:
+                    mappings[room_key] = {
+                        "entity_id": entity_id,
+                        CONF_MAX_AGE: user_input[CONF_MAX_AGE],
+                    }
+                    return self._save(data, {**options, CONF_MAPPINGS: mappings})
+
+        schema = vol.Schema(
+            {
+                vol.Optional(
+                    "entity_id", **({"default": current["entity_id"]} if current else {})
+                ): selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain="sensor", device_class="temperature")
+                ),
+                vol.Required(
+                    CONF_MAX_AGE, default=current.get(CONF_MAX_AGE, DEFAULT_MAX_AGE)
+                ): vol.All(vol.Coerce(int), vol.Range(min=90, max=86400)),
+                vol.Required("external_confirmed", default=False): bool,
+                **({vol.Required("remove", default=False): bool} if current else {}),
+            }
+        )
+        return self.async_show_form(
+            step_id="source",
+            description_placeholders={"room": self._room_name},
+            errors=errors,
+            data_schema=self.add_suggested_values_to_schema(schema, user_input),
         )

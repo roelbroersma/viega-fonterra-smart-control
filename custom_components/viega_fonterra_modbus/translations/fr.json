@@ -36,37 +36,18 @@
   },
   "options": {
     "step": {
-      "module": {
-        "title": "Paramètres de connexion",
-        "description": "Les pièces et leurs actionneurs sont lus dans l’unité de base. Modifiez leur affectation dans Fonterra, puis rechargez l’intégration.",
+      "init": {
+        "title": "Paramètres",
+        "description": "Cochez Connect Upgrade s’il est installé. Sélectionnez une pièce pour associer, modifier ou retirer son capteur.",
         "data": {
           "host": "Adresse IP ou nom d’hôte",
           "port": "Port Modbus",
           "device_name": "Nom de l’appareil",
           "polling_interval": "Intervalle de lecture (secondes)",
           "modbus_timeout": "Délai de réponse Modbus (secondes)",
-          "modbus_debug": "Journaliser les trames Modbus pour le débogage"
-        }
-      },
-      "init": {
-        "title": "Viega Fonterra Smart",
-        "menu_options": {
-          "module": "Paramètres de connexion",
-          "connect": "Connect Upgrade"
-        }
-      },
-      "connect": {
-        "title": "Connect",
-        "description": "Compatible avec Connect Upgrade : pilotez votre chauffage avec un capteur de température externe. Sélectionnez « Capteur externe » pour la pièce dans Fonterra, puis choisissez votre capteur dans Home Assistant.",
-        "data": {
+          "modbus_debug": "Journaliser les trames Modbus pour le débogage",
           "connect_upgrade": "Connect Upgrade installé",
-          "configure_source": "Choisir le capteur de la pièce"
-        }
-      },
-      "room": {
-        "title": "Pièce",
-        "data": {
-          "room": "Pièce"
+          "sensor_room": "Associer le capteur d’une pièce (facultatif)"
         }
       },
       "source": {
@@ -89,15 +70,16 @@
       "cannot_connect": "Connexion Modbus indisponible. Vérifiez l’adresse de Fonterra, le port et le réglage Modbus.",
       "invalid_sensor": "Sélectionnez un capteur de température existant.",
       "external_required": "Sélectionnez « Capteur externe » pour cette pièce dans Fonterra, puis confirmez.",
-      "legacy_companion_active": "Désactivez d’abord l’ancienne intégration Smart Connect séparée.",
       "identity_unverified": "Le numéro de série du module Wi-Fi Fonterra n’a pas pu être vérifié. Vérifiez l’adresse dans les paramètres de connexion du module.",
-      "address_in_use": "Un autre module utilise déjà cette adresse et ce port."
+      "address_in_use": "Un autre module utilise déjà cette adresse et ce port.",
+      "connect_required": "Activez Connect Upgrade pour associer le capteur d’une pièce.",
+      "room_changed": "L’affectation des actionneurs a changé. Relancez la détection des pièces, puis réessayez."
     },
     "abort": {
-      "modbus_required": "Connexion Modbus indisponible. Vérifiez la connexion à Fonterra, puis rechargez l’intégration.",
       "no_rooms": "Aucune pièce affectée n’a été trouvée. Vérifiez les affectations, puis rechargez l’intégration Viega.",
       "already_configured": "Ce module Fonterra est déjà configuré.",
-      "settings_changed": "Les paramètres du module ont changé pendant que ce formulaire était ouvert. Rouvrez le formulaire."
+      "settings_changed": "Les paramètres du module ont changé pendant que ce formulaire était ouvert. Rouvrez le formulaire.",
+      "address_in_use": "Un autre module utilise déjà cette adresse et ce port."
     }
   },
   "entity": {

@@ -309,27 +309,3 @@ ERROR_STATE_KEYS: tuple[str, ...] = (
     *(error_code_key(code) for code in sorted(BASE_UNIT_ERROR_CODES)),
     ERROR_KEY_UNKNOWN,
 )
-
-
-def error_key_from_legacy_text(text: str) -> str | None:
-    """Map a state saved by a version that still showed English text
-    (e.g. "No error") to its key, so a restart after the upgrade keeps it."""
-    if text in ERROR_STATE_KEYS:
-        return text
-    if text == "error: sensor invalid":
-        return ERROR_KEY_SENSOR_INVALID
-    if text.startswith("Unknown error (code "):
-        return ERROR_KEY_UNKNOWN
-    for code, description in BASE_UNIT_ERROR_CODES.items():
-        if text == description:
-            return error_code_key(code)
-    return None
-
-
-REGISTER_DEFINITIONS: dict[str, dict[str, int | str | None]] = {
-    "temperature_flow": {"address": 1000, "name": "Flow temperature", "unit": "°C"},
-    "temperature_return": {"address": 1001, "name": "Return temperature", "unit": "°C"},
-    "temperature_room": {"address": 1002, "name": "Room temperature", "unit": "°C"},
-    "system_pressure": {"address": 1010, "name": "System pressure", "unit": "bar"},
-    "pump_state": {"address": 1020, "name": "Pump state", "unit": None},
-}

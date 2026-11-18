@@ -2,13 +2,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from conftest import make_entry
-from homeassistant.config_entries import ConfigEntryDisabler, ConfigEntryState
+from homeassistant.config_entries import ConfigEntryState
 from test_config_flow import manager
 
 from custom_components.viega_fonterra_modbus import async_setup_entry, async_unload_entry
-from custom_components.viega_fonterra_modbus.connect.const import DOMAIN
 from custom_components.viega_fonterra_modbus.connect.modbus import ModbusError
-from custom_components.viega_fonterra_modbus.connect.runtime import merged_options
+from custom_components.viega_fonterra_modbus.const import DOMAIN
 
 
 def fake_client():
@@ -116,39 +115,3 @@ async def test_unload_stops_sender_before_disconnecting_single_client(hass):
     hass.config_entries.async_unload_platforms = AsyncMock(side_effect=unload)
     assert await async_unload_entry(hass, entry)
     assert order == ["stop", "platforms", "disconnect"]
-
-
-def test_disabled_legacy_companion_options_are_copied_without_losing_module_options(hass):
-    entry = make_entry(
-        entry_id="base",
-        data={"host": "fonterra.example", "port": 502},
-        options={"rooms": {"room_1": {"name": "Keep"}}, "custom_option": 7},
-    )
-    old = make_entry(
-        domain="fonterra_connect",
-        entry_id="old",
-        data={"modbus_entry_id": "base", "wifi_serial": "TEST000001", "connect_upgrade": True},
-        options={"sources": {"1": {"entity_id": "sensor.room", "max_age": 900}}},
-    )
-    object.__setattr__(old, "disabled_by", ConfigEntryDisabler.USER)
-    manager(hass, [entry, old])
-    result = merged_options(hass, entry)
-    assert result["rooms"] == entry.options["rooms"]
-    assert result["custom_option"] == 7
-    assert result["sources"] == old.options["sources"]
-    assert result["_connect_wifi_serial"] == "TEST000001"
-    assert result["connect_upgrade"] is True
-    assert "connect_upgrade" not in entry.options
-
-
-def test_existing_merged_options_are_never_overwritten_by_old_companion(hass):
-    entry = make_entry(
-        entry_id="base", options={"connect_upgrade": False, "sources": {}, "rooms": {}}
-    )
-    old = make_entry(
-        domain="fonterra_connect",
-        data={"modbus_entry_id": "base", "wifi_serial": "TEST000001", "connect_upgrade": True},
-    )
-    object.__setattr__(old, "disabled_by", ConfigEntryDisabler.USER)
-    manager(hass, [entry, old])
-    assert merged_options(hass, entry) == dict(entry.options)

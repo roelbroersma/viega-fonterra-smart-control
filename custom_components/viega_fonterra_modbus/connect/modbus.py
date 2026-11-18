@@ -7,9 +7,10 @@ import re
 
 from homeassistant.core import HomeAssistant
 
+from ..const import DOMAIN
 from ..identity import read_wlan_serial
 from ..registers import actor_registers
-from .const import EXTERNAL_TEMPERATURE_REGISTER, UPSTREAM_DOMAIN
+from .const import EXTERNAL_TEMPERATURE_REGISTER
 
 
 class ModbusError(Exception):
@@ -25,7 +26,7 @@ class SharedModbus:
 
     def runtime(self) -> dict:
         """Resolve each cycle so an upstream unload cannot leave a stale client."""
-        data = self.hass.data.get(UPSTREAM_DOMAIN, {}).get(self.entry_id)
+        data = self.hass.data.get(DOMAIN, {}).get(self.entry_id)
         if not isinstance(data, dict) or not data.get("client"):
             raise ModbusError("Modbus unavailable; enable Modbus and load Viega Fonterra")
         if self.serial is not None and self.identity(data) != self.serial:

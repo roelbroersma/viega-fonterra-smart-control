@@ -19,7 +19,6 @@ from .registers import (
     ERROR_KEY_SENSOR_INVALID,
     ERROR_STATE_KEYS,
     error_code_key,
-    error_key_from_legacy_text,
     resolve_room_number,
     room_registers,
 )
@@ -54,14 +53,7 @@ async def async_setup_entry(
 
 
 def _room_error_address(room_id: str, room_config: object) -> int:
-    """Return the room's own error-code register, not the shared base-unit one.
-
-    Each room has its own error/warning register (manual 30051/30053/...,
-    codes 21/22/24 - thermostat connectivity/battery). Falling back to the
-    shared base-unit error register (as this entity previously always did)
-    made every room's diagnostic text identical regardless of that room's
-    actual state.
-    """
+    """Select the room register so each room reports its own fault."""
     room_number = resolve_room_number(room_id, room_config if isinstance(room_config, dict) else {})
     if room_number:
         return room_registers(room_number)["error_code"]
@@ -90,11 +82,6 @@ class ViegaDiagnosticTextEntity(ViegaCoordinatedEntity, SensorEntity, RestoreEnt
     ) -> None:
         self._entry_id = entry_id
         if room_id is not None and room_name is not None:
-            # Localized via translations/*.json entity.sensor.room_diagnostic
-            # (spec.md "localize every entity name"). `name` is still kept
-            # below as the fallback for the room_id-less call shape used by
-            # standalone/legacy diagnosis entities, where there is no "room"
-            # to build a translation placeholder from.
             self._attr_translation_key = "room_diagnostic"
             self._attr_translation_placeholders = {"room": str(room_name)}
         elif name is not None:
@@ -120,17 +107,13 @@ class ViegaDiagnosticTextEntity(ViegaCoordinatedEntity, SensorEntity, RestoreEnt
         return attributes or None
 
     async def async_added_to_hass(self) -> None:
-        """Restore the last known value across restarts (spec.md 15),
-        including English texts saved by older versions (spec.md 5d)."""
+        """Restore the last valid fault state after restarting Home Assistant."""
         await super().async_added_to_hass()
         last_state = await self.async_get_last_state()
-        if last_state is None or last_state.state in ("unknown", "unavailable"):
+        if last_state is None or last_state.state not in ERROR_STATE_KEYS:
             return
-        key = error_key_from_legacy_text(last_state.state)
-        if key is None:
-            return
-        self.status = key
-        self._attr_native_value = key
+        self.status = last_state.state
+        self._attr_native_value = self.status
         code = last_state.attributes.get("error_code")
         if isinstance(code, int):
             self._error_code = code

@@ -2,8 +2,8 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from custom_components.viega_fonterra_modbus.connect.const import UPSTREAM_DOMAIN
 from custom_components.viega_fonterra_modbus.connect.modbus import ModbusError, SharedModbus
+from custom_components.viega_fonterra_modbus.const import DOMAIN
 
 
 def runtime(client):
@@ -16,7 +16,7 @@ def runtime(client):
 
 async def test_shared_client_exact_register_and_scaling(hass):
     client = AsyncMock()
-    hass.data[UPSTREAM_DOMAIN] = {"modbus": runtime(client)}
+    hass.data[DOMAIN] = {"modbus": runtime(client)}
     bus = SharedModbus(hass, "modbus", "TEST000001")
     client.reconnect_count = 2
     token = [int.from_bytes(b"TEST000001"[i : i + 2], "big") for i in range(0, 10, 2)]
@@ -36,7 +36,7 @@ async def test_shared_client_exact_register_and_scaling(hass):
 )
 async def test_rejects_bad_writes(hass, room, value):
     client = AsyncMock()
-    hass.data[UPSTREAM_DOMAIN] = {"modbus": runtime(client)}
+    hass.data[DOMAIN] = {"modbus": runtime(client)}
     with pytest.raises(ValueError):
         await SharedModbus(hass, "modbus").write_measurement(room, value)
     client.write_register.assert_not_called()
@@ -44,11 +44,11 @@ async def test_rejects_bad_writes(hass, room, value):
 
 async def test_unload_and_changed_module_fail_closed(hass):
     client = AsyncMock()
-    hass.data[UPSTREAM_DOMAIN] = {"modbus": runtime(client)}
+    hass.data[DOMAIN] = {"modbus": runtime(client)}
     bus = SharedModbus(hass, "modbus", "OTHER00001")
     with pytest.raises(ModbusError):
         await bus.write_measurement(1, 20)
-    hass.data[UPSTREAM_DOMAIN].clear()
+    hass.data[DOMAIN].clear()
     with pytest.raises(ModbusError):
         await bus.write_measurement(1, 20)
     client.write_register.assert_not_called()
@@ -59,7 +59,7 @@ async def test_connection_checks_actual_wifi_identity(hass):
     client.read_holding_registers.return_value = [1]
     words = [int.from_bytes(b"TEST000001"[i : i + 2], "big") for i in range(0, 10, 2)]
     client.read_input_registers.return_value = words
-    hass.data[UPSTREAM_DOMAIN] = {"modbus": runtime(client)}
+    hass.data[DOMAIN] = {"modbus": runtime(client)}
     bus = SharedModbus(hass, "modbus", "TEST000001")
     await bus.check_connection()
     client.read_input_registers.assert_awaited_with(1, 5)
@@ -78,7 +78,7 @@ async def test_connection_checks_actual_wifi_identity(hass):
 )
 async def test_changed_upstream_data_fails_with_a_clear_error(hass, data):
     client = AsyncMock()
-    hass.data[UPSTREAM_DOMAIN] = {"modbus": {"client": client, **data}}
+    hass.data[DOMAIN] = {"modbus": {"client": client, **data}}
     bus = SharedModbus(hass, "modbus", "TEST000001")
     with pytest.raises(ModbusError):
         bus.rooms()

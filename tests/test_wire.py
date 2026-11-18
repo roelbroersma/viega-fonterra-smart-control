@@ -9,8 +9,8 @@ import struct
 import pytest
 
 from custom_components.viega_fonterra_modbus import modbus_handler as reference
-from custom_components.viega_fonterra_modbus.connect.const import UPSTREAM_DOMAIN
 from custom_components.viega_fonterra_modbus.connect.modbus import ModbusError, SharedModbus
+from custom_components.viega_fonterra_modbus.const import DOMAIN
 from custom_components.viega_fonterra_modbus.sensor import ViegaConnectUpgradeSensor
 
 
@@ -98,7 +98,7 @@ async def test_connect_detection_reads_only_one_slot_without_configured_rooms(
         server.holding_errors[111] = exception_code
     client = reference.ViegaModbusClient("127.0.0.1", port=server.port)
     await client.connect()
-    hass.data[UPSTREAM_DOMAIN] = {"modbus": {"client": client, "rooms": {}}}
+    hass.data[DOMAIN] = {"modbus": {"client": client, "rooms": {}}}
     sensor = ViegaConnectUpgradeSensor("modbus")
     sensor.hass = hass
     try:
@@ -120,7 +120,7 @@ async def test_connect_detection_reads_only_one_slot_without_configured_rooms(
 async def test_real_upstream_lock_serializes_climate_and_measurement(hass, server):
     client = reference.ViegaModbusClient("127.0.0.1", port=server.port)
     await client.connect()
-    hass.data[UPSTREAM_DOMAIN] = {
+    hass.data[DOMAIN] = {
         "modbus": {
             "client": client,
             "identity": {"wlan_serial_number": "TEST000001"},
@@ -148,7 +148,7 @@ async def test_real_upstream_lock_serializes_climate_and_measurement(hass, serve
 async def test_real_upstream_lost_write_reply_is_not_retried(hass, server):
     client = reference.ViegaModbusClient("127.0.0.1", port=server.port, timeout=0.1)
     await client.connect()
-    hass.data[UPSTREAM_DOMAIN] = {
+    hass.data[DOMAIN] = {
         "modbus": {"client": client, "identity": {"wlan_serial_number": "TEST000001"}}
     }
     server.drop_write = True
@@ -167,7 +167,7 @@ async def test_real_upstream_lost_write_reply_is_not_retried(hass, server):
 async def test_connect_revalidates_identity_after_a_new_socket(hass, server):
     client = reference.ViegaModbusClient("127.0.0.1", port=server.port)
     await client.connect()
-    hass.data[UPSTREAM_DOMAIN] = {
+    hass.data[DOMAIN] = {
         "modbus": {"client": client, "identity": {"wlan_serial_number": "TEST000001"}}
     }
     bus = SharedModbus(hass, "modbus")

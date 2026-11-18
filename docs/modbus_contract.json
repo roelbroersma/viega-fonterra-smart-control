@@ -68,7 +68,7 @@
       "read_fc": 4,
       "quantity": 1,
       "type": "int16",
-      "note": "Existing room diagnostic only; not Connect capability/source/ageTicks"
+      "note": "Native Fonterra room diagnosis"
     },
     "room_target_temperature": {
       "pdu_formula": "51 + 2*(roomId-1)",
@@ -204,19 +204,6 @@
     "safe_modbus_source_register": null,
     "policy": "Explicit user Connect Upgrade opt-in and confirmation that chosen rooms already use Extern gemeten; no probe writes",
     "external_mode_selection": "Existing Fonterra web UI; no new Modbus register or automatic fallback"
-  },
-  "freshness": {
-    "device": "Native PIC ageTicks <=12000 and valid PIC status; ticks are not seconds; original timeout remains authoritative",
-    "modbus_limit": "No documented Modbus source/status/reason/ageTicks registers. Equal readback alone is NOT proof of current PIC freshness. Do not invent register addresses or seconds conversion.",
-    "sender": "Periodically resend only real finite 5..40degC measurements while source report time remains recent. Equal-valued actual reports refresh report time; no new physical report means source eventually expires.",
-    "home_assistant": "State.last_reported, never last_changed. Reject restored/unknown/unavailable/invalid values. KNX always_callback=true and sync_state=expire 5 allow equal telegrams and periodic bus reads. No cached-value heartbeat templates.",
-    "ha_candidate": {
-      "poll_seconds": 30,
-      "resend_seconds": 60,
-      "default_source_max_age_seconds": 900,
-      "require_report_after_companion_setup": true,
-      "note": "Sender defaults, not a claimed conversion of PIC ticks; physical timeout acceptance still required"
-    }
   },
   "write_failure": "No immediate retry after a lost acknowledgement. Verify WLAN identity and actor assignment before sending on a later poll. Stop on missing, invalid or expired readings. The native diagnostics report device faults.",
   "proof": [

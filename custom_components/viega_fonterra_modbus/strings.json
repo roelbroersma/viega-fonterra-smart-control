@@ -36,37 +36,18 @@
   },
   "options": {
     "step": {
-      "module": {
-        "title": "Connection settings",
-        "description": "Rooms and actuator assignments come from the base unit. Change the layout in Fonterra, then reload this integration.",
+      "init": {
+        "title": "Settings",
+        "description": "Tick Connected Upgrade if it is installed. Select a room only to link, change or remove its sensor.",
         "data": {
           "host": "IP address or hostname",
           "port": "Modbus port",
           "device_name": "Device name",
           "polling_interval": "Polling interval (seconds)",
           "modbus_timeout": "Modbus timeout (seconds)",
-          "modbus_debug": "Enable Modbus frame debug logging"
-        }
-      },
-      "init": {
-        "title": "Viega Fonterra Smart",
-        "menu_options": {
-          "module": "Connection settings",
-          "connect": "Connect Upgrade"
-        }
-      },
-      "connect": {
-        "title": "Connect",
-        "description": "Includes Connect Upgrade support for external temperature sensors. First set the room to External measured in Fonterra, then choose your Home Assistant sensor.",
-        "data": {
+          "modbus_debug": "Enable Modbus frame debug logging",
           "connect_upgrade": "Connect Upgrade installed",
-          "configure_source": "Choose room sensor"
-        }
-      },
-      "room": {
-        "title": "Room",
-        "data": {
-          "room": "Room"
+          "sensor_room": "Room sensor (optional)"
         }
       },
       "source": {
@@ -89,15 +70,16 @@
       "cannot_connect": "No Modbus connection. Check your Fonterra address, port and Modbus setting.",
       "invalid_sensor": "Choose an existing temperature sensor.",
       "external_required": "Set the room to External measured and confirm.",
-      "legacy_companion_active": "Disable the old separate Smart Connect integration first.",
       "identity_unverified": "Could not verify the Fonterra WLAN serial. Check the address in the existing hub connection settings.",
-      "address_in_use": "Another hub already uses this address and port."
+      "address_in_use": "Another hub already uses this address and port.",
+      "connect_required": "Enable Connected Upgrade to link a room sensor.",
+      "room_changed": "The actuator assignment has changed. Rediscover the rooms and try again."
     },
     "abort": {
-      "modbus_required": "No Modbus connection available. Check the Fonterra connection and reload this integration.",
       "no_rooms": "No assigned room found. Check room assignment and reload the Viega integration.",
       "already_configured": "This Fonterra module is already configured.",
-      "settings_changed": "The hub settings changed while this form was open. Open the form again."
+      "settings_changed": "The hub settings changed while this form was open. Open the form again.",
+      "address_in_use": "Another hub already uses this address and port."
     }
   },
   "entity": {

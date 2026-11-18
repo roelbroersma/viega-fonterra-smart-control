@@ -36,37 +36,18 @@
   },
   "options": {
     "step": {
-      "module": {
-        "title": "Verbindingsinstellingen",
-        "description": "Kamers en groepen worden uit de verdeler gelezen. Pas de indeling aan in Fonterra en herlaad daarna deze koppeling.",
+      "init": {
+        "title": "Instellingen",
+        "description": "Vink Connect Upgrade aan als die is geïnstalleerd. Kies alleen een kamer als je de sensor wilt koppelen, wijzigen of verwijderen.",
         "data": {
           "host": "IP-adres of hostnaam",
           "port": "Modbuspoort",
           "device_name": "Apparaatnaam",
           "polling_interval": "Uitleesinterval (seconden)",
           "modbus_timeout": "Modbus-timeout (seconden)",
-          "modbus_debug": "Modbus-berichten loggen voor foutopsporing"
-        }
-      },
-      "init": {
-        "title": "Viega Fonterra Smart",
-        "menu_options": {
-          "module": "Verbindingsinstellingen",
-          "connect": "Connect Upgrade"
-        }
-      },
-      "connect": {
-        "title": "Connect",
-        "description": "Ook geschikt voor Connect Upgrade: regel je verwarming met een externe temperatuursensor. Zet de kamer in Fonterra op Extern gemeten en kies daarna je Home Assistant-sensor.",
-        "data": {
+          "modbus_debug": "Modbus-berichten loggen voor foutopsporing",
           "connect_upgrade": "Connect Upgrade geïnstalleerd",
-          "configure_source": "Kamersensor kiezen"
-        }
-      },
-      "room": {
-        "title": "Kamer",
-        "data": {
-          "room": "Kamer"
+          "sensor_room": "Kamersensor koppelen (optioneel)"
         }
       },
       "source": {
@@ -89,15 +70,16 @@
       "cannot_connect": "Geen Modbusverbinding. Controleer het adres, de poort en de Modbusinstelling van je Fonterra.",
       "invalid_sensor": "Kies een bestaande temperatuursensor.",
       "external_required": "Zet de kamer op Extern gemeten en bevestig dit.",
-      "legacy_companion_active": "Schakel de oude losse Smart Connect-integratie eerst uit.",
       "identity_unverified": "Het WLAN-serienummer van Fonterra kon niet worden bevestigd. Controleer het adres bij Verbindingsinstellingen van deze hub.",
-      "address_in_use": "Een andere hub gebruikt dit adres en deze poort al."
+      "address_in_use": "Een andere hub gebruikt dit adres en deze poort al.",
+      "connect_required": "Vink Connect Upgrade aan om een kamersensor te koppelen.",
+      "room_changed": "De actorindeling is gewijzigd. Ontdek de ruimtes opnieuw en probeer het nog eens."
     },
     "abort": {
-      "modbus_required": "Geen Modbusverbinding beschikbaar. Controleer de Fonterra-verbinding en herlaad deze integratie.",
       "no_rooms": "Geen ingedeelde kamer gevonden. Controleer de indeling en herlaad de Viega-integratie.",
       "already_configured": "Deze Fonterra-module is al ingesteld.",
-      "settings_changed": "De hubinstellingen zijn gewijzigd. Open het formulier opnieuw."
+      "settings_changed": "De hubinstellingen zijn gewijzigd. Open het formulier opnieuw.",
+      "address_in_use": "Een andere hub gebruikt dit adres en deze poort al."
     }
   },
   "entity": {

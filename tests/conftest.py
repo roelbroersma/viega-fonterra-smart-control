@@ -6,13 +6,8 @@ import pytest
 from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.core import HomeAssistant
 
-from custom_components.viega_fonterra_modbus.connect.const import (
-    CONF_CONNECT,
-    CONF_SERIAL,
-    CONF_UPSTREAM,
-    DOMAIN,
-    UPSTREAM_DOMAIN,
-)
+from custom_components.viega_fonterra_modbus.connect.const import CONF_CONNECT
+from custom_components.viega_fonterra_modbus.const import DOMAIN
 
 
 def make_entry(
@@ -30,7 +25,7 @@ def make_entry(
         version=1,
         minor_version=1,
         title="Test Fonterra",
-        data=data or {CONF_CONNECT: True, CONF_SERIAL: unique_id, CONF_UPSTREAM: "modbus"},
+        data={CONF_CONNECT: True} if data is None else data,
         options=options or {},
         source="user",
         unique_id=unique_id,
@@ -49,9 +44,7 @@ async def hass(tmp_path):
 
 @pytest.fixture
 def upstream_entry():
-    return make_entry(
-        domain=UPSTREAM_DOMAIN, entry_id="modbus", data={"host": "fonterra.example", "port": 502}
-    )
+    return make_entry(entry_id="modbus", data={"host": "fonterra.example", "port": 502})
 
 
 @pytest.fixture

@@ -2,6 +2,7 @@
   "domain": "viega_fonterra_modbus",
   "name": "Viega Fonterra Smart",
   "after_dependencies": ["dhcp", "frontend", "http", "zeroconf"],
+  "categories": ["climate.thermostats_heating"],
   "codeowners": [
     "@roelbroersma"
   ],
@@ -18,7 +19,7 @@
     "custom_components.viega_fonterra_modbus"
   ],
   "requirements": [],
-  "version": "0.9.0",
+  "version": "0.9.1",
   "zeroconf": [
     {
       "type": "_modbus._tcp.local.",

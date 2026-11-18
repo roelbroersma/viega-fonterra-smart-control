@@ -36,37 +36,18 @@
   },
   "options": {
     "step": {
-      "module": {
-        "title": "Verbindungseinstellungen",
-        "description": "Räume und Gruppen werden aus der Basisstation gelesen. Ändern Sie die Zuordnung in Fonterra und laden Sie danach diese Integration neu.",
+      "init": {
+        "title": "Einstellungen",
+        "description": "Aktivieren Sie Connect Upgrade, wenn es installiert ist. Wählen Sie einen Raum, um dessen Sensor zu verknüpfen, zu ändern oder zu entfernen.",
         "data": {
           "host": "IP-Adresse oder Hostname",
           "port": "Modbus-Port",
           "device_name": "Gerätename",
           "polling_interval": "Polling-Intervall (Sekunden)",
           "modbus_timeout": "Modbus-Timeout (Sekunden)",
-          "modbus_debug": "Modbus-Frame-Debug-Logging aktivieren"
-        }
-      },
-      "init": {
-        "title": "Viega Fonterra Smart",
-        "menu_options": {
-          "module": "Verbindungseinstellungen",
-          "connect": "Connect Upgrade"
-        }
-      },
-      "connect": {
-        "title": "Connect",
-        "description": "Auch für Connect Upgrade geeignet: Steuern Sie Ihre Heizung mit einem externen Temperatursensor. Stellen Sie den Raum in Fonterra auf externe Messung ein und wählen Sie anschließend Ihren Home Assistant-Sensor aus.",
-        "data": {
+          "modbus_debug": "Modbus-Frame-Debug-Logging aktivieren",
           "connect_upgrade": "Connect Upgrade installiert",
-          "configure_source": "Raumsensor auswählen"
-        }
-      },
-      "room": {
-        "title": "Raum",
-        "data": {
-          "room": "Raum"
+          "sensor_room": "Raumsensor verknüpfen (optional)"
         }
       },
       "source": {
@@ -89,15 +70,16 @@
       "cannot_connect": "Keine Modbusverbindung. Adresse, Port und Modbuseinstellung der Fonterra prüfen.",
       "invalid_sensor": "Vorhandenen Temperatursensor auswählen.",
       "external_required": "Raum auf Extern gemessen einstellen und bestätigen.",
-      "legacy_companion_active": "Zuerst die alte separate Smart Connect-Integration deaktivieren.",
       "identity_unverified": "Die WLAN-Seriennummer konnte nicht bestätigt werden. Adresse in den Verbindungseinstellungen des vorhandenen Hubs prüfen.",
-      "address_in_use": "Ein anderer Hub verwendet diese Adresse und diesen Port bereits."
+      "address_in_use": "Ein anderer Hub verwendet diese Adresse und diesen Port bereits.",
+      "connect_required": "Aktivieren Sie Connect Upgrade, um einen Raumsensor zu verknüpfen.",
+      "room_changed": "Die Stellantriebe wurden neu zugeordnet. Ermitteln Sie die Räume erneut und versuchen Sie es noch einmal."
     },
     "abort": {
-      "modbus_required": "Keine Modbusverbindung verfügbar. Fonterra-Verbindung prüfen und diese Integration neu laden.",
       "no_rooms": "Kein zugeordneter Raum gefunden. Zuordnung prüfen und Viega-Integration neu laden.",
       "already_configured": "Dieses Fonterra-Modul ist bereits eingerichtet.",
-      "settings_changed": "Die Hub-Einstellungen wurden geändert. Öffnen Sie das Formular erneut."
+      "settings_changed": "Die Hub-Einstellungen wurden geändert. Öffnen Sie das Formular erneut.",
+      "address_in_use": "Ein anderer Hub verwendet diese Adresse und diesen Port bereits."
     }
   },
   "entity": {
