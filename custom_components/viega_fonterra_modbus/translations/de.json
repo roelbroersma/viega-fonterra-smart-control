@@ -177,7 +177,7 @@
         "name": "Vorlauftemperatur"
       },
       "actuator_return_temperature": {
-        "name": "{room} Aktor {actor} Rücklauftemperatur"
+        "name": "{room} Rücklauftemperatur Stellantrieb {actor}"
       },
       "room_diagnostic": {
         "name": "{room} Diagnose",
@@ -238,13 +238,13 @@
         }
       },
       "actuator_stats_open_actuator_count": {
-        "name": "Aktuell geöffnete Aktoren"
+        "name": "Aktuell geöffnete Stellantriebe"
       },
       "actuator_stats_open_transition_count": {
         "name": "Anzahl bestätigter Öffnungswechsel"
       },
       "actuator_stats_last_transition_time": {
-        "name": "Letzter bestätigter Aktorwechsel"
+        "name": "Letzte bestätigte Bewegung eines Stellantriebs"
       },
       "actuator_stats_confirmed_open_seconds": {
         "name": "Bestätigte Öffnungsdauer"
@@ -273,7 +273,7 @@
         }
       },
       "actuator_position": {
-        "name": "{room} Aktor {actor} Stellung"
+        "name": "{room} Ventilstellung Stellantrieb {actor}"
       },
       "circulation_pump": {
         "name": "Umwälzpumpe"
@@ -289,7 +289,7 @@
   "services": {
     "rediscover": {
       "name": "Gerät neu erkennen",
-      "description": "Liest Raum- und Aktortopologie erneut vom Gerät ein und aktualisiert die Entitäten direkt.",
+      "description": "Liest die Räume und die Zuordnung der Stellantriebe erneut aus dem Gerät und aktualisiert die Entitäten direkt.",
       "fields": {
         "device_id": {
           "name": "Gerät",
@@ -299,7 +299,7 @@
     },
     "overview": {
       "name": "Übersicht über alle Module",
-      "description": "Liefert eine Zusammenfassung je konfiguriertem Viega-Fonterra-Modul: Erreichbarkeit, Basiseinheit-Fehler, veraltete/fehlgeschlagene Kommunikation sowie Raum-/Aktoranzahl."
+      "description": "Liefert eine Zusammenfassung je konfiguriertem Viega-Fonterra-Modul: Erreichbarkeit, Basiseinheit-Fehler, veraltete/fehlgeschlagene Kommunikation sowie die Anzahl der Räume und Stellantriebe."
     }
   },
   "exceptions": {

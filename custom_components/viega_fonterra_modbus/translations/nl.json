@@ -109,7 +109,7 @@
             "name": "Klepstand"
           },
           "actuator_positions": {
-            "name": "Klepstanden per groep"
+            "name": "Klepstanden per actor"
           },
           "base_unit_error_code": {
             "name": "Foutcode basiseenheid"
@@ -159,7 +159,7 @@
               "sensor_invalid": "Geen geldige waarde",
               "no_error": "Geen fout",
               "error_3": "Minstens één kamerthermostaat heeft geen verbinding met de basiseenheid",
-              "error_4": "Storing op de actuatorbus",
+              "error_4": "Storing op de actorbus",
               "error_5": "Storing in de aanvoertemperatuursensor",
               "error_6": "Storing in de retourtemperatuursensor",
               "error_7": "Het maximum aantal kamerthermostaten is bereikt",
@@ -177,7 +177,7 @@
         "name": "Aanvoertemperatuur"
       },
       "actuator_return_temperature": {
-        "name": "{room} retourtemperatuur groep {actor}"
+        "name": "{room} retourtemperatuur actor {actor}"
       },
       "room_diagnostic": {
         "name": "{room} diagnose",
@@ -185,7 +185,7 @@
           "sensor_invalid": "Geen geldige waarde",
           "no_error": "Geen fout",
           "error_3": "Minstens één kamerthermostaat heeft geen verbinding met de basiseenheid",
-          "error_4": "Storing op de actuatorbus",
+          "error_4": "Storing op de actorbus",
           "error_5": "Storing in de aanvoertemperatuursensor",
           "error_6": "Storing in de retourtemperatuursensor",
           "error_7": "Het maximum aantal kamerthermostaten is bereikt",
@@ -238,7 +238,7 @@
         }
       },
       "actuator_stats_open_actuator_count": {
-        "name": "Aantal open groepen"
+        "name": "Aantal open actoren"
       },
       "actuator_stats_open_transition_count": {
         "name": "Aantal bevestigde openingen"
@@ -255,7 +255,7 @@
           "sensor_invalid": "Geen geldige waarde",
           "no_error": "Geen fout",
           "error_3": "Minstens één kamerthermostaat heeft geen verbinding met de basiseenheid",
-          "error_4": "Storing op de actuatorbus",
+          "error_4": "Storing op de actorbus",
           "error_5": "Storing in de aanvoertemperatuursensor",
           "error_6": "Storing in de retourtemperatuursensor",
           "error_7": "Het maximum aantal kamerthermostaten is bereikt",
@@ -273,7 +273,7 @@
         }
       },
       "actuator_position": {
-        "name": "{room} klepstand groep {actor}"
+        "name": "{room} klepstand actor {actor}"
       },
       "circulation_pump": {
         "name": "Circulatiepomp"
@@ -299,7 +299,7 @@
     },
     "overview": {
       "name": "Overzicht van alle hubs",
-      "description": "Geeft per Fonterra-hub de bereikbaarheid, foutmeldingen, communicatiestatus en het aantal kamers en groepen."
+      "description": "Geeft per Fonterra-hub de bereikbaarheid, foutmeldingen, communicatiestatus en het aantal kamers en actoren."
     }
   },
   "exceptions": {
@@ -350,8 +350,8 @@
       "description": "De basiseenheid van **{device}** meldt foutcode {code}. Minstens één kamerthermostaat heeft geen verbinding met de basiseenheid.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
     },
     "base_unit_error_4": {
-      "title": "Storing op de actuatorbus op {device}",
-      "description": "De basiseenheid van **{device}** meldt foutcode {code}. Storing op de actuatorbus.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
+      "title": "Storing op de actorbus op {device}",
+      "description": "De basiseenheid van **{device}** meldt foutcode {code}. Storing op de actorbus.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
     },
     "base_unit_error_5": {
       "title": "Storing in de aanvoertemperatuursensor op {device}",

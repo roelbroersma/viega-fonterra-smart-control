@@ -21,7 +21,7 @@ Home Assistant 2026.11.0 of nieuwer. Schakel Modbus TCP in Fonterra in en zorg d
 
 ### Installeren
 
-1. [Open Viega Fonterra Smart in de Marketplace](https://my.home-assistant.io/redirect/marketplace_repository/?owner=roelbroersma&repository=viega-fonterra-smart-control&category=integration). Je kunt ook onder **Instellingen > Marketplace > Toevoegen via link** de GitHub-repository invoeren.
+1. Zoek naar **Viega Fonterra Smart** onder **Instellingen > Marketplace**. Zie je hem nog niet? [Open de integratie via deze link](https://my.home-assistant.io/redirect/marketplace_repository/?owner=roelbroersma&repository=viega-fonterra-smart-control&category=integration). Je kunt de GitHub-repository ook invoeren via **Voeg toe via link**.
 2. Open **Viega Fonterra Smart** in de Marketplace en kies **Installeren**. Herstart Home Assistant als daarom wordt gevraagd.
 3. Open **Instellingen > Apparaten & diensten** en bevestig de gevonden verdeler. Je kunt **Viega Fonterra Smart** ook toevoegen met het IP-adres of de hostnaam. Elke verdeler krijgt een eigen vermelding.
 
@@ -29,7 +29,7 @@ Voor een handmatige installatie pak je de ZIP van de [GitHub-release](https://gi
 
 ### Dashboardkaart
 
-Vernieuw je browser na de herstart. Kies **Dashboard bewerken > Kaart toevoegen > Viega Fonterra Smart**. Gebruik het overzicht voor alle ruimtes of kies één kamer. Stel de doeltemperatuur bij of wijzig de vermogensstand bij een losse groep die deze bediening ondersteunt. Een kamerfout verschijnt onder **Diagnose**, op basis van de foutcode van Fonterra.
+Vernieuw je browser na de herstart. Kies **Dashboard bewerken > Kaart toevoegen > Viega Fonterra Smart**. Gebruik het overzicht voor alle ruimtes of kies één kamer. Stel de doeltemperatuur bij of wijzig de vermogensstand voor een losse actor die deze bediening ondersteunt. Per actor zie je de klepstand en retourtemperatuur. Een kamerfout verschijnt onder **Diagnose**, op basis van de foutcode van Fonterra.
 
 ![Vloerverwarmingsoverzicht en ruimtekaart voor de badkamer](docs/dashboard.png)
 
@@ -95,7 +95,7 @@ Home Assistant 2026.11.0 or later. Enable Modbus TCP in Fonterra and make sure H
 
 ### Installation
 
-1. [Open Viega Fonterra Smart in the Marketplace](https://my.home-assistant.io/redirect/marketplace_repository/?owner=roelbroersma&repository=viega-fonterra-smart-control&category=integration). You can also enter the GitHub repository under **Settings > Marketplace > Add from link**.
+1. Search for **Viega Fonterra Smart** under **Settings > Marketplace**. If it does not appear, [open the integration from this link](https://my.home-assistant.io/redirect/marketplace_repository/?owner=roelbroersma&repository=viega-fonterra-smart-control&category=integration). You can also enter the GitHub repository under **Settings > Marketplace > Add from link**.
 2. Open **Viega Fonterra Smart** in the Marketplace and choose **Install**. Restart Home Assistant if prompted.
 3. Go to **Settings > Devices & services** and confirm the discovered controller. You can also add **Viega Fonterra Smart** using the IP address or hostname. Each controller has its own entry.
 
@@ -103,7 +103,7 @@ For manual installation, extract the ZIP from the [GitHub release](https://githu
 
 ### Dashboard card
 
-Refresh your browser after restarting. Go to **Edit dashboard > Add card > Viega Fonterra Smart**. Use the overview for all rooms or select a single room. Adjust the setpoint or change the power level for a standalone group that supports it. Room faults appear under **Diagnostics**, based on the code reported by Fonterra. [View the dashboard screenshot](docs/dashboard.png)
+Refresh your browser after restarting. Go to **Edit dashboard > Add card > Viega Fonterra Smart**. Use the overview for all rooms or select a single room. Adjust the setpoint or change the power level for a standalone actuator that supports it. The card shows the valve position and return temperature for each actuator. Room faults appear under **Diagnostics**, based on the code reported by Fonterra. [View the dashboard screenshot](docs/dashboard.png)
 
 Use this YAML to add a room card.
 
@@ -167,7 +167,7 @@ Home Assistant 2026.11.0 oder neuer. Aktivieren Sie Modbus TCP in Fonterra. Home
 
 ### Inbetriebnahme
 
-1. [Viega Fonterra Smart im Marketplace öffnen](https://my.home-assistant.io/redirect/marketplace_repository/?owner=roelbroersma&repository=viega-fonterra-smart-control&category=integration). Sie können das GitHub-Repository auch unter **Einstellungen > Marketplace > Per Link hinzufügen** eingeben.
+1. Suchen Sie unter **Einstellungen > Marketplace** nach **Viega Fonterra Smart**. Falls der Eintrag fehlt, [öffnen Sie die Integration über diesen Link](https://my.home-assistant.io/redirect/marketplace_repository/?owner=roelbroersma&repository=viega-fonterra-smart-control&category=integration). Sie können das GitHub-Repository auch unter **Einstellungen > Marketplace > Per Link hinzufügen** eingeben.
 2. Öffnen Sie **Viega Fonterra Smart** im Marketplace und wählen Sie **Installieren**. Starten Sie Home Assistant neu, wenn Sie dazu aufgefordert werden.
 3. Öffnen Sie **Einstellungen > Geräte & Dienste** und bestätigen Sie den gefundenen Verteiler. Sie können **Viega Fonterra Smart** auch über IP-Adresse oder Hostnamen hinzufügen. Jeder Verteiler erhält einen eigenen Eintrag.
 
@@ -175,7 +175,7 @@ Für die manuelle Installation entpacken Sie die ZIP-Datei aus dem [GitHub-Relea
 
 ### Dashboard-Karte
 
-Laden Sie die Browserseite nach dem Neustart neu. Wählen Sie **Dashboard bearbeiten > Karte hinzufügen > Viega Fonterra Smart**. Verwenden Sie die Übersicht für alle Räume oder wählen Sie einen einzelnen Raum. Stellen Sie die Solltemperatur ein oder ändern Sie die Leistungsstufe einer einzelnen Heizgruppe, sofern diese Funktion verfügbar ist. Raumfehler erscheinen unter **Diagnose** mit der von Fonterra gemeldeten Störung. [Dashboard ansehen](docs/dashboard.png)
+Laden Sie die Browserseite nach dem Neustart neu. Wählen Sie **Dashboard bearbeiten > Karte hinzufügen > Viega Fonterra Smart**. Verwenden Sie die Übersicht für alle Räume oder wählen Sie einen einzelnen Raum. Stellen Sie die Solltemperatur ein oder ändern Sie die Leistungsstufe eines einzelnen Stellantriebs, sofern diese Funktion verfügbar ist. Für jeden Stellantrieb zeigt die Karte die Ventilstellung und Rücklauftemperatur an. Raumfehler erscheinen unter **Diagnose** mit der von Fonterra gemeldeten Störung. [Dashboard ansehen](docs/dashboard.png)
 
 Mit diesem YAML-Beispiel fügen Sie eine Raumkarte hinzu.
 
