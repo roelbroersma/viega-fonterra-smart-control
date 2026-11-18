@@ -4,7 +4,9 @@
 
 ## Nederlands
 
-Regel je Viega Fonterra Smart Control-vloerverwarming vanuit Home Assistant. De integratie vindt je verdelers en leest de kamerindeling uit Fonterra. Je ziet per ruimte de gemeten en ingestelde temperatuur, plus de aanvoertemperatuur, pompstatus en diagnose van de basisunit. Met [Connected Upgrade van Gigaweb](https://www.gigaweb.nl/fonterra-smart-control-upgrade/) kun je hiervoor ook een eigen temperatuursensor gebruiken.
+Regel je Viega Fonterra Smart Control-vloerverwarming vanuit Home Assistant. De integratie vindt je verdelers via het netwerk en leest de kamerindeling uit. De dashboardkaart toont temperaturen, klepstanden en diagnose en laat je de ruimtetemperatuur instellen.
+
+Met [Connected Upgrade van Gigaweb](https://www.gigaweb.nl/fonterra-smart-control-upgrade/) kun je per kamer de meting van een Home Assistant-sensor doorgeven, bijvoorbeeld van een KNX-tastsensor. Fonterra gebruikt die meting om de kamer te regelen. Voor de gewone bediening via Modbus TCP is de upgrade optioneel.
 
 **Inhoud**
 
@@ -78,7 +80,9 @@ De kaart en integratie volgen de taal van Home Assistant. Nederlands, Engels, Du
 
 ## English
 
-Control your Viega Fonterra Smart Control underfloor heating from Home Assistant. The integration discovers your controllers and reads the room layout from Fonterra. You can see each room’s measured temperature and setpoint, along with the supply temperature, pump status and controller diagnostics. With [Gigaweb Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/), you can use your own temperature sensor.
+Control your Viega Fonterra Smart Control underfloor heating from Home Assistant. The integration discovers your controllers on the network and reads the room layout. The dashboard card shows temperatures, valve positions and diagnostics and lets you adjust the room setpoint.
+
+With [Gigaweb Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/), you can send readings from a Home Assistant sensor, such as a KNX wall sensor, to Fonterra for each room. Fonterra uses those readings to control the room. The upgrade is optional for standard Modbus TCP control.
 
 **Contents**
 
@@ -150,7 +154,9 @@ The card and integration follow your Home Assistant language. Dutch, English, Ge
 
 ## Deutsch
 
-Steuern Sie Ihre Viega Fonterra Smart-Control-Fußbodenheizung in Home Assistant. Die Integration findet Ihre Verteiler und liest die Raumaufteilung aus Fonterra aus. Sie sehen die gemessene Temperatur und die Solltemperatur pro Raum sowie Vorlauftemperatur, Pumpenstatus und Diagnose der Basiseinheit. Mit dem [Connected Upgrade von Gigaweb](https://www.gigaweb.nl/fonterra-smart-control-upgrade/) können Sie einen eigenen Temperatursensor verwenden.
+Steuern Sie Ihre Viega Fonterra Smart-Control-Fußbodenheizung in Home Assistant. Die Integration findet Ihre Verteiler im Netzwerk und liest die Raumaufteilung aus. Die Dashboard-Karte zeigt Temperaturen, Ventilstellungen und Diagnose an. Dort können Sie auch die Solltemperatur einstellen.
+
+Mit dem [Connected Upgrade von Gigaweb](https://www.gigaweb.nl/fonterra-smart-control-upgrade/) können Sie für jeden Raum Messwerte eines Home-Assistant-Sensors an Fonterra senden, zum Beispiel von einem KNX-Tastsensor. Fonterra regelt den Raum anhand dieser Messwerte. Für die normale Bedienung über Modbus TCP ist das Upgrade optional.
 
 **Inhalt**
 
