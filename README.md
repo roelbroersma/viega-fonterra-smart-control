@@ -44,6 +44,20 @@ entity: climate.voorbeeld_badkamer
 
 Vervang de entiteit door je eigen klimaatentiteit. Laat `entity` weg voor het overzicht.
 
+#### Geschiedenis per ruimte
+
+Voeg onder de ruimtekaart een **Geschiedenisgrafiek** toe en selecteer de Fonterra-klimaatentiteit van de kamer. Home Assistant toont de gemeten en ingestelde temperatuur en markeert de periodes waarin de kamer verwarmt. De grafiek gebruikt de geschiedenis die Home Assistant heeft opgeslagen.
+
+```yaml
+type: history-graph
+title: Badkamer
+hours_to_show: 24
+entities:
+  - climate.voorbeeld_badkamer
+```
+
+Kopieer de kaart voor elke ruimte en vervang de titel en de klimaatentiteit.
+
 ### Je eigen temperatuursensor
 
 Stel dat `sensor.badkamer_temperatuur` in Home Assistant de temperatuur van een KNX Tastsensor 4 ontvangt.
@@ -118,6 +132,20 @@ entity: climate.example_bathroom
 
 Replace the example with your climate entity. Omit `entity` for the overview.
 
+#### Room history
+
+Add a **History graph** below the room card and select the Fonterra climate entity for that room. Home Assistant shows the measured temperature, the setpoint and the periods when the room was heating. The graph uses the history recorded by Home Assistant.
+
+```yaml
+type: history-graph
+title: Bathroom
+hours_to_show: 24
+entities:
+  - climate.example_bathroom
+```
+
+Duplicate the card for each room and change its title and climate entity.
+
 ### Using your own temperature sensor
 
 Suppose `sensor.bathroom_temperature` in Home Assistant receives readings from a KNX Tastsensor 4.
@@ -191,6 +219,20 @@ entity: climate.beispiel_badezimmer
 ```
 
 Ersetzen Sie das Beispiel durch Ihre Klimaentität. Lassen Sie `entity` für die Übersicht weg.
+
+#### Raumverlauf
+
+Fügen Sie unter der Raumkarte ein **Verlaufsdiagramm** hinzu und wählen Sie die Fonterra-Klimaentität des Raums. Home Assistant zeigt die gemessene Temperatur, die Solltemperatur und die Zeiträume, in denen der Raum beheizt wurde. Das Diagramm verwendet den von Home Assistant aufgezeichneten Verlauf.
+
+```yaml
+type: history-graph
+title: Badezimmer
+hours_to_show: 24
+entities:
+  - climate.beispiel_badezimmer
+```
+
+Kopieren Sie die Karte für jeden Raum und ändern Sie den Titel und die Klimaentität.
 
 ### Eigenen Temperatursensor verwenden
 
