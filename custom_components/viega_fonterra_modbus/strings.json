@@ -1,0 +1,419 @@
+{
+  "title": "Viega Fonterra Smart",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Viega Fonterra Smart",
+        "description": "Enter the module IP address or hostname, Modbus port, and device name. Rooms are discovered automatically from the device once connected.",
+        "data": {
+          "host": "IP address or hostname",
+          "port": "Modbus port",
+          "device_name": "Device name",
+          "polling_interval": "Polling interval (seconds)",
+          "modbus_timeout": "Modbus timeout (seconds)",
+          "modbus_debug": "Enable Modbus frame debug logging",
+          "connect_upgrade": "Connect Upgrade installed"
+        }
+      }
+    },
+    "error": {
+      "invalid_host": "Enter a valid host or IP address.",
+      "required": "This field is required.",
+      "invalid_port": "Enter a port between 1 and 65535.",
+      "invalid_timeout": "Enter a timeout between 1 and 30 seconds.",
+      "cannot_connect": "Unable to connect to the Viega module."
+    },
+    "abort": {
+      "already_configured": "This address and port are already configured.",
+      "invalid_discovery": "This advertisement does not provide a supported Fonterra Modbus port.",
+      "address_updated": "Fonterra has a new verified network address.",
+      "current_address_available": "Fonterra still responds at its current address.",
+      "identity_unverified": "Could not verify the Fonterra WLAN serial. Check the address in the existing hub connection settings.",
+      "enable_modbus": "Home Assistant showed a notification to enable Modbus TCP in Fonterra.",
+      "modbus_advertised": "Modbus has already been advertised."
+    },
+    "flow_title": "{name}"
+  },
+  "options": {
+    "step": {
+      "module": {
+        "title": "Connection settings",
+        "description": "Rooms and actuator assignments come from the base unit. Change the layout in Fonterra, then reload this integration.",
+        "data": {
+          "host": "IP address or hostname",
+          "port": "Modbus port",
+          "device_name": "Device name",
+          "polling_interval": "Polling interval (seconds)",
+          "modbus_timeout": "Modbus timeout (seconds)",
+          "modbus_debug": "Enable Modbus frame debug logging"
+        }
+      },
+      "init": {
+        "title": "Viega Fonterra Smart",
+        "menu_options": {
+          "module": "Connection settings",
+          "connect": "Connect Upgrade"
+        }
+      },
+      "connect": {
+        "title": "Connect",
+        "description": "Includes Connect Upgrade support for external temperature sensors. First set the room to External measured in Fonterra, then choose your Home Assistant sensor.",
+        "data": {
+          "connect_upgrade": "Connect Upgrade installed",
+          "configure_source": "Choose room sensor"
+        }
+      },
+      "room": {
+        "title": "Room",
+        "data": {
+          "room": "Room"
+        }
+      },
+      "source": {
+        "title": "Temperature sensor",
+        "description": "Choose the temperature sensor for room {room}. First set the room to Extern gemeten (External measured) in Fonterra. Real sensor reports must arrive regularly, even at equal temperature. After startup/reload, a new report is required.",
+        "data": {
+          "entity_id": "Temperature sensor",
+          "max_age": "Maximum sensor report age (seconds)",
+          "external_confirmed": "This room is set to External measured in Fonterra",
+          "remove": "Remove this room's sensor mapping"
+        }
+      }
+    },
+    "error": {
+      "invalid_host": "Enter a valid host or IP address.",
+      "required": "This field is required.",
+      "invalid_port": "Enter a port between 1 and 65535.",
+      "invalid_timeout": "Enter a timeout between 1 and 30 seconds.",
+      "invalid_polling_interval": "Enter a polling interval between 5 and 300 seconds.",
+      "cannot_connect": "No Modbus connection. Check your Fonterra address, port and Modbus setting.",
+      "invalid_sensor": "Choose an existing temperature sensor.",
+      "external_required": "Set the room to External measured and confirm.",
+      "legacy_companion_active": "Disable the old separate Smart Connect integration first.",
+      "identity_unverified": "Could not verify the Fonterra WLAN serial. Check the address in the existing hub connection settings.",
+      "address_in_use": "Another hub already uses this address and port."
+    },
+    "abort": {
+      "modbus_required": "No Modbus connection available. Check the Fonterra connection and reload this integration.",
+      "no_rooms": "No assigned room found. Check room assignment and reload the Viega integration.",
+      "already_configured": "This Fonterra module is already configured.",
+      "settings_changed": "The hub settings changed while this form was open. Open the form again."
+    }
+  },
+  "entity": {
+    "climate": {
+      "room": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "manual": "Manual",
+              "profile": "Profile",
+              "setback": "Setback"
+            }
+          },
+          "room_id": {
+            "name": "Room number"
+          },
+          "power_level": {
+            "name": "Manual power level"
+          },
+          "flow_temperature": {
+            "name": "Flow temperature"
+          },
+          "return_temperature": {
+            "name": "Return temperature"
+          },
+          "actuator_position": {
+            "name": "Actuator position"
+          },
+          "actuator_positions": {
+            "name": "Actuator positions"
+          },
+          "base_unit_error_code": {
+            "name": "Base unit error code"
+          },
+          "last_active_hvac_mode": {
+            "name": "Last active mode",
+            "state": {
+              "heat": "Heating",
+              "cool": "Cooling",
+              "off": "Off"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "connect_upgrade_detection": {
+        "name": "Connect Upgrade",
+        "state_attributes": {
+          "connect_help": {
+            "name": "Using your own sensor",
+            "state": {
+              "own_temperature_sensor": "Connect Upgrade lets Home Assistant send the measured room temperature from your own sensor to Fonterra. Set the room to external measurement (Extern gemeten) in Fonterra, then link the sensor under Configure → Connect Upgrade. That room can then work without a Viega room thermostat."
+            }
+          }
+        },
+        "state": {
+          "detected": "Detected",
+          "not_detected": "Not detected"
+        }
+      },
+      "wlan_serial_number": {
+        "name": "WLAN module serial number"
+      },
+      "base_unit_serial_number": {
+        "name": "Base unit serial number"
+      },
+      "base_unit_name": {
+        "name": "Base unit name"
+      },
+      "base_unit_error_code": {
+        "name": "Base unit error code",
+        "state_attributes": {
+          "description": {
+            "name": "Description",
+            "state": {
+              "sensor_invalid": "No valid value",
+              "no_error": "No error",
+              "error_3": "Base unit: at least one room thermostat is no longer connected",
+              "error_4": "Base unit: fault on the actuator bus",
+              "error_5": "Base unit: fault at the flow-temperature sensor",
+              "error_6": "Base unit: fault at the return-temperature sensor",
+              "error_7": "Base unit: no further room thermostats can be registered",
+              "error_9": "Base unit: replace the backup battery",
+              "error_10": "Warning: risk of condensation, flow temperature too low",
+              "error_21": "No connection to the room thermostat",
+              "error_22": "Warning: room thermostat battery is weak",
+              "error_24": "Warning: connection to the room thermostat is weak",
+              "unknown_error": "Unknown error"
+            }
+          }
+        }
+      },
+      "flow_temperature": {
+        "name": "Flow temperature"
+      },
+      "actuator_return_temperature": {
+        "name": "{room} actuator {actor} return temperature"
+      },
+      "room_diagnostic": {
+        "name": "{room} diagnostic",
+        "state": {
+          "sensor_invalid": "No valid value",
+          "no_error": "No error",
+          "error_3": "Base unit: at least one room thermostat is no longer connected",
+          "error_4": "Base unit: fault on the actuator bus",
+          "error_5": "Base unit: fault at the flow-temperature sensor",
+          "error_6": "Base unit: fault at the return-temperature sensor",
+          "error_7": "Base unit: no further room thermostats can be registered",
+          "error_9": "Base unit: replace the backup battery",
+          "error_10": "Warning: risk of condensation, flow temperature too low",
+          "error_21": "No connection to the room thermostat",
+          "error_22": "Warning: room thermostat battery is weak",
+          "error_24": "Warning: connection to the room thermostat is weak",
+          "unknown_error": "Unknown error"
+        },
+        "state_attributes": {
+          "error_code": {
+            "name": "Error code"
+          }
+        }
+      },
+      "health_last_success_time": {
+        "name": "Last successful Modbus response"
+      },
+      "health_last_failure_time": {
+        "name": "Last failed Modbus request"
+      },
+      "health_consecutive_failures": {
+        "name": "Consecutive Modbus failures"
+      },
+      "health_invalid_value_count": {
+        "name": "Invalid Modbus value count"
+      },
+      "health_last_exception_code": {
+        "name": "Last Modbus exception code"
+      },
+      "health_last_success_duration": {
+        "name": "Last Modbus request duration"
+      },
+      "health_reconnect_count": {
+        "name": "Modbus reconnections"
+      },
+      "health_last_reconnect_time": {
+        "name": "Last Modbus reconnection"
+      },
+      "health_invalid_registers": {
+        "name": "Invalid registers",
+        "state_attributes": {
+          "invalid_registers": {
+            "name": "Registers"
+          },
+          "rejected_registers": {
+            "name": "Rejected registers"
+          }
+        }
+      },
+      "actuator_stats_open_actuator_count": {
+        "name": "Currently open actuators"
+      },
+      "actuator_stats_open_transition_count": {
+        "name": "Confirmed open-transition count"
+      },
+      "actuator_stats_last_transition_time": {
+        "name": "Last confirmed actuator transition"
+      },
+      "actuator_stats_confirmed_open_seconds": {
+        "name": "Confirmed open time"
+      },
+      "base_unit_diagnostic": {
+        "name": "Base unit diagnostic",
+        "state": {
+          "sensor_invalid": "No valid value",
+          "no_error": "No error",
+          "error_3": "Base unit: at least one room thermostat is no longer connected",
+          "error_4": "Base unit: fault on the actuator bus",
+          "error_5": "Base unit: fault at the flow-temperature sensor",
+          "error_6": "Base unit: fault at the return-temperature sensor",
+          "error_7": "Base unit: no further room thermostats can be registered",
+          "error_9": "Base unit: replace the backup battery",
+          "error_10": "Warning: risk of condensation, flow temperature too low",
+          "error_21": "No connection to the room thermostat",
+          "error_22": "Warning: room thermostat battery is weak",
+          "error_24": "Warning: connection to the room thermostat is weak",
+          "unknown_error": "Unknown error"
+        },
+        "state_attributes": {
+          "error_code": {
+            "name": "Error code"
+          }
+        }
+      },
+      "actuator_position": {
+        "name": "{room} actuator {actor} position"
+      },
+      "circulation_pump": {
+        "name": "Circulation pump"
+      }
+    },
+    "number": {
+      "power_level": {
+        "name": "{room} manual power level",
+        "unit_of_measurement": "level"
+      }
+    }
+  },
+  "services": {
+    "rediscover": {
+      "name": "Rediscover device",
+      "description": "Re-reads the room and actuator topology from the device and updates entities in place.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "The Viega Fonterra module to rediscover."
+        }
+      }
+    },
+    "overview": {
+      "name": "Multi-module overview",
+      "description": "Returns a per-module summary across every configured Viega Fonterra module: reachability, base-unit errors, stale/failed communication, and room/actuator counts."
+    }
+  },
+  "exceptions": {
+    "temperature_out_of_range": {
+      "message": "Target temperature {value} °C is outside the allowed range ({min}–{max} °C) for the current mode."
+    },
+    "power_level_out_of_range": {
+      "message": "Power level {value} is outside the allowed range ({min}–{max})."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Operating mode \"{mode}\" is not supported by the Viega module."
+    },
+    "unsupported_preset_mode": {
+      "message": "Profile mode \"{mode}\" is not supported by the Viega module."
+    },
+    "register_not_configured": {
+      "message": "Room {room} has no register for this setting, so it cannot be changed."
+    },
+    "write_failed": {
+      "message": "Could not send the change to Viega module {device}: {error}"
+    },
+    "unknown_device": {
+      "message": "Device {device_id} was not found."
+    },
+    "module_not_loaded": {
+      "message": "Viega module {device} is not loaded. Check that the integration is set up and running."
+    },
+    "rediscover_failed": {
+      "message": "Rediscovery of Viega module {device} failed: {error}. The previous room configuration is kept."
+    },
+    "preset_requires_heating": {
+      "message": "Profile mode \"{mode}\" can only be selected while the Viega module is in heating mode."
+    },
+    "power_level_unavailable": {
+      "message": "Fonterra reports no available power level for {room}."
+    },
+    "target_temperature_unavailable": {
+      "message": "Fonterra reports no adjustable temperature for {room}. Check the room thermostat or the configured temperature sensor."
+    }
+  },
+  "issues": {
+    "module_unreachable": {
+      "title": "Viega module {device} is not reachable",
+      "description": "Home Assistant has received no response from the Viega Fonterra module **{device}** since {since}. Room values stay at their last known state until it responds again.\n\nCheck that the module is powered and connected to the network. The integration keeps reconnecting on its own, and this message disappears automatically once the module responds again."
+    },
+    "base_unit_error_3": {
+      "title": "Viega module {device}: A room thermostat is no longer connected",
+      "description": "The base unit of **{device}** reports error code {code}: At least one room thermostat is no longer connected to the base unit.\n\nThis message disappears automatically once the base unit no longer reports the error."
+    },
+    "base_unit_error_4": {
+      "title": "Viega module {device}: Fault on the actuator bus",
+      "description": "The base unit of **{device}** reports error code {code}: There is a fault on the actuator bus.\n\nThis message disappears automatically once the base unit no longer reports the error."
+    },
+    "base_unit_error_5": {
+      "title": "Viega module {device}: Flow-temperature sensor fault",
+      "description": "The base unit of **{device}** reports error code {code}: The flow-temperature sensor reports a fault.\n\nThis message disappears automatically once the base unit no longer reports the error."
+    },
+    "base_unit_error_6": {
+      "title": "Viega module {device}: Return-temperature sensor fault",
+      "description": "The base unit of **{device}** reports error code {code}: The return-temperature sensor reports a fault.\n\nThis message disappears automatically once the base unit no longer reports the error."
+    },
+    "base_unit_error_7": {
+      "title": "Viega module {device}: No more room thermostats can be registered",
+      "description": "The base unit of **{device}** reports error code {code}: No further room thermostats can be registered at the base unit.\n\nThis message disappears automatically once the base unit no longer reports the error."
+    },
+    "base_unit_error_9": {
+      "title": "Viega module {device}: Replace the backup battery",
+      "description": "The base unit of **{device}** reports error code {code}: The backup battery of the base unit needs to be replaced.\n\nThis message disappears automatically once the base unit no longer reports the error."
+    },
+    "base_unit_error_10": {
+      "title": "Viega module {device}: Risk of condensation",
+      "description": "The base unit of **{device}** reports error code {code}: Warning: risk of condensation because the flow temperature is too low.\n\nThis message disappears automatically once the base unit no longer reports the error."
+    },
+    "base_unit_error_21": {
+      "title": "Viega module {device}: No connection to a room thermostat",
+      "description": "The base unit of **{device}** reports error code {code}: There is no connection to a room thermostat.\n\nThis message disappears automatically once the base unit no longer reports the error."
+    },
+    "base_unit_error_22": {
+      "title": "Viega module {device}: Room thermostat battery is weak",
+      "description": "The base unit of **{device}** reports error code {code}: Warning: the battery of a room thermostat is weak.\n\nThis message disappears automatically once the base unit no longer reports the error."
+    },
+    "base_unit_error_24": {
+      "title": "Viega module {device}: Weak connection to a room thermostat",
+      "description": "The base unit of **{device}** reports error code {code}: Warning: the connection to a room thermostat is weak.\n\nThis message disappears automatically once the base unit no longer reports the error."
+    },
+    "base_unit_error_unknown": {
+      "title": "Viega module {device}: error code {code}",
+      "description": "The base unit of **{device}** reports error code {code}, which is not described in the Viega manual known to this integration.\n\nThis message disappears automatically once the base unit no longer reports the error."
+    },
+    "registers_not_updating": {
+      "title": "Viega module {device}: values are not updating",
+      "description": "The Viega Fonterra module **{device}** answers, but has rejected reading these registers since {since} (Modbus exception {codes}):\n\n{registers}\n\nThe affected values in Home Assistant are frozen at their last known state. This often follows a Viega firmware update. Check that Modbus TCP is fully enabled in the Viega app and that the module runs normally; if the problem stays, report it with *Download diagnostics* attached. This message disappears automatically once all values can be read again."
+    },
+    "enable_modbus": {
+      "title": "Fonterra found. Enable Modbus TCP",
+      "description": "Fonterra at **{host}** announced its web service, but Modbus did not respond. Open the Fonterra settings and check that **Modbus TCP** is enabled to add the hub."
+    }
+  }
+}

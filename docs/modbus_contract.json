@@ -1,0 +1,233 @@
+{
+  "schema": 1,
+  "contract": "Fonterra Connect Modbus",
+  "version": "0.1.1",
+  "status": "USED_BY_HOME_ASSISTANT_0_9_0",
+  "transport": {
+    "type": "Modbus TCP",
+    "default_port": 502,
+    "unit_id": 1,
+    "prerequisite": "Enable Modbus TCP in Fonterra"
+  },
+  "addressing": {
+    "canonical": "Zero-based PDU address, transmitted literally",
+    "viega_manual": "PDU = manual address - 30000 for input, - 40000 for holding; do not subtract another 1",
+    "other_clients": "A client using holding 40001 = PDU 0 calls PDU 100 register 40101",
+    "room_id": "1..12; obtain from each actuator's room_id register; not native slot 1..8, actor index, or screen order"
+  },
+  "registers": {
+    "operating_mode": {
+      "pdu": 1,
+      "table": "holding",
+      "read_fc": 3,
+      "type": "int16",
+      "quantity": 1,
+      "write_fc": [
+        16
+      ],
+      "values": {
+        "0": "Standby",
+        "1": "Heating",
+        "2": "Cooling"
+      },
+      "scope": "Whole base unit, shared by every room"
+    },
+    "profile_mode": {
+      "pdu": 2,
+      "table": "holding",
+      "read_fc": 3,
+      "type": "int16",
+      "quantity": 1,
+      "write_fc": [
+        16
+      ],
+      "values": {
+        "0": "Manual",
+        "1": "Profile",
+        "2": "Setback"
+      },
+      "constraint": "Only in heating mode; whole base unit"
+    },
+    "base_error": {
+      "pdu": 24,
+      "table": "input",
+      "read_fc": 4
+    },
+    "room_current_temperature": {
+      "pdu_formula": "50 + 2*(roomId-1)",
+      "table": "input",
+      "read_fc": 4,
+      "quantity": 1,
+      "type": "int16",
+      "scale": 0.1,
+      "unit": "degC"
+    },
+    "room_error": {
+      "pdu_formula": "51 + 2*(roomId-1)",
+      "table": "input",
+      "read_fc": 4,
+      "quantity": 1,
+      "type": "int16",
+      "note": "Existing room diagnostic only; not Connect capability/source/ageTicks"
+    },
+    "room_target_temperature": {
+      "pdu_formula": "51 + 2*(roomId-1)",
+      "table": "holding",
+      "read_fc": 3,
+      "write_fc": [
+        6,
+        16
+      ],
+      "quantity": 1,
+      "scale": 0.1,
+      "unit": "degC",
+      "type": "int16",
+      "manual_range_verbatim": "5/16 bis 30 * 10",
+      "note": "Original manual pp92-93 gives 5/16..30degC depending on context. Do not conflate with Connect's measured-temperature 5..40degC. Existing HA climate accepts 5..30; no new wider setpoint range is promised."
+    },
+    "external_measured_temperature": {
+      "pdu_formula": "100 + (roomId-1)",
+      "pdu_range": [
+        100,
+        111
+      ],
+      "table": "holding",
+      "read_fc": 3,
+      "write_fc": [
+        6,
+        16
+      ],
+      "quantity": 1,
+      "write_type": "uint16",
+      "write_raw_range": [
+        50,
+        400
+      ],
+      "scale": 0.1,
+      "unit": "degC",
+      "example": {
+        "roomId": 1,
+        "pdu": 100,
+        "value": 19.7,
+        "raw": 197
+      },
+      "effect": "Native external measured-temperature processing, including validity refresh; does not change setpoint"
+    },
+    "actor_room_id": {
+      "pdu_formula": "252 + 3*(actorId-1)",
+      "actor_range": [
+        1,
+        12
+      ],
+      "room_range": [
+        1,
+        12
+      ],
+      "table": "input",
+      "read_fc": 4,
+      "quantity": 1,
+      "type": "int16"
+    },
+    "room_power_level": {
+      "pdu_formula": "50 + 2*(roomId-1)",
+      "table": "holding",
+      "read_fc": 3,
+      "write_fc": [
+        16
+      ],
+      "quantity": 1,
+      "type": "int16",
+      "raw_range": [
+        0,
+        10
+      ],
+      "manual_range_verbatim": "0/1 bis 10",
+      "scale": 1,
+      "note": "Original ROOM power-level register; not proven to address a detached standalone actor. Do not substitute actorId for roomId."
+    },
+    "standalone_actor_power": {
+      "pdu": null,
+      "status": "NO_VERIFIED_REGISTER_IN_CURRENT_MANUAL_OR_CONNECT_ADDENDUM",
+      "note": "Native per-actor power exists in Connect, but no actor power Modbus address is specified by these PDFs. Omit standalone actor power writes until the existing web/API owner provides exact native Modbus evidence. Do not invent new firmware registers."
+    },
+    "wifi_serial": {
+      "pdu": 1,
+      "table": "input",
+      "read_fc": 4,
+      "quantity": 5,
+      "type": "string(10)",
+      "encoding": "Big-endian register bytes; trim trailing NUL/space",
+      "identity": "WiFi module, distinct from base/PIC serial"
+    },
+    "base_serial": {
+      "pdu": 6,
+      "table": "input",
+      "read_fc": 4,
+      "quantity": 5,
+      "type": "string(10)"
+    },
+    "base_name": {
+      "pdu": 11,
+      "table": "input",
+      "read_fc": 4,
+      "quantity": 12,
+      "type": "string(24)"
+    },
+    "actor_position": {
+      "pdu_formula": "250 + 3*(actorId-1)",
+      "table": "input",
+      "read_fc": 4,
+      "quantity": 1,
+      "type": "int16",
+      "values": {
+        "0": "Closed",
+        "1": "Open"
+      }
+    },
+    "actor_return_temperature": {
+      "pdu_formula": "251 + 3*(actorId-1)",
+      "table": "input",
+      "read_fc": 4,
+      "quantity": 1,
+      "type": "int16",
+      "scale": 0.1
+    }
+  },
+  "invalid_read_sentinel": {
+    "signed": -99,
+    "unsigned": 65437,
+    "hex": "FF9D",
+    "rule": "Detect before scaling; never write sentinel or substitute 21degC"
+  },
+  "connect_gate": {
+    "safe_modbus_capability_register": null,
+    "safe_modbus_source_register": null,
+    "policy": "Explicit user Connect Upgrade opt-in and confirmation that chosen rooms already use Extern gemeten; no probe writes",
+    "external_mode_selection": "Existing Fonterra web UI; no new Modbus register or automatic fallback"
+  },
+  "freshness": {
+    "device": "Native PIC ageTicks <=12000 and valid PIC status; ticks are not seconds; original timeout remains authoritative",
+    "modbus_limit": "No documented Modbus source/status/reason/ageTicks registers. Equal readback alone is NOT proof of current PIC freshness. Do not invent register addresses or seconds conversion.",
+    "sender": "Periodically resend only real finite 5..40degC measurements while source report time remains recent. Equal-valued actual reports refresh report time; no new physical report means source eventually expires.",
+    "home_assistant": "State.last_reported, never last_changed. Reject restored/unknown/unavailable/invalid values. KNX always_callback=true and sync_state=expire 5 allow equal telegrams and periodic bus reads. No cached-value heartbeat templates.",
+    "ha_candidate": {
+      "poll_seconds": 30,
+      "resend_seconds": 60,
+      "default_source_max_age_seconds": 900,
+      "require_report_after_companion_setup": true,
+      "note": "Sender defaults, not a claimed conversion of PIC ticks; physical timeout acceptance still required"
+    }
+  },
+  "write_failure": "No immediate retry after a lost acknowledgement. Verify WLAN identity and actor assignment before sending on a later poll. Stop on missing, invalid or expired readings. The native diagnostics report device faults.",
+  "proof": [
+    "https://www.gigaweb.nl/fonterra-smart-control-upgrade/ (Connected Upgrade and published documentation)",
+    "https://github.com/mikefogel/homeassistant-viega-fonterra-modbus/tree/820c51bc02aaa6f471d1d8853db52c55d1099829/custom_components/viega_fonterra_modbus",
+    "Viega Fonterra Smart Control 2.0 manual, Modbus register tables and worked examples"
+  ],
+  "room_error_codes": {
+    "0": "No error",
+    "21": "No thermostat connection",
+    "22": "Thermostat battery low",
+    "24": "Thermostat radio connection weak"
+  }
+}

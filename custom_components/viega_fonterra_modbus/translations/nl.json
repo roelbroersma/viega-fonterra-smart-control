@@ -1,0 +1,419 @@
+{
+  "title": "Viega Fonterra Smart",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Viega Fonterra Smart",
+        "description": "Vul het adres van je Fonterra in en schakel Modbus in Fonterra in. Kamers worden automatisch gevonden. Vink Connect Upgrade alleen aan als die op jouw Fonterra is geïnstalleerd.",
+        "data": {
+          "host": "IP-adres of hostnaam",
+          "port": "Modbuspoort",
+          "device_name": "Apparaatnaam",
+          "polling_interval": "Uitleesinterval (seconden)",
+          "modbus_timeout": "Modbus-timeout (seconden)",
+          "modbus_debug": "Modbus-berichten loggen voor foutopsporing",
+          "connect_upgrade": "Connect Upgrade geïnstalleerd"
+        }
+      }
+    },
+    "error": {
+      "invalid_host": "Vul een geldig IP-adres of een geldige hostnaam in.",
+      "required": "Dit veld is verplicht.",
+      "invalid_port": "Vul een poort tussen 1 en 65535 in.",
+      "invalid_timeout": "Kies een time-out tussen 1 en 30 seconden.",
+      "cannot_connect": "Geen verbinding. Schakel Modbus in Fonterra in en controleer het adres en de poort."
+    },
+    "abort": {
+      "already_configured": "Dit adres en deze poort zijn al ingesteld.",
+      "invalid_discovery": "Deze advertentie bevat geen ondersteunde Fonterra Modbuspoort.",
+      "address_updated": "Fonterra heeft een nieuw geverifieerd netwerkadres.",
+      "current_address_available": "Fonterra reageert nog op het huidige adres.",
+      "identity_unverified": "Het WLAN-serienummer van Fonterra kon niet worden bevestigd. Controleer het adres bij Verbindingsinstellingen van deze hub.",
+      "enable_modbus": "Home Assistant heeft een melding getoond om Modbus TCP in Fonterra in te schakelen.",
+      "modbus_advertised": "Modbus werd al aangekondigd."
+    },
+    "flow_title": "{name}"
+  },
+  "options": {
+    "step": {
+      "module": {
+        "title": "Verbindingsinstellingen",
+        "description": "Kamers en groepen worden uit de verdeler gelezen. Pas de indeling aan in Fonterra en herlaad daarna deze koppeling.",
+        "data": {
+          "host": "IP-adres of hostnaam",
+          "port": "Modbuspoort",
+          "device_name": "Apparaatnaam",
+          "polling_interval": "Uitleesinterval (seconden)",
+          "modbus_timeout": "Modbus-timeout (seconden)",
+          "modbus_debug": "Modbus-berichten loggen voor foutopsporing"
+        }
+      },
+      "init": {
+        "title": "Viega Fonterra Smart",
+        "menu_options": {
+          "module": "Verbindingsinstellingen",
+          "connect": "Connect Upgrade"
+        }
+      },
+      "connect": {
+        "title": "Connect",
+        "description": "Ook geschikt voor Connect Upgrade: regel je verwarming met een externe temperatuursensor. Zet de kamer in Fonterra op Extern gemeten en kies daarna je Home Assistant-sensor.",
+        "data": {
+          "connect_upgrade": "Connect Upgrade geïnstalleerd",
+          "configure_source": "Kamersensor kiezen"
+        }
+      },
+      "room": {
+        "title": "Kamer",
+        "data": {
+          "room": "Kamer"
+        }
+      },
+      "source": {
+        "title": "Temperatuursensor",
+        "description": "Kies de temperatuursensor voor kamer {room}. Zet deze kamer eerst in Fonterra op Extern gemeten. Een echte sensormelding moet regelmatig binnenkomen, ook bij gelijke temperatuur. Na starten of herladen wacht de koppeling op een nieuwe melding.",
+        "data": {
+          "entity_id": "Temperatuursensor",
+          "max_age": "Maximale ouderdom sensormelding (seconden)",
+          "external_confirmed": "Deze kamer staat in Fonterra op Extern gemeten",
+          "remove": "Sensor voor deze kamer verwijderen"
+        }
+      }
+    },
+    "error": {
+      "invalid_host": "Vul een geldig IP-adres of een geldige hostnaam in.",
+      "required": "Dit veld is verplicht.",
+      "invalid_port": "Vul een poort tussen 1 en 65535 in.",
+      "invalid_timeout": "Kies een time-out tussen 1 en 30 seconden.",
+      "invalid_polling_interval": "Kies een uitleesinterval tussen 5 en 300 seconden.",
+      "cannot_connect": "Geen Modbusverbinding. Controleer het adres, de poort en de Modbusinstelling van je Fonterra.",
+      "invalid_sensor": "Kies een bestaande temperatuursensor.",
+      "external_required": "Zet de kamer op Extern gemeten en bevestig dit.",
+      "legacy_companion_active": "Schakel de oude losse Smart Connect-integratie eerst uit.",
+      "identity_unverified": "Het WLAN-serienummer van Fonterra kon niet worden bevestigd. Controleer het adres bij Verbindingsinstellingen van deze hub.",
+      "address_in_use": "Een andere hub gebruikt dit adres en deze poort al."
+    },
+    "abort": {
+      "modbus_required": "Geen Modbusverbinding beschikbaar. Controleer de Fonterra-verbinding en herlaad deze integratie.",
+      "no_rooms": "Geen ingedeelde kamer gevonden. Controleer de indeling en herlaad de Viega-integratie.",
+      "already_configured": "Deze Fonterra-module is al ingesteld.",
+      "settings_changed": "De hubinstellingen zijn gewijzigd. Open het formulier opnieuw."
+    }
+  },
+  "entity": {
+    "climate": {
+      "room": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "manual": "Handmatig",
+              "profile": "Tijdprogramma",
+              "setback": "Verlaagd"
+            }
+          },
+          "room_id": {
+            "name": "Kamernummer"
+          },
+          "power_level": {
+            "name": "Handmatige vermogensstand"
+          },
+          "flow_temperature": {
+            "name": "Aanvoertemperatuur"
+          },
+          "return_temperature": {
+            "name": "Retourtemperatuur"
+          },
+          "actuator_position": {
+            "name": "Klepstand"
+          },
+          "actuator_positions": {
+            "name": "Klepstanden per groep"
+          },
+          "base_unit_error_code": {
+            "name": "Foutcode basiseenheid"
+          },
+          "last_active_hvac_mode": {
+            "name": "Laatst actieve bedrijfsmodus",
+            "state": {
+              "heat": "Verwarmen",
+              "cool": "Koelen",
+              "off": "Uit"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "connect_upgrade_detection": {
+        "name": "Connect Upgrade",
+        "state_attributes": {
+          "connect_help": {
+            "name": "Eigen temperatuursensor",
+            "state": {
+              "own_temperature_sensor": "Met Connect Upgrade stuurt Home Assistant de gemeten kamertemperatuur van je eigen sensor naar Fonterra. Zet de kamer in Fonterra op ‘Extern gemeten’ en koppel de sensor via Configureren → Connect Upgrade. Voor die kamer heb je dan geen Viega-kamerthermostaat nodig."
+            }
+          }
+        },
+        "state": {
+          "detected": "Gedetecteerd",
+          "not_detected": "Niet gedetecteerd"
+        }
+      },
+      "wlan_serial_number": {
+        "name": "Serienummer wifi-module"
+      },
+      "base_unit_serial_number": {
+        "name": "Serienummer basiseenheid"
+      },
+      "base_unit_name": {
+        "name": "Naam basiseenheid"
+      },
+      "base_unit_error_code": {
+        "name": "Foutcode basiseenheid",
+        "state_attributes": {
+          "description": {
+            "name": "Omschrijving",
+            "state": {
+              "sensor_invalid": "Geen geldige waarde",
+              "no_error": "Geen fout",
+              "error_3": "Minstens één kamerthermostaat heeft geen verbinding met de basiseenheid",
+              "error_4": "Storing op de actuatorbus",
+              "error_5": "Storing in de aanvoertemperatuursensor",
+              "error_6": "Storing in de retourtemperatuursensor",
+              "error_7": "Het maximum aantal kamerthermostaten is bereikt",
+              "error_9": "Vervang de back-upbatterij van de basiseenheid",
+              "error_10": "Kans op condensatie door een te lage aanvoertemperatuur",
+              "error_21": "Geen verbinding met de kamerthermostaat",
+              "error_22": "Batterij van de kamerthermostaat is bijna leeg",
+              "error_24": "Zwakke verbinding met de kamerthermostaat",
+              "unknown_error": "Onbekende fout"
+            }
+          }
+        }
+      },
+      "flow_temperature": {
+        "name": "Aanvoertemperatuur"
+      },
+      "actuator_return_temperature": {
+        "name": "{room} retourtemperatuur groep {actor}"
+      },
+      "room_diagnostic": {
+        "name": "{room} diagnose",
+        "state": {
+          "sensor_invalid": "Geen geldige waarde",
+          "no_error": "Geen fout",
+          "error_3": "Minstens één kamerthermostaat heeft geen verbinding met de basiseenheid",
+          "error_4": "Storing op de actuatorbus",
+          "error_5": "Storing in de aanvoertemperatuursensor",
+          "error_6": "Storing in de retourtemperatuursensor",
+          "error_7": "Het maximum aantal kamerthermostaten is bereikt",
+          "error_9": "Vervang de back-upbatterij van de basiseenheid",
+          "error_10": "Kans op condensatie door een te lage aanvoertemperatuur",
+          "error_21": "Geen verbinding met de kamerthermostaat",
+          "error_22": "Batterij van de kamerthermostaat is bijna leeg",
+          "error_24": "Zwakke verbinding met de kamerthermostaat",
+          "unknown_error": "Onbekende fout"
+        },
+        "state_attributes": {
+          "error_code": {
+            "name": "Foutcode"
+          }
+        }
+      },
+      "health_last_success_time": {
+        "name": "Laatste succesvolle Modbus-uitlezing"
+      },
+      "health_last_failure_time": {
+        "name": "Laatste mislukte Modbus-aanvraag"
+      },
+      "health_consecutive_failures": {
+        "name": "Opeenvolgende Modbus-fouten"
+      },
+      "health_invalid_value_count": {
+        "name": "Aantal ongeldige Modbus-waarden"
+      },
+      "health_last_exception_code": {
+        "name": "Laatste Modbus-foutcode"
+      },
+      "health_last_success_duration": {
+        "name": "Duur van laatste Modbus-aanvraag"
+      },
+      "health_reconnect_count": {
+        "name": "Aantal herverbindingen via Modbus"
+      },
+      "health_last_reconnect_time": {
+        "name": "Laatste herverbinding via Modbus"
+      },
+      "health_invalid_registers": {
+        "name": "Ongeldige registers",
+        "state_attributes": {
+          "invalid_registers": {
+            "name": "Registers"
+          },
+          "rejected_registers": {
+            "name": "Geweigerde registers"
+          }
+        }
+      },
+      "actuator_stats_open_actuator_count": {
+        "name": "Aantal open groepen"
+      },
+      "actuator_stats_open_transition_count": {
+        "name": "Aantal bevestigde openingen"
+      },
+      "actuator_stats_last_transition_time": {
+        "name": "Laatste bevestigde klepbeweging"
+      },
+      "actuator_stats_confirmed_open_seconds": {
+        "name": "Bevestigde tijd open"
+      },
+      "base_unit_diagnostic": {
+        "name": "Diagnose basiseenheid",
+        "state": {
+          "sensor_invalid": "Geen geldige waarde",
+          "no_error": "Geen fout",
+          "error_3": "Minstens één kamerthermostaat heeft geen verbinding met de basiseenheid",
+          "error_4": "Storing op de actuatorbus",
+          "error_5": "Storing in de aanvoertemperatuursensor",
+          "error_6": "Storing in de retourtemperatuursensor",
+          "error_7": "Het maximum aantal kamerthermostaten is bereikt",
+          "error_9": "Vervang de back-upbatterij van de basiseenheid",
+          "error_10": "Kans op condensatie door een te lage aanvoertemperatuur",
+          "error_21": "Geen verbinding met de kamerthermostaat",
+          "error_22": "Batterij van de kamerthermostaat is bijna leeg",
+          "error_24": "Zwakke verbinding met de kamerthermostaat",
+          "unknown_error": "Onbekende fout"
+        },
+        "state_attributes": {
+          "error_code": {
+            "name": "Foutcode"
+          }
+        }
+      },
+      "actuator_position": {
+        "name": "{room} klepstand groep {actor}"
+      },
+      "circulation_pump": {
+        "name": "Circulatiepomp"
+      }
+    },
+    "number": {
+      "power_level": {
+        "name": "{room} handmatige vermogensstand",
+        "unit_of_measurement": "stand"
+      }
+    }
+  },
+  "services": {
+    "rediscover": {
+      "name": "Ruimten opnieuw ontdekken",
+      "description": "Leest de kamerindeling uit Fonterra en werkt de bijbehorende entiteiten bij.",
+      "fields": {
+        "device_id": {
+          "name": "Apparaat",
+          "description": "De Fonterra-verdeler om opnieuw uit te lezen."
+        }
+      }
+    },
+    "overview": {
+      "name": "Overzicht van alle hubs",
+      "description": "Geeft per Fonterra-hub de bereikbaarheid, foutmeldingen, communicatiestatus en het aantal kamers en groepen."
+    }
+  },
+  "exceptions": {
+    "temperature_out_of_range": {
+      "message": "De gewenste temperatuur van {value} °C valt buiten het bereik voor de huidige modus ({min}–{max} °C)."
+    },
+    "power_level_out_of_range": {
+      "message": "Vermogensstand {value} valt buiten het bereik ({min}–{max})."
+    },
+    "unsupported_hvac_mode": {
+      "message": "De Viega-module ondersteunt bedrijfsmodus ‘{mode}’ niet."
+    },
+    "unsupported_preset_mode": {
+      "message": "De Viega-module ondersteunt profielmodus ‘{mode}’ niet."
+    },
+    "register_not_configured": {
+      "message": "Voor kamer {room} is geen register beschikbaar voor deze instelling."
+    },
+    "write_failed": {
+      "message": "De wijziging kon niet naar Viega-module {device} worden gestuurd ({error})."
+    },
+    "unknown_device": {
+      "message": "Apparaat {device_id} is niet gevonden."
+    },
+    "module_not_loaded": {
+      "message": "Viega-module {device} is niet geladen. Controleer of de integratie is ingesteld en actief is."
+    },
+    "rediscover_failed": {
+      "message": "Viega-module {device} kon niet opnieuw worden uitgelezen ({error}). De bestaande kamerindeling blijft in gebruik."
+    },
+    "preset_requires_heating": {
+      "message": "Kies profielmodus ‘{mode}’ wanneer de Viega-module in verwarmingsmodus staat."
+    },
+    "power_level_unavailable": {
+      "message": "Fonterra meldt geen beschikbare vermogensstand voor {room}."
+    },
+    "target_temperature_unavailable": {
+      "message": "Fonterra geeft voor {room} geen instelbare temperatuur terug. Controleer de kamerthermostaat of de ingestelde temperatuursensor."
+    }
+  },
+  "issues": {
+    "module_unreachable": {
+      "title": "Viega-module {device} is onbereikbaar",
+      "description": "Home Assistant krijgt sinds {since} geen antwoord van **{device}**. De laatst bekende kamerwaarden blijven zichtbaar.\n\nControleer de voeding en netwerkverbinding. Home Assistant probeert opnieuw verbinding te maken. De melding verdwijnt zodra de module weer antwoordt."
+    },
+    "base_unit_error_3": {
+      "title": "Verbinding met een kamerthermostaat verbroken op {device}",
+      "description": "De basiseenheid van **{device}** meldt foutcode {code}. Minstens één kamerthermostaat heeft geen verbinding met de basiseenheid.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
+    },
+    "base_unit_error_4": {
+      "title": "Storing op de actuatorbus op {device}",
+      "description": "De basiseenheid van **{device}** meldt foutcode {code}. Storing op de actuatorbus.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
+    },
+    "base_unit_error_5": {
+      "title": "Storing in de aanvoertemperatuursensor op {device}",
+      "description": "De basiseenheid van **{device}** meldt foutcode {code}. Storing in de aanvoertemperatuursensor.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
+    },
+    "base_unit_error_6": {
+      "title": "Storing in de retourtemperatuursensor op {device}",
+      "description": "De basiseenheid van **{device}** meldt foutcode {code}. Storing in de retourtemperatuursensor.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
+    },
+    "base_unit_error_7": {
+      "title": "Maximum aantal kamerthermostaten bereikt op {device}",
+      "description": "De basiseenheid van **{device}** meldt foutcode {code}. Het maximum aantal kamerthermostaten is bereikt.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
+    },
+    "base_unit_error_9": {
+      "title": "Back-upbatterij vervangen op {device}",
+      "description": "De basiseenheid van **{device}** meldt foutcode {code}. Vervang de back-upbatterij van de basiseenheid.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
+    },
+    "base_unit_error_10": {
+      "title": "Kans op condensatie op {device}",
+      "description": "De basiseenheid van **{device}** meldt foutcode {code}. Kans op condensatie door een te lage aanvoertemperatuur.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
+    },
+    "base_unit_error_21": {
+      "title": "Geen verbinding met een kamerthermostaat op {device}",
+      "description": "De basiseenheid van **{device}** meldt foutcode {code}. Geen verbinding met de kamerthermostaat.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
+    },
+    "base_unit_error_22": {
+      "title": "Batterij van een kamerthermostaat bijna leeg op {device}",
+      "description": "De basiseenheid van **{device}** meldt foutcode {code}. Batterij van de kamerthermostaat is bijna leeg.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
+    },
+    "base_unit_error_24": {
+      "title": "Zwakke verbinding met een kamerthermostaat op {device}",
+      "description": "De basiseenheid van **{device}** meldt foutcode {code}. Zwakke verbinding met de kamerthermostaat.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
+    },
+    "base_unit_error_unknown": {
+      "title": "Onbekende foutcode {code} op {device}",
+      "description": "De basiseenheid van **{device}** meldt foutcode {code}. Deze foutcode staat niet in de Viega-handleiding die de integratie gebruikt.\n\nDe melding verdwijnt zodra de basiseenheid de fout niet meer doorgeeft."
+    },
+    "registers_not_updating": {
+      "title": "Sommige waarden van {device} worden niet meer bijgewerkt",
+      "description": "**{device}** antwoordt wel, maar weigert sinds {since} de volgende registers uit te lezen (Modbus-foutcodes {codes}):\n\n{registers}\n\nHome Assistant houdt voor deze registers de laatste geldige waarden aan. Controleer in Fonterra of Modbus TCP volledig is ingeschakeld. Blijft het probleem bestaan, voeg dan bij je melding het bestand van **Diagnostiek downloaden** toe. Deze melding verdwijnt zodra de registers weer worden uitgelezen."
+    },
+    "enable_modbus": {
+      "title": "Fonterra gevonden. Schakel Modbus TCP in",
+      "description": "Fonterra op **{host}** meldt zijn webdienst, maar Modbus geeft geen antwoord. Open de instellingen in Fonterra en controleer of **Modbus TCP** aan staat. Zodra Modbus reageert kun je de unit toevoegen via **Ontdekt**."
+    }
+  }
+}

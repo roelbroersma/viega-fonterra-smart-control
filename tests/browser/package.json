@@ -1,0 +1,11 @@
+{
+  "name": "fonterra-card-browser-tests",
+  "private": true,
+  "scripts": {
+    "install-browser": "playwright install chromium",
+    "test": "node smoke.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.65.1"
+  }
+}

@@ -1,0 +1,182 @@
+"""Diagnostic text entities for failed unit values."""
+
+from __future__ import annotations
+
+import logging
+
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EntityCategory
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.restore_state import RestoreEntity
+
+from .const import DOMAIN
+from .device import build_device_info
+from .entity import ViegaCoordinatedEntity
+from .modbus_handler import ViegaModbusClient
+from .registers import (
+    BASE_UNIT_REGISTERS,
+    ERROR_KEY_SENSOR_INVALID,
+    ERROR_STATE_KEYS,
+    error_code_key,
+    error_key_from_legacy_text,
+    resolve_room_number,
+    room_registers,
+)
+
+DEFAULT_STATUS = ERROR_KEY_SENSOR_INVALID
+
+_LOGGER = logging.getLogger(__name__)
+
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities,
+) -> None:
+    """Set up diagnostic text entities for known failure states."""
+    entry_data = hass.data.get(DOMAIN, {}).get(entry.entry_id, {})
+    rooms = entry_data.get("rooms", {})
+
+    entities = [
+        ViegaDiagnosticTextEntity(
+            entry.entry_id,
+            f"{room_config.get('name', room_id) if isinstance(room_config, dict) else room_id} diagnostic",
+            room_id=room_id,
+            address=_room_error_address(room_id, room_config),
+            room_name=room_config.get("name", room_id)
+            if isinstance(room_config, dict)
+            else room_id,
+        )
+        for room_id, room_config in rooms.items()
+    ]
+    async_add_entities(entities)
+
+
+def _room_error_address(room_id: str, room_config: object) -> int:
+    """Return the room's own error-code register, not the shared base-unit one.
+
+    Each room has its own error/warning register (manual 30051/30053/...,
+    codes 21/22/24 - thermostat connectivity/battery). Falling back to the
+    shared base-unit error register (as this entity previously always did)
+    made every room's diagnostic text identical regardless of that room's
+    actual state.
+    """
+    room_number = resolve_room_number(room_id, room_config if isinstance(room_config, dict) else {})
+    if room_number:
+        return room_registers(room_number)["error_code"]
+    return BASE_UNIT_REGISTERS["error_code"]
+
+
+class ViegaDiagnosticTextEntity(ViegaCoordinatedEntity, SensorEntity, RestoreEntity):
+    """A room's error/warning state as a translated enum (spec.md 3b/5d).
+
+    The state is a key (`no_error`, `error_21`, `unknown_error`, ...) whose
+    text comes from `translations/*.json`; the raw code is an attribute.
+    """
+
+    _attr_has_entity_name = True
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_options = list(ERROR_STATE_KEYS)
+
+    def __init__(
+        self,
+        entry_id: str | None,
+        name: str | None,
+        status: str = DEFAULT_STATUS,
+        room_id: str | None = None,
+        address: int | None = None,
+        room_name: str | None = None,
+    ) -> None:
+        self._entry_id = entry_id
+        if room_id is not None and room_name is not None:
+            # Localized via translations/*.json entity.sensor.room_diagnostic
+            # (spec.md "localize every entity name"). `name` is still kept
+            # below as the fallback for the room_id-less call shape used by
+            # standalone/legacy diagnosis entities, where there is no "room"
+            # to build a translation placeholder from.
+            self._attr_translation_key = "room_diagnostic"
+            self._attr_translation_placeholders = {"room": str(room_name)}
+        elif name is not None:
+            self.name = name
+        self.status = status
+        self._room_id = room_id
+        self._address = address if address is not None else BASE_UNIT_REGISTERS["error_code"]
+        self._attr_unique_id = (
+            f"{entry_id}_{room_id}_diagnostic"
+            if entry_id is not None and room_id
+            else (f"{entry_id}_{name}_diagnostic" if entry_id is not None else None)
+        )
+        self._attr_native_value = status
+        self._error_code: int | None = None
+
+    @property
+    def extra_state_attributes(self) -> dict[str, object] | None:
+        attributes = {}
+        if self._room_id is not None:
+            attributes["room_id"] = resolve_room_number(self._room_id, {}) or self._room_id
+        if self._error_code is not None:
+            attributes["error_code"] = self._error_code
+        return attributes or None
+
+    async def async_added_to_hass(self) -> None:
+        """Restore the last known value across restarts (spec.md 15),
+        including English texts saved by older versions (spec.md 5d)."""
+        await super().async_added_to_hass()
+        last_state = await self.async_get_last_state()
+        if last_state is None or last_state.state in ("unknown", "unavailable"):
+            return
+        key = error_key_from_legacy_text(last_state.state)
+        if key is None:
+            return
+        self.status = key
+        self._attr_native_value = key
+        code = last_state.attributes.get("error_code")
+        if isinstance(code, int):
+            self._error_code = code
+
+    async def async_update(self) -> None:
+        """Refresh the diagnostic status from the shared error-code poll."""
+        if self._entry_id is None:
+            return
+        entry_data = self.hass.data.get(DOMAIN, {}).get(self._entry_id, {})
+        try:
+            shared = entry_data.get("polling")
+            values = await (
+                shared.read(self.hass, self._entry_id, "input", self._address, 1)
+                if shared
+                else entry_data["client"].read_input_registers(self._address, 1)
+            )
+            if values and values[0] != ViegaModbusClient.ERROR_SENTINEL:
+                self._error_code = values[0]
+                self.status = error_code_key(values[0])
+                self._attr_native_value = self.status
+                if _LOGGER.isEnabledFor(logging.DEBUG):
+                    _LOGGER.debug(
+                        "Diagnostic %s (room=%s, register PDU=%s): code=%s -> %r",
+                        self.name,
+                        self._room_id,
+                        self._address,
+                        values[0],
+                        self.status,
+                    )
+        except Exception:
+            return
+
+    @property
+    def device_info(self):
+        if self._entry_id is None:
+            return None
+        return build_device_info(self.hass, self._entry_id)
+
+
+class ViegaBaseUnitDiagnosticEntity(ViegaDiagnosticTextEntity):
+    """The base unit's error code as translated text (spec.md 3a/5d), next
+    to the binary sensor that only says "Problem"."""
+
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_translation_key = "base_unit_diagnostic"
+
+    def __init__(self, entry_id: str) -> None:
+        super().__init__(entry_id, None)
+        self._attr_unique_id = f"{entry_id}_base_unit_diagnostic"

@@ -1,0 +1,419 @@
+{
+  "title": "Viega Fonterra Smart",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Viega Fonterra Smart",
+        "description": "Inserisci l’indirizzo IP o il nome host del modulo, la porta Modbus e il nome del dispositivo. Dopo la connessione, le stanze vengono rilevate automaticamente.",
+        "data": {
+          "host": "Indirizzo IP o nome host",
+          "port": "Porta Modbus",
+          "device_name": "Nome del dispositivo",
+          "polling_interval": "Intervallo di lettura (secondi)",
+          "modbus_timeout": "Tempo massimo di risposta Modbus (secondi)",
+          "modbus_debug": "Registra i frame Modbus per il debug",
+          "connect_upgrade": "Connect Upgrade installato"
+        }
+      }
+    },
+    "error": {
+      "invalid_host": "Inserisci un indirizzo IP o un nome host valido.",
+      "required": "Questo campo è obbligatorio.",
+      "invalid_port": "Inserisci una porta tra 1 e 65535.",
+      "invalid_timeout": "Scegli un tempo massimo tra 1 e 30 secondi.",
+      "cannot_connect": "Impossibile collegarsi al modulo Viega."
+    },
+    "abort": {
+      "already_configured": "Questo indirizzo e questa porta sono già configurati.",
+      "invalid_discovery": "L’annuncio non indica una porta Modbus Fonterra supportata.",
+      "address_updated": "Il nuovo indirizzo di Fonterra è stato verificato.",
+      "current_address_available": "Fonterra risponde ancora all’indirizzo attuale.",
+      "identity_unverified": "Impossibile verificare il numero di serie del modulo Wi-Fi Fonterra. Controlla l’indirizzo nelle impostazioni di connessione del modulo.",
+      "enable_modbus": "Home Assistant ha mostrato una notifica per attivare Modbus TCP in Fonterra.",
+      "modbus_advertised": "Il servizio Modbus è già stato annunciato."
+    },
+    "flow_title": "{name}"
+  },
+  "options": {
+    "step": {
+      "module": {
+        "title": "Impostazioni di connessione",
+        "description": "Le stanze e le assegnazioni degli attuatori vengono lette dall’unità di base. Modifica le assegnazioni in Fonterra, poi ricarica l’integrazione.",
+        "data": {
+          "host": "Indirizzo IP o nome host",
+          "port": "Porta Modbus",
+          "device_name": "Nome del dispositivo",
+          "polling_interval": "Intervallo di lettura (secondi)",
+          "modbus_timeout": "Tempo massimo di risposta Modbus (secondi)",
+          "modbus_debug": "Registra i frame Modbus per il debug"
+        }
+      },
+      "init": {
+        "title": "Viega Fonterra Smart",
+        "menu_options": {
+          "module": "Impostazioni di connessione",
+          "connect": "Connect Upgrade"
+        }
+      },
+      "connect": {
+        "title": "Connect",
+        "description": "Compatibile con Connect Upgrade: regola il riscaldamento con un sensore di temperatura esterno. Imposta la stanza su «Sensore esterno» in Fonterra, poi scegli il sensore in Home Assistant.",
+        "data": {
+          "connect_upgrade": "Connect Upgrade installato",
+          "configure_source": "Scegli il sensore della stanza"
+        }
+      },
+      "room": {
+        "title": "Stanza",
+        "data": {
+          "room": "Stanza"
+        }
+      },
+      "source": {
+        "title": "Sensore di temperatura",
+        "description": "Scegli il sensore di temperatura per la stanza {room}. In Fonterra, seleziona prima « Sensore esterno ». Il sensore deve inviare misurazioni regolari, anche a temperatura costante. Dopo un avvio o un ricaricamento serve una nuova misurazione.",
+        "data": {
+          "entity_id": "Sensore di temperatura",
+          "max_age": "Età massima della misurazione (secondi)",
+          "external_confirmed": "In Fonterra è selezionato « Sensore esterno » per questa stanza",
+          "remove": "Rimuovi l’associazione del sensore per questa stanza"
+        }
+      }
+    },
+    "error": {
+      "invalid_host": "Inserisci un indirizzo IP o un nome host valido.",
+      "required": "Questo campo è obbligatorio.",
+      "invalid_port": "Inserisci una porta tra 1 e 65535.",
+      "invalid_timeout": "Scegli un tempo massimo tra 1 e 30 secondi.",
+      "invalid_polling_interval": "Scegli un intervallo di lettura tra 5 e 300 secondi.",
+      "cannot_connect": "Connessione Modbus non disponibile. Controlla l’indirizzo di Fonterra, la porta e l’impostazione Modbus.",
+      "invalid_sensor": "Seleziona un sensore di temperatura esistente.",
+      "external_required": "Seleziona « Sensore esterno » per questa stanza in Fonterra, poi conferma.",
+      "legacy_companion_active": "Disattiva prima la precedente integrazione Smart Connect separata.",
+      "identity_unverified": "Impossibile verificare il numero di serie del modulo Wi-Fi Fonterra. Controlla l’indirizzo nelle impostazioni di connessione del modulo.",
+      "address_in_use": "Un altro modulo usa già questo indirizzo e questa porta."
+    },
+    "abort": {
+      "modbus_required": "Connessione Modbus non disponibile. Controlla la connessione a Fonterra, poi ricarica l’integrazione.",
+      "no_rooms": "Non è stata trovata alcuna stanza assegnata. Controlla le assegnazioni, poi ricarica l’integrazione Viega.",
+      "already_configured": "Questo modulo Fonterra è già configurato.",
+      "settings_changed": "Le impostazioni del modulo sono cambiate durante la configurazione. Riapri il modulo."
+    }
+  },
+  "entity": {
+    "climate": {
+      "room": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "manual": "Manuale",
+              "profile": "Programma",
+              "setback": "Ridotto"
+            }
+          },
+          "room_id": {
+            "name": "Numero della stanza"
+          },
+          "power_level": {
+            "name": "Livello di potenza manuale"
+          },
+          "flow_temperature": {
+            "name": "Temperatura di mandata"
+          },
+          "return_temperature": {
+            "name": "Temperatura di ritorno"
+          },
+          "actuator_position": {
+            "name": "Posizione dell’attuatore"
+          },
+          "actuator_positions": {
+            "name": "Posizioni degli attuatori"
+          },
+          "base_unit_error_code": {
+            "name": "Codice di errore dell’unità di base"
+          },
+          "last_active_hvac_mode": {
+            "name": "Ultima modalità attiva",
+            "state": {
+              "heat": "Riscaldamento",
+              "cool": "Raffrescamento",
+              "off": "Spento"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "connect_upgrade_detection": {
+        "name": "Connect Upgrade",
+        "state_attributes": {
+          "connect_help": {
+            "name": "Usare il proprio sensore",
+            "state": {
+              "own_temperature_sensor": "Con Connect Upgrade, Home Assistant invia a Fonterra la temperatura ambiente misurata dal tuo sensore. In Fonterra, seleziona « Sensore esterno » per la stanza, poi associa il sensore in Configura → Connect Upgrade. Per quella stanza non serve più un termostato ambiente Viega."
+            }
+          }
+        },
+        "state": {
+          "detected": "Rilevato",
+          "not_detected": "Non rilevato"
+        }
+      },
+      "wlan_serial_number": {
+        "name": "Numero di serie del modulo Wi-Fi"
+      },
+      "base_unit_serial_number": {
+        "name": "Numero di serie dell’unità di base"
+      },
+      "base_unit_name": {
+        "name": "Nome dell’unità di base"
+      },
+      "base_unit_error_code": {
+        "name": "Codice di errore dell’unità di base",
+        "state_attributes": {
+          "description": {
+            "name": "Descrizione dell’errore",
+            "state": {
+              "sensor_invalid": "Nessun valore valido",
+              "no_error": "Nessun errore",
+              "error_3": "Almeno un termostato ambiente non è più collegato all’unità di base",
+              "error_4": "Guasto sul bus degli attuatori",
+              "error_5": "Guasto della sonda di mandata",
+              "error_6": "Guasto della sonda di ritorno",
+              "error_7": "Raggiunto il numero massimo di termostati ambiente",
+              "error_9": "La batteria tampone dell’unità di base deve essere sostituita",
+              "error_10": "Rischio di condensa perché la temperatura di mandata è troppo bassa",
+              "error_21": "Nessuna connessione al termostato ambiente",
+              "error_22": "Batteria del termostato ambiente quasi scarica",
+              "error_24": "Segnale debole del termostato ambiente",
+              "unknown_error": "Errore sconosciuto"
+            }
+          }
+        }
+      },
+      "flow_temperature": {
+        "name": "Temperatura di mandata"
+      },
+      "actuator_return_temperature": {
+        "name": "{room} temperatura di ritorno dell’attuatore {actor}"
+      },
+      "room_diagnostic": {
+        "name": "Diagnostica di {room}",
+        "state": {
+          "sensor_invalid": "Nessun valore valido",
+          "no_error": "Nessun errore",
+          "error_3": "Almeno un termostato ambiente non è più collegato all’unità di base",
+          "error_4": "Guasto sul bus degli attuatori",
+          "error_5": "Guasto della sonda di mandata",
+          "error_6": "Guasto della sonda di ritorno",
+          "error_7": "Raggiunto il numero massimo di termostati ambiente",
+          "error_9": "La batteria tampone dell’unità di base deve essere sostituita",
+          "error_10": "Rischio di condensa perché la temperatura di mandata è troppo bassa",
+          "error_21": "Nessuna connessione al termostato ambiente",
+          "error_22": "Batteria del termostato ambiente quasi scarica",
+          "error_24": "Segnale debole del termostato ambiente",
+          "unknown_error": "Errore sconosciuto"
+        },
+        "state_attributes": {
+          "error_code": {
+            "name": "Codice di errore"
+          }
+        }
+      },
+      "health_last_success_time": {
+        "name": "Ultima risposta Modbus valida"
+      },
+      "health_last_failure_time": {
+        "name": "Ultima richiesta Modbus non riuscita"
+      },
+      "health_consecutive_failures": {
+        "name": "Errori Modbus consecutivi"
+      },
+      "health_invalid_value_count": {
+        "name": "Numero di valori Modbus non validi"
+      },
+      "health_last_exception_code": {
+        "name": "Ultimo codice di eccezione Modbus"
+      },
+      "health_last_success_duration": {
+        "name": "Durata dell’ultima richiesta Modbus"
+      },
+      "health_reconnect_count": {
+        "name": "Numero di riconnessioni Modbus"
+      },
+      "health_last_reconnect_time": {
+        "name": "Ultima riconnessione Modbus"
+      },
+      "health_invalid_registers": {
+        "name": "Registri non validi",
+        "state_attributes": {
+          "invalid_registers": {
+            "name": "Registri"
+          },
+          "rejected_registers": {
+            "name": "Registri rifiutati"
+          }
+        }
+      },
+      "actuator_stats_open_actuator_count": {
+        "name": "Attuatori attualmente aperti"
+      },
+      "actuator_stats_open_transition_count": {
+        "name": "Numero di aperture confermate"
+      },
+      "actuator_stats_last_transition_time": {
+        "name": "Ultimo cambio di posizione confermato"
+      },
+      "actuator_stats_confirmed_open_seconds": {
+        "name": "Tempo di apertura confermato"
+      },
+      "base_unit_diagnostic": {
+        "name": "Diagnostica dell’unità di base",
+        "state": {
+          "sensor_invalid": "Nessun valore valido",
+          "no_error": "Nessun errore",
+          "error_3": "Almeno un termostato ambiente non è più collegato all’unità di base",
+          "error_4": "Guasto sul bus degli attuatori",
+          "error_5": "Guasto della sonda di mandata",
+          "error_6": "Guasto della sonda di ritorno",
+          "error_7": "Raggiunto il numero massimo di termostati ambiente",
+          "error_9": "La batteria tampone dell’unità di base deve essere sostituita",
+          "error_10": "Rischio di condensa perché la temperatura di mandata è troppo bassa",
+          "error_21": "Nessuna connessione al termostato ambiente",
+          "error_22": "Batteria del termostato ambiente quasi scarica",
+          "error_24": "Segnale debole del termostato ambiente",
+          "unknown_error": "Errore sconosciuto"
+        },
+        "state_attributes": {
+          "error_code": {
+            "name": "Codice di errore"
+          }
+        }
+      },
+      "actuator_position": {
+        "name": "{room} posizione dell’attuatore {actor}"
+      },
+      "circulation_pump": {
+        "name": "Pompa di circolazione"
+      }
+    },
+    "number": {
+      "power_level": {
+        "name": "{room} livello di potenza manuale",
+        "unit_of_measurement": "livello"
+      }
+    }
+  },
+  "services": {
+    "rediscover": {
+      "name": "Rileva di nuovo il dispositivo",
+      "description": "Rilegge dal dispositivo le stanze e i relativi attuatori e aggiorna le entità esistenti.",
+      "fields": {
+        "device_id": {
+          "name": "Dispositivo",
+          "description": "Modulo Viega Fonterra da rilevare di nuovo."
+        }
+      }
+    },
+    "overview": {
+      "name": "Panoramica dei moduli",
+      "description": "Mostra per ogni modulo la raggiungibilità, gli errori dell’unità di base, i problemi di comunicazione e il numero di stanze e attuatori."
+    }
+  },
+  "exceptions": {
+    "temperature_out_of_range": {
+      "message": "La temperatura impostata di {value} °C è fuori dall’intervallo consentito per la modalità attuale (da {min} a {max} °C)."
+    },
+    "power_level_out_of_range": {
+      "message": "Il livello di potenza {value} è fuori dall’intervallo consentito (da {min} a {max})."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Il modulo Viega non supporta la modalità « {mode} »."
+    },
+    "unsupported_preset_mode": {
+      "message": "Il modulo Viega non supporta la modalità di programma « {mode} »."
+    },
+    "register_not_configured": {
+      "message": "Per questa impostazione non è disponibile alcun registro nella stanza {room}."
+    },
+    "write_failed": {
+      "message": "Impossibile inviare la modifica al modulo Viega {device} ({error})."
+    },
+    "unknown_device": {
+      "message": "Il dispositivo {device_id} non è stato trovato."
+    },
+    "module_not_loaded": {
+      "message": "Il modulo Viega {device} non è caricato. Verifica che l’integrazione sia configurata e attiva."
+    },
+    "rediscover_failed": {
+      "message": "Impossibile rileggere il modulo Viega {device} ({error}). Le assegnazioni esistenti vengono conservate."
+    },
+    "preset_requires_heating": {
+      "message": "La modalità di programma « {mode} » è disponibile solo in riscaldamento."
+    },
+    "power_level_unavailable": {
+      "message": "Fonterra non fornisce un livello di potenza regolabile per {room}."
+    },
+    "target_temperature_unavailable": {
+      "message": "Fonterra non fornisce una temperatura impostabile per {room}. Controlla il termostato ambiente o il sensore di temperatura configurato."
+    }
+  },
+  "issues": {
+    "module_unreachable": {
+      "title": "Il modulo Viega {device} non è raggiungibile",
+      "description": "Home Assistant non riceve risposte dal modulo **{device}** da {since}. Restano visibili gli ultimi valori disponibili.\n\nControlla l’alimentazione e il collegamento di rete. Home Assistant tenta di ripristinare la connessione. L’avviso scompare quando il modulo risponde di nuovo."
+    },
+    "base_unit_error_3": {
+      "title": "Termostato ambiente scollegato da {device}",
+      "description": "L’unità di base di **{device}** segnala il codice {code}. Almeno un termostato ambiente non è più collegato all’unità di base.\n\nL’avviso scompare quando l’unità di base smette di segnalare l’errore."
+    },
+    "base_unit_error_4": {
+      "title": "Guasto sul bus degli attuatori di {device}",
+      "description": "L’unità di base di **{device}** segnala il codice {code}. Guasto sul bus degli attuatori.\n\nL’avviso scompare quando l’unità di base smette di segnalare l’errore."
+    },
+    "base_unit_error_5": {
+      "title": "Guasto della sonda di mandata di {device}",
+      "description": "L’unità di base di **{device}** segnala il codice {code}. Guasto della sonda di mandata.\n\nL’avviso scompare quando l’unità di base smette di segnalare l’errore."
+    },
+    "base_unit_error_6": {
+      "title": "Guasto della sonda di ritorno di {device}",
+      "description": "L’unità di base di **{device}** segnala il codice {code}. Guasto della sonda di ritorno.\n\nL’avviso scompare quando l’unità di base smette di segnalare l’errore."
+    },
+    "base_unit_error_7": {
+      "title": "Raggiunto il numero massimo di termostati su {device}",
+      "description": "L’unità di base di **{device}** segnala il codice {code}. Raggiunto il numero massimo di termostati ambiente.\n\nL’avviso scompare quando l’unità di base smette di segnalare l’errore."
+    },
+    "base_unit_error_9": {
+      "title": "Batteria tampone di {device} da sostituire",
+      "description": "L’unità di base di **{device}** segnala il codice {code}. La batteria tampone dell’unità di base deve essere sostituita.\n\nL’avviso scompare quando l’unità di base smette di segnalare l’errore."
+    },
+    "base_unit_error_10": {
+      "title": "Rischio di condensa su {device}",
+      "description": "L’unità di base di **{device}** segnala il codice {code}. Rischio di condensa perché la temperatura di mandata è troppo bassa.\n\nL’avviso scompare quando l’unità di base smette di segnalare l’errore."
+    },
+    "base_unit_error_21": {
+      "title": "Termostato ambiente non raggiungibile su {device}",
+      "description": "L’unità di base di **{device}** segnala il codice {code}. Nessuna connessione al termostato ambiente.\n\nL’avviso scompare quando l’unità di base smette di segnalare l’errore."
+    },
+    "base_unit_error_22": {
+      "title": "Batteria di un termostato quasi scarica su {device}",
+      "description": "L’unità di base di **{device}** segnala il codice {code}. Batteria del termostato ambiente quasi scarica.\n\nL’avviso scompare quando l’unità di base smette di segnalare l’errore."
+    },
+    "base_unit_error_24": {
+      "title": "Segnale debole di un termostato su {device}",
+      "description": "L’unità di base di **{device}** segnala il codice {code}. Segnale debole del termostato ambiente.\n\nL’avviso scompare quando l’unità di base smette di segnalare l’errore."
+    },
+    "base_unit_error_unknown": {
+      "title": "Codice di errore sconosciuto {code} su {device}",
+      "description": "L’unità di base di **{device}** segnala il codice {code}. Il codice non è riportato nel manuale Viega usato dall’integrazione.\n\nL’avviso scompare quando l’unità di base smette di segnalare l’errore."
+    },
+    "registers_not_updating": {
+      "title": "Alcuni valori di {device} non vengono più aggiornati",
+      "description": "Il modulo **{device}** risponde, ma rifiuta la lettura dei registri indicati di seguito da {since}. Codici di eccezione Modbus {codes}.\n\n{registers}\n\nHome Assistant conserva gli ultimi valori disponibili. Verifica in Fonterra che Modbus TCP sia attivo. Se il problema persiste, allega alla segnalazione il file ottenuto con **Scarica diagnostica**. L’avviso scompare quando i registri tornano leggibili."
+    },
+    "enable_modbus": {
+      "title": "Fonterra trovato. Attiva Modbus TCP",
+      "description": "Fonterra all’indirizzo **{host}** ha annunciato il servizio web, ma Modbus non risponde. Apri le impostazioni di Fonterra e verifica che **Modbus TCP** sia attivo per aggiungere il modulo."
+    }
+  }
+}

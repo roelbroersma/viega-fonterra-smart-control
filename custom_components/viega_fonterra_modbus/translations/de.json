@@ -1,0 +1,419 @@
+{
+  "title": "Viega Fonterra Smart",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Viega Fonterra Smart",
+        "description": "Gib IP-Adresse oder Hostname, Port und den Namen des Geräts ein. Räume werden automatisch vom Gerät erkannt, sobald die Verbindung steht.",
+        "data": {
+          "host": "IP-Adresse oder Hostname",
+          "port": "Modbus-Port",
+          "device_name": "Gerätename",
+          "polling_interval": "Polling-Intervall (Sekunden)",
+          "modbus_timeout": "Modbus-Timeout (Sekunden)",
+          "modbus_debug": "Modbus-Frame-Debug-Logging aktivieren",
+          "connect_upgrade": "Connect Upgrade installiert"
+        }
+      }
+    },
+    "error": {
+      "invalid_host": "Bitte einen gültigen Host oder eine IP-Adresse eingeben.",
+      "required": "Dieses Feld ist erforderlich.",
+      "invalid_port": "Bitte einen Port zwischen 1 und 65535 eingeben.",
+      "invalid_timeout": "Bitte einen Timeout zwischen 1 und 30 Sekunden eingeben.",
+      "cannot_connect": "Verbindung zum Viega-Modul nicht möglich."
+    },
+    "abort": {
+      "already_configured": "Diese Adresse und dieser Port sind bereits konfiguriert.",
+      "invalid_discovery": "Diese Ankündigung enthält keinen unterstützten Fonterra-Modbusport.",
+      "address_updated": "Fonterra hat eine neue verifizierte Netzwerkadresse.",
+      "current_address_available": "Fonterra antwortet noch auf der aktuellen Adresse.",
+      "identity_unverified": "Die WLAN-Seriennummer konnte nicht bestätigt werden. Adresse in den Verbindungseinstellungen des vorhandenen Hubs prüfen.",
+      "enable_modbus": "Home Assistant hat einen Hinweis zur Aktivierung von Modbus TCP in Fonterra angezeigt.",
+      "modbus_advertised": "Modbus wurde bereits angekündigt."
+    },
+    "flow_title": "{name}"
+  },
+  "options": {
+    "step": {
+      "module": {
+        "title": "Verbindungseinstellungen",
+        "description": "Räume und Gruppen werden aus der Basisstation gelesen. Ändern Sie die Zuordnung in Fonterra und laden Sie danach diese Integration neu.",
+        "data": {
+          "host": "IP-Adresse oder Hostname",
+          "port": "Modbus-Port",
+          "device_name": "Gerätename",
+          "polling_interval": "Polling-Intervall (Sekunden)",
+          "modbus_timeout": "Modbus-Timeout (Sekunden)",
+          "modbus_debug": "Modbus-Frame-Debug-Logging aktivieren"
+        }
+      },
+      "init": {
+        "title": "Viega Fonterra Smart",
+        "menu_options": {
+          "module": "Verbindungseinstellungen",
+          "connect": "Connect Upgrade"
+        }
+      },
+      "connect": {
+        "title": "Connect",
+        "description": "Auch für Connect Upgrade geeignet: Steuern Sie Ihre Heizung mit einem externen Temperatursensor. Stellen Sie den Raum in Fonterra auf externe Messung ein und wählen Sie anschließend Ihren Home Assistant-Sensor aus.",
+        "data": {
+          "connect_upgrade": "Connect Upgrade installiert",
+          "configure_source": "Raumsensor auswählen"
+        }
+      },
+      "room": {
+        "title": "Raum",
+        "data": {
+          "room": "Raum"
+        }
+      },
+      "source": {
+        "title": "Temperatursensor",
+        "description": "Temperatursensor für Raum {room} auswählen. Den Raum vorher in Fonterra auf Extern gemessen einstellen. Auch gleiche Messwerte müssen regelmäßig neu gemeldet werden. Nach Start/Neuladen wird auf eine neue Sensormeldung gewartet.",
+        "data": {
+          "entity_id": "Temperatursensor",
+          "max_age": "Maximales Alter der Sensormeldung (Sekunden)",
+          "external_confirmed": "Dieser Raum ist in Fonterra auf Extern gemessen eingestellt",
+          "remove": "Sensorzuordnung entfernen"
+        }
+      }
+    },
+    "error": {
+      "invalid_host": "Bitte einen gültigen Host oder eine IP-Adresse eingeben.",
+      "required": "Dieses Feld ist erforderlich.",
+      "invalid_port": "Bitte einen Port zwischen 1 und 65535 eingeben.",
+      "invalid_timeout": "Bitte einen Timeout zwischen 1 und 30 Sekunden eingeben.",
+      "invalid_polling_interval": "Bitte ein Polling-Intervall zwischen 5 und 300 Sekunden eingeben.",
+      "cannot_connect": "Keine Modbusverbindung. Adresse, Port und Modbuseinstellung der Fonterra prüfen.",
+      "invalid_sensor": "Vorhandenen Temperatursensor auswählen.",
+      "external_required": "Raum auf Extern gemessen einstellen und bestätigen.",
+      "legacy_companion_active": "Zuerst die alte separate Smart Connect-Integration deaktivieren.",
+      "identity_unverified": "Die WLAN-Seriennummer konnte nicht bestätigt werden. Adresse in den Verbindungseinstellungen des vorhandenen Hubs prüfen.",
+      "address_in_use": "Ein anderer Hub verwendet diese Adresse und diesen Port bereits."
+    },
+    "abort": {
+      "modbus_required": "Keine Modbusverbindung verfügbar. Fonterra-Verbindung prüfen und diese Integration neu laden.",
+      "no_rooms": "Kein zugeordneter Raum gefunden. Zuordnung prüfen und Viega-Integration neu laden.",
+      "already_configured": "Dieses Fonterra-Modul ist bereits eingerichtet.",
+      "settings_changed": "Die Hub-Einstellungen wurden geändert. Öffnen Sie das Formular erneut."
+    }
+  },
+  "entity": {
+    "climate": {
+      "room": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "manual": "Manuell",
+              "profile": "Profil",
+              "setback": "Absenkbetrieb"
+            }
+          },
+          "room_id": {
+            "name": "Raumnummer"
+          },
+          "power_level": {
+            "name": "Manuelle Leistungsstufe"
+          },
+          "flow_temperature": {
+            "name": "Vorlauftemperatur"
+          },
+          "return_temperature": {
+            "name": "Rücklauftemperatur"
+          },
+          "actuator_position": {
+            "name": "Stellantriebsposition"
+          },
+          "actuator_positions": {
+            "name": "Stellantriebspositionen"
+          },
+          "base_unit_error_code": {
+            "name": "Fehlercode der Basiseinheit"
+          },
+          "last_active_hvac_mode": {
+            "name": "Letzte aktive Betriebsart",
+            "state": {
+              "heat": "Heizen",
+              "cool": "Kühlen",
+              "off": "Aus"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "connect_upgrade_detection": {
+        "name": "Connect Upgrade",
+        "state_attributes": {
+          "connect_help": {
+            "name": "Eigener Temperatursensor",
+            "state": {
+              "own_temperature_sensor": "Mit dem Connect Upgrade sendet Home Assistant die gemessene Raumtemperatur Ihres eigenen Sensors an Fonterra. Stellen Sie den Raum in Fonterra auf „Extern gemessen“ und verknüpfen Sie den Sensor unter Konfigurieren → Connect Upgrade. In diesem Raum genügt dann Ihr eigener Temperatursensor."
+            }
+          }
+        },
+        "state": {
+          "detected": "Erkannt",
+          "not_detected": "Nicht erkannt"
+        }
+      },
+      "wlan_serial_number": {
+        "name": "WLAN-Modul Seriennummer"
+      },
+      "base_unit_serial_number": {
+        "name": "Basiseinheit Seriennummer"
+      },
+      "base_unit_name": {
+        "name": "Basiseinheit Bezeichnung"
+      },
+      "base_unit_error_code": {
+        "name": "Basiseinheit Fehlercode",
+        "state_attributes": {
+          "description": {
+            "name": "Beschreibung",
+            "state": {
+              "sensor_invalid": "Kein gültiger Wert",
+              "no_error": "Kein Fehler",
+              "error_3": "Basiseinheit: Mindestens ein Raumthermostat ist nicht mehr verbunden",
+              "error_4": "Basiseinheit: Störung am Stellantriebs-Bus",
+              "error_5": "Basiseinheit: Störung am Vorlauftemperaturfühler",
+              "error_6": "Basiseinheit: Störung am Rücklauftemperaturfühler",
+              "error_7": "Basiseinheit: Keine weiteren Raumthermostate anmeldbar",
+              "error_9": "Basiseinheit: Pufferbatterie ersetzen",
+              "error_10": "Warnung: Kondensationsgefahr, Vorlauftemperatur zu niedrig",
+              "error_21": "Keine Verbindung zum Raumthermostat",
+              "error_22": "Warnung: Batterie des Raumthermostats schwach",
+              "error_24": "Warnung: Verbindung zum Raumthermostat schwach",
+              "unknown_error": "Unbekannter Fehler"
+            }
+          }
+        }
+      },
+      "flow_temperature": {
+        "name": "Vorlauftemperatur"
+      },
+      "actuator_return_temperature": {
+        "name": "{room} Aktor {actor} Rücklauftemperatur"
+      },
+      "room_diagnostic": {
+        "name": "{room} Diagnose",
+        "state": {
+          "sensor_invalid": "Kein gültiger Wert",
+          "no_error": "Kein Fehler",
+          "error_3": "Basiseinheit: Mindestens ein Raumthermostat ist nicht mehr verbunden",
+          "error_4": "Basiseinheit: Störung am Stellantriebs-Bus",
+          "error_5": "Basiseinheit: Störung am Vorlauftemperaturfühler",
+          "error_6": "Basiseinheit: Störung am Rücklauftemperaturfühler",
+          "error_7": "Basiseinheit: Keine weiteren Raumthermostate anmeldbar",
+          "error_9": "Basiseinheit: Pufferbatterie ersetzen",
+          "error_10": "Warnung: Kondensationsgefahr, Vorlauftemperatur zu niedrig",
+          "error_21": "Keine Verbindung zum Raumthermostat",
+          "error_22": "Warnung: Batterie des Raumthermostats schwach",
+          "error_24": "Warnung: Verbindung zum Raumthermostat schwach",
+          "unknown_error": "Unbekannter Fehler"
+        },
+        "state_attributes": {
+          "error_code": {
+            "name": "Fehlercode"
+          }
+        }
+      },
+      "health_last_success_time": {
+        "name": "Letzte erfolgreiche Modbus-Antwort"
+      },
+      "health_last_failure_time": {
+        "name": "Letzte fehlgeschlagene Modbus-Anfrage"
+      },
+      "health_consecutive_failures": {
+        "name": "Aufeinanderfolgende Modbus-Fehler"
+      },
+      "health_invalid_value_count": {
+        "name": "Anzahl ungültiger Modbus-Werte"
+      },
+      "health_last_exception_code": {
+        "name": "Letzter Modbus-Fehlercode"
+      },
+      "health_last_success_duration": {
+        "name": "Dauer der letzten Modbus-Anfrage"
+      },
+      "health_reconnect_count": {
+        "name": "Modbus-Neuverbindungen"
+      },
+      "health_last_reconnect_time": {
+        "name": "Letzte Modbus-Neuverbindung"
+      },
+      "health_invalid_registers": {
+        "name": "Ungültige Register",
+        "state_attributes": {
+          "invalid_registers": {
+            "name": "Register"
+          },
+          "rejected_registers": {
+            "name": "Abgelehnte Register"
+          }
+        }
+      },
+      "actuator_stats_open_actuator_count": {
+        "name": "Aktuell geöffnete Aktoren"
+      },
+      "actuator_stats_open_transition_count": {
+        "name": "Anzahl bestätigter Öffnungswechsel"
+      },
+      "actuator_stats_last_transition_time": {
+        "name": "Letzter bestätigter Aktorwechsel"
+      },
+      "actuator_stats_confirmed_open_seconds": {
+        "name": "Bestätigte Öffnungsdauer"
+      },
+      "base_unit_diagnostic": {
+        "name": "Basiseinheit Diagnose",
+        "state": {
+          "sensor_invalid": "Kein gültiger Wert",
+          "no_error": "Kein Fehler",
+          "error_3": "Basiseinheit: Mindestens ein Raumthermostat ist nicht mehr verbunden",
+          "error_4": "Basiseinheit: Störung am Stellantriebs-Bus",
+          "error_5": "Basiseinheit: Störung am Vorlauftemperaturfühler",
+          "error_6": "Basiseinheit: Störung am Rücklauftemperaturfühler",
+          "error_7": "Basiseinheit: Keine weiteren Raumthermostate anmeldbar",
+          "error_9": "Basiseinheit: Pufferbatterie ersetzen",
+          "error_10": "Warnung: Kondensationsgefahr, Vorlauftemperatur zu niedrig",
+          "error_21": "Keine Verbindung zum Raumthermostat",
+          "error_22": "Warnung: Batterie des Raumthermostats schwach",
+          "error_24": "Warnung: Verbindung zum Raumthermostat schwach",
+          "unknown_error": "Unbekannter Fehler"
+        },
+        "state_attributes": {
+          "error_code": {
+            "name": "Fehlercode"
+          }
+        }
+      },
+      "actuator_position": {
+        "name": "{room} Aktor {actor} Stellung"
+      },
+      "circulation_pump": {
+        "name": "Umwälzpumpe"
+      }
+    },
+    "number": {
+      "power_level": {
+        "name": "{room} manuelle Leistungsstufe",
+        "unit_of_measurement": "Stufe"
+      }
+    }
+  },
+  "services": {
+    "rediscover": {
+      "name": "Gerät neu erkennen",
+      "description": "Liest Raum- und Aktortopologie erneut vom Gerät ein und aktualisiert die Entitäten direkt.",
+      "fields": {
+        "device_id": {
+          "name": "Gerät",
+          "description": "Das Viega-Fonterra-Modul, das neu erkannt werden soll."
+        }
+      }
+    },
+    "overview": {
+      "name": "Übersicht über alle Module",
+      "description": "Liefert eine Zusammenfassung je konfiguriertem Viega-Fonterra-Modul: Erreichbarkeit, Basiseinheit-Fehler, veraltete/fehlgeschlagene Kommunikation sowie Raum-/Aktoranzahl."
+    }
+  },
+  "exceptions": {
+    "temperature_out_of_range": {
+      "message": "Die Solltemperatur {value} °C liegt außerhalb des erlaubten Bereichs ({min}–{max} °C) für den aktuellen Modus."
+    },
+    "power_level_out_of_range": {
+      "message": "Die Leistungsstufe {value} liegt außerhalb des erlaubten Bereichs ({min}–{max})."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Der Betriebsmodus „{mode}“ wird vom Viega-Modul nicht unterstützt."
+    },
+    "unsupported_preset_mode": {
+      "message": "Der Profilmodus „{mode}“ wird vom Viega-Modul nicht unterstützt."
+    },
+    "register_not_configured": {
+      "message": "Für den Raum {room} gibt es kein Register für diese Einstellung, sie kann daher nicht geändert werden."
+    },
+    "write_failed": {
+      "message": "Die Änderung konnte nicht an das Viega-Modul {device} gesendet werden: {error}"
+    },
+    "unknown_device": {
+      "message": "Das Gerät {device_id} wurde nicht gefunden."
+    },
+    "module_not_loaded": {
+      "message": "Das Viega-Modul {device} ist nicht geladen. Bitte prüfen, ob die Integration eingerichtet ist und läuft."
+    },
+    "rediscover_failed": {
+      "message": "Die Neuerkennung des Viega-Moduls {device} ist fehlgeschlagen: {error}. Die bisherige Raumkonfiguration bleibt erhalten."
+    },
+    "preset_requires_heating": {
+      "message": "Der Profilmodus „{mode}“ kann nur im Heizbetrieb des Viega-Moduls gewählt werden."
+    },
+    "power_level_unavailable": {
+      "message": "Fonterra meldet keine verfügbare Leistungsstufe für {room}."
+    },
+    "target_temperature_unavailable": {
+      "message": "Fonterra meldet für {room} keine einstellbare Temperatur. Prüfen Sie den Raumthermostat oder den eingestellten Temperatursensor."
+    }
+  },
+  "issues": {
+    "module_unreachable": {
+      "title": "Viega-Modul {device} ist nicht erreichbar",
+      "description": "Home Assistant hat seit {since} keine Antwort vom Viega-Fonterra-Modul **{device}** erhalten. Die Raumwerte bleiben auf dem zuletzt bekannten Stand, bis es wieder antwortet.\n\nBitte prüfen, ob das Modul Strom hat und mit dem Netzwerk verbunden ist. Die Integration verbindet sich selbstständig neu; diese Meldung verschwindet automatisch, sobald das Modul wieder antwortet."
+    },
+    "base_unit_error_3": {
+      "title": "Viega-Modul {device}: Mindestens ein Raumthermostat ist nicht mehr verbunden",
+      "description": "Die Basiseinheit von **{device}** meldet Fehlercode {code}: Mindestens ein Raumthermostat ist nicht mehr mit der Basiseinheit verbunden.\n\nDiese Meldung verschwindet automatisch, sobald die Basiseinheit den Fehler nicht mehr meldet."
+    },
+    "base_unit_error_4": {
+      "title": "Viega-Modul {device}: Störung am Stellantriebs-Bus",
+      "description": "Die Basiseinheit von **{device}** meldet Fehlercode {code}: Am Bus der Stellantriebe liegt eine Störung vor.\n\nDiese Meldung verschwindet automatisch, sobald die Basiseinheit den Fehler nicht mehr meldet."
+    },
+    "base_unit_error_5": {
+      "title": "Viega-Modul {device}: Störung am Vorlauftemperaturfühler",
+      "description": "Die Basiseinheit von **{device}** meldet Fehlercode {code}: Der Vorlauftemperaturfühler meldet eine Störung.\n\nDiese Meldung verschwindet automatisch, sobald die Basiseinheit den Fehler nicht mehr meldet."
+    },
+    "base_unit_error_6": {
+      "title": "Viega-Modul {device}: Störung am Rücklauftemperaturfühler",
+      "description": "Die Basiseinheit von **{device}** meldet Fehlercode {code}: Der Rücklauftemperaturfühler meldet eine Störung.\n\nDiese Meldung verschwindet automatisch, sobald die Basiseinheit den Fehler nicht mehr meldet."
+    },
+    "base_unit_error_7": {
+      "title": "Viega-Modul {device}: Keine weiteren Raumthermostate anmeldbar",
+      "description": "Die Basiseinheit von **{device}** meldet Fehlercode {code}: An der Basiseinheit können keine weiteren Raumthermostate angemeldet werden.\n\nDiese Meldung verschwindet automatisch, sobald die Basiseinheit den Fehler nicht mehr meldet."
+    },
+    "base_unit_error_9": {
+      "title": "Viega-Modul {device}: Pufferbatterie ersetzen",
+      "description": "Die Basiseinheit von **{device}** meldet Fehlercode {code}: Die Pufferbatterie der Basiseinheit muss ersetzt werden.\n\nDiese Meldung verschwindet automatisch, sobald die Basiseinheit den Fehler nicht mehr meldet."
+    },
+    "base_unit_error_10": {
+      "title": "Viega-Modul {device}: Kondensationsgefahr",
+      "description": "Die Basiseinheit von **{device}** meldet Fehlercode {code}: Warnung: Kondensationsgefahr, weil die Vorlauftemperatur zu niedrig ist.\n\nDiese Meldung verschwindet automatisch, sobald die Basiseinheit den Fehler nicht mehr meldet."
+    },
+    "base_unit_error_21": {
+      "title": "Viega-Modul {device}: Keine Verbindung zu einem Raumthermostat",
+      "description": "Die Basiseinheit von **{device}** meldet Fehlercode {code}: Es besteht keine Verbindung zu einem Raumthermostat.\n\nDiese Meldung verschwindet automatisch, sobald die Basiseinheit den Fehler nicht mehr meldet."
+    },
+    "base_unit_error_22": {
+      "title": "Viega-Modul {device}: Batterie eines Raumthermostats schwach",
+      "description": "Die Basiseinheit von **{device}** meldet Fehlercode {code}: Warnung: Die Batterie eines Raumthermostats ist schwach.\n\nDiese Meldung verschwindet automatisch, sobald die Basiseinheit den Fehler nicht mehr meldet."
+    },
+    "base_unit_error_24": {
+      "title": "Viega-Modul {device}: Schwache Verbindung zu einem Raumthermostat",
+      "description": "Die Basiseinheit von **{device}** meldet Fehlercode {code}: Warnung: Die Verbindung zu einem Raumthermostat ist schwach.\n\nDiese Meldung verschwindet automatisch, sobald die Basiseinheit den Fehler nicht mehr meldet."
+    },
+    "base_unit_error_unknown": {
+      "title": "Viega-Modul {device}: Fehlercode {code}",
+      "description": "Die Basiseinheit von **{device}** meldet Fehlercode {code}, der in der dieser Integration bekannten Viega-Anleitung nicht beschrieben ist.\n\nDiese Meldung verschwindet automatisch, sobald die Basiseinheit den Fehler nicht mehr meldet."
+    },
+    "registers_not_updating": {
+      "title": "Viega-Modul {device}: Werte werden nicht aktualisiert",
+      "description": "Das Viega-Fonterra-Modul **{device}** antwortet, lehnt aber seit {since} das Lesen dieser Register ab (Modbus-Exception {codes}):\n\n{registers}\n\nDie betroffenen Werte in Home Assistant bleiben auf dem zuletzt bekannten Stand stehen. Das tritt häufig nach einem Viega-Firmware-Update auf. Bitte prüfen, ob Modbus TCP in der Viega-App vollständig aktiviert ist und das Modul normal läuft; bleibt das Problem bestehen, mit angehängter *Diagnose* melden. Diese Meldung verschwindet automatisch, sobald alle Werte wieder gelesen werden können."
+    },
+    "enable_modbus": {
+      "title": "Fonterra gefunden. Modbus TCP aktivieren",
+      "description": "Fonterra unter **{host}** meldet seinen Webdienst, aber Modbus antwortet nicht. Prüfen Sie in den Fonterra-Einstellungen, ob **Modbus TCP** aktiviert ist."
+    }
+  }
+}

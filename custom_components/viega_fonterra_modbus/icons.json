@@ -1,0 +1,49 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "actuator_position": {
+        "default": "mdi:valve-closed",
+        "state": {
+          "on": "mdi:valve-open"
+        }
+      },
+      "circulation_pump": {
+        "default": "mdi:pump-off",
+        "state": {
+          "on": "mdi:pump"
+        }
+      }
+    },
+    "sensor": {
+      "connect_upgrade_detection": {
+        "default": "mdi:information-outline"
+      },
+      "room_diagnostic": {
+        "default": "mdi:alert-circle-outline",
+        "state": {
+          "no_error": "mdi:check-circle-outline"
+        }
+      },
+      "health_invalid_registers": {
+        "default": "mdi:alert-octagon-outline",
+        "range": {
+          "0": "mdi:check-circle-outline"
+        }
+      },
+      "base_unit_diagnostic": {
+        "default": "mdi:alert-circle-outline",
+        "state": {
+          "no_error": "mdi:check-circle-outline"
+        }
+      }
+    }
+  },
+  "services": {
+    "rediscover": {
+      "service": "mdi:magnify-scan"
+    },
+    "overview": {
+      "service": "mdi:view-list"
+    }
+  }
+}

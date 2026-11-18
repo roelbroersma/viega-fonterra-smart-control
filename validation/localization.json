@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "candidate": "0.9.0",
+  "languages": [
+    "nl",
+    "en",
+    "de",
+    "fr",
+    "it"
+  ],
+  "texts_per_language": 195,
+  "all_keys_and_placeholders_match": true,
+  "catalogs_loaded_as_expected_in_core": [
+    "2026.11.0",
+    "2026.11.1"
+  ],
+  "frontend_language_metadata": {
+    "2026.11.0": "https://github.com/home-assistant/frontend/blob/20261028.4/src/translations/translationMetadata.json",
+    "2026.11.1": "https://github.com/home-assistant/frontend/blob/20261028.5/src/translations/translationMetadata.json"
+  },
+  "belgian_language_choices": {
+    "nl-BE": "Select nl",
+    "fr-BE": "Select fr"
+  },
+  "dashboard_languages": [
+    "nl",
+    "en",
+    "de",
+    "fr",
+    "it"
+  ]
+}

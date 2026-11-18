@@ -1,0 +1,38 @@
+name: Checks
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        homeassistant: ['2026.11.0', '2026.11.1']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14.10'
+      - run: pip install --require-hashes -r requirements/ha-${{ matrix.homeassistant }}.lock.txt
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: pytest -q
+      - run: python scripts/check_release.py --candidate
+  card:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26.11.1'
+      - run: node --test tests/test_card.mjs
+  hassfest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: home-assistant/actions/hassfest@master
+  hacs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hacs/action@main
+        with:
+          category: integration

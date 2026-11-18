@@ -1,0 +1,45 @@
+{
+  "domain": "viega_fonterra_modbus",
+  "name": "Viega Fonterra Smart",
+  "after_dependencies": ["dhcp", "frontend", "http", "zeroconf"],
+  "codeowners": [
+    "@roelbroersma"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "persistent_notification"
+  ],
+  "dhcp": [{"hostname": "smart-*"}],
+  "documentation": "https://github.com/roelbroersma/viega-fonterra-smart-control#readme",
+  "integration_type": "hub",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/roelbroersma/viega-fonterra-smart-control/issues",
+  "loggers": [
+    "custom_components.viega_fonterra_modbus"
+  ],
+  "requirements": [],
+  "version": "0.9.0",
+  "zeroconf": [
+    {
+      "type": "_modbus._tcp.local.",
+      "properties": {
+        "Model": "fonterra smart control",
+        "Vendor": "viega"
+      }
+    },
+    {
+      "type": "_http._tcp.local.",
+      "properties": {
+        "Model": "fonterra smart control",
+        "Vendor": "viega"
+      }
+    },
+    {
+      "type": "_https._tcp.local.",
+      "properties": {
+        "Model": "fonterra smart control",
+        "Vendor": "viega"
+      }
+    }
+  ]
+}

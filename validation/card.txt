@@ -1,0 +1,11 @@
+✔ filters rooms and matches controls, sources and actuators to the right divider (26.8866ms)
+✔ selects a room, hides controls when unavailable and clamps steps (1.0129ms)
+✔ provides the full same set of labels in the five integration languages (0.7595ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 160.3265

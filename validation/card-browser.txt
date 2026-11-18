@@ -1,0 +1,1 @@
+Browser PASS: overview, room detail, keyboard-compatible controls, calls, errors, picker, offline and 390px dark layout
