@@ -1,6 +1,6 @@
 # Viega Fonterra Smart
 
-[Nederlands](#nederlands) · [For English, see below](#english) · [Auf Deutsch weiterlesen](#deutsch)
+[Nederlands](https://github.com/roelbroersma/viega-fonterra-smart-control#nederlands) · [For English, see below](https://github.com/roelbroersma/viega-fonterra-smart-control#english) · [Auf Deutsch weiterlesen](https://github.com/roelbroersma/viega-fonterra-smart-control#deutsch)
 
 ## Nederlands
 
@@ -8,12 +8,12 @@ Regel je Viega Fonterra Smart Control-vloerverwarming vanuit Home Assistant. De 
 
 **Inhoud**
 
-- [Vereisten](#vereisten)
-- [Installeren](#installeren)
-- [Dashboardkaart](#dashboardkaart)
-- [Je eigen temperatuursensor](#je-eigen-temperatuursensor)
-- [Kamers en verbinding](#kamers-en-verbinding)
-- [Hulp en ontwikkeling](#hulp-en-ontwikkeling)
+- [Vereisten](https://github.com/roelbroersma/viega-fonterra-smart-control#vereisten)
+- [Installeren](https://github.com/roelbroersma/viega-fonterra-smart-control#installeren)
+- [Dashboardkaart](https://github.com/roelbroersma/viega-fonterra-smart-control#dashboardkaart)
+- [Je eigen temperatuursensor](https://github.com/roelbroersma/viega-fonterra-smart-control#je-eigen-temperatuursensor)
+- [Kamers en verbinding](https://github.com/roelbroersma/viega-fonterra-smart-control#kamers-en-verbinding)
+- [Hulp en ontwikkeling](https://github.com/roelbroersma/viega-fonterra-smart-control#hulp-en-ontwikkeling)
 
 ### Vereisten
 
@@ -62,7 +62,7 @@ knx:
       sync_state: "expire 5"
 ```
 
-`always_callback` verwerkt ook een gelijke meting. `sync_state` vraagt na vijf minuten zonder telegram een waarde op. Home Assistant stopt met doorgeven als de bron onbeschikbaar is of de meting te oud wordt. Fonterra bepaalt wanneer de ontvangen temperatuur verloopt en meldt een kamerfout via **Diagnose**.
+`always_callback` verwerkt ook een gelijke meting. `sync_state` vraagt na vijf minuten zonder telegram een waarde op. Home Assistant stopt met doorgeven als de sensor uitvalt of te lang geen nieuwe meting meldt. Onder **Diagnose** zie je de foutcodes die Fonterra meldt.
 
 ### Kamers en verbinding
 
@@ -82,12 +82,12 @@ Control your Viega Fonterra Smart Control underfloor heating from Home Assistant
 
 **Contents**
 
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Dashboard card](#dashboard-card)
-- [Using your own temperature sensor](#using-your-own-temperature-sensor)
-- [Rooms and connectivity](#rooms-and-connectivity)
-- [Help and development](#help-and-development)
+- [Requirements](https://github.com/roelbroersma/viega-fonterra-smart-control#requirements)
+- [Installation](https://github.com/roelbroersma/viega-fonterra-smart-control#installation)
+- [Dashboard card](https://github.com/roelbroersma/viega-fonterra-smart-control#dashboard-card)
+- [Using your own temperature sensor](https://github.com/roelbroersma/viega-fonterra-smart-control#using-your-own-temperature-sensor)
+- [Rooms and connectivity](https://github.com/roelbroersma/viega-fonterra-smart-control#rooms-and-connectivity)
+- [Help and development](https://github.com/roelbroersma/viega-fonterra-smart-control#help-and-development)
 
 ### Requirements
 
@@ -134,7 +134,7 @@ knx:
       sync_state: "expire 5"
 ```
 
-`always_callback` also processes identical readings. `sync_state` requests a value after five minutes without a telegram. Home Assistant stops sending when the source is unavailable or the reading is too old. Fonterra decides when the last received reading expires and reports room faults under **Diagnostics**.
+`always_callback` also processes identical readings. `sync_state` requests a value after five minutes without a telegram. Home Assistant stops sending when the sensor is unavailable or stops reporting for too long. **Diagnostics** shows the fault codes reported by Fonterra.
 
 ### Rooms and connectivity
 
@@ -154,12 +154,12 @@ Steuern Sie Ihre Viega Fonterra Smart-Control-Fußbodenheizung in Home Assistant
 
 **Inhalt**
 
-- [Voraussetzungen](#voraussetzungen)
-- [Installation](#inbetriebnahme)
-- [Dashboard-Karte](#dashboard-karte)
-- [Eigenen Temperatursensor verwenden](#eigenen-temperatursensor-verwenden)
-- [Räume und Verbindung](#räume-und-verbindung)
-- [Hilfe und Entwicklung](#hilfe-und-entwicklung)
+- [Voraussetzungen](https://github.com/roelbroersma/viega-fonterra-smart-control#voraussetzungen)
+- [Installation](https://github.com/roelbroersma/viega-fonterra-smart-control#inbetriebnahme)
+- [Dashboard-Karte](https://github.com/roelbroersma/viega-fonterra-smart-control#dashboard-karte)
+- [Eigenen Temperatursensor verwenden](https://github.com/roelbroersma/viega-fonterra-smart-control#eigenen-temperatursensor-verwenden)
+- [Räume und Verbindung](https://github.com/roelbroersma/viega-fonterra-smart-control#räume-und-verbindung)
+- [Hilfe und Entwicklung](https://github.com/roelbroersma/viega-fonterra-smart-control#hilfe-und-entwicklung)
 
 ### Voraussetzungen
 
@@ -206,7 +206,7 @@ knx:
       sync_state: "expire 5"
 ```
 
-`always_callback` verarbeitet auch identische Messwerte. `sync_state` fordert nach fünf Minuten ohne Telegramm einen Messwert an. Home Assistant stellt die Übertragung ein, wenn der Sensor nicht verfügbar oder der Messwert zu alt ist. Fonterra bestimmt, wann der letzte Messwert abläuft, und meldet Raumfehler unter **Diagnose**.
+`always_callback` verarbeitet auch identische Messwerte. `sync_state` fordert nach fünf Minuten ohne Telegramm einen Messwert an. Home Assistant stoppt die Übertragung, wenn der Sensor ausfällt oder zu lange keinen neuen Messwert meldet. Unter **Diagnose** sehen Sie die von Fonterra gemeldeten Fehlercodes.
 
 ### Räume und Verbindung
 
