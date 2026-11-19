@@ -63,7 +63,7 @@ Kopieer de kaart voor elke ruimte en vervang de titel en de klimaatentiteit.
 Stel dat `sensor.badkamer_temperatuur` in Home Assistant de temperatuur van een KNX Tastsensor 4 ontvangt.
 
 1. Kies voor de badkamer in Fonterra **Extern gemeten**. Deze optie is beschikbaar met [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/).
-2. Open **Configureren** bij de verdeler in Home Assistant. Vink **Connect Upgrade geïnstalleerd** aan en kies **Badkamer** bij **Kamersensor koppelen (optioneel)**.
+2. Open **Configureren** bij de verdeler in Home Assistant. Vink **Connect Upgrade geïnstalleerd** aan en kies **Badkamer** bij **Ruimte voor externe sensor (optioneel)**.
 3. Selecteer `sensor.badkamer_temperatuur`, bevestig de externe bron en sla op. Controleer de gemeten temperatuur in Fonterra. Een meting van **21,8 °C** gaat naar de gemeten temperatuur. De gewenste temperatuur stel je afzonderlijk in.
 
 Als je de KNX-sensor in YAML aanmaakt, gebruik dan je eigen groepsadres. De sensor moet leesverzoeken kunnen beantwoorden.
@@ -151,7 +151,7 @@ Duplicate the card for each room and change its title and climate entity.
 Suppose `sensor.bathroom_temperature` in Home Assistant receives readings from a KNX Tastsensor 4.
 
 1. In Fonterra, select **External measured** for the bathroom. This option is available with [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/).
-2. Open **Configure** on the controller in Home Assistant. Tick **Connect Upgrade installed** and select **Bathroom** under **Room sensor (optional)**.
+2. Open **Configure** on the controller in Home Assistant. Tick **Connect Upgrade installed** and select **Bathroom** under **Room for external sensor (optional)**.
 3. Select `sensor.bathroom_temperature`, confirm the external source and save. Check the reading in Fonterra. A reading of **21.8 °C** is sent as the measured temperature. The setpoint is set separately.
 
 When setting up the KNX sensor in YAML, use your own group address. The sensor must respond to read requests.
@@ -239,7 +239,7 @@ Kopieren Sie die Karte für jeden Raum und ändern Sie den Titel und die Klimaen
 Angenommen, `sensor.badezimmertemperatur` in Home Assistant erhält Messwerte von einem KNX Tastsensor 4.
 
 1. Wählen Sie für das Badezimmer in Fonterra die externe Messung (**Extern gemessen**). Diese Option ist mit dem [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/) verfügbar.
-2. Öffnen Sie in Home Assistant **Konfigurieren** beim Verteiler. Aktivieren Sie **Connect Upgrade installiert** und wählen Sie **Badezimmer** unter **Raumsensor verknüpfen (optional)**.
+2. Öffnen Sie in Home Assistant **Konfigurieren** beim Verteiler. Aktivieren Sie **Connect Upgrade installiert** und wählen Sie **Badezimmer** unter **Raum für externen Sensor (optional)**.
 3. Wählen Sie `sensor.badezimmertemperatur`, bestätigen Sie die externe Messquelle und speichern Sie. Prüfen Sie die gemessene Temperatur in Fonterra. Ein Messwert von **21,8 °C** wird als gemessene Raumtemperatur übertragen. Die Solltemperatur stellen Sie separat ein.
 
 Wenn Sie den KNX-Sensor in YAML einrichten, verwenden Sie Ihre eigene Gruppenadresse. Der Sensor muss auf Leseanfragen antworten.

@@ -38,7 +38,7 @@
     "step": {
       "init": {
         "title": "Instellingen",
-        "description": "Vink Connect Upgrade aan als die is geïnstalleerd. Kies alleen een kamer als je de sensor wilt koppelen, wijzigen of verwijderen.",
+        "description": "Vink Connect Upgrade aan als die is geïnstalleerd. Kies een kamer als je een temperatuursensor uit Home Assistant wilt koppelen, wijzigen of verwijderen. De sensorinstellingen openen in de volgende stap. Laat de kamerkeuze leeg om alleen deze instellingen op te slaan.",
         "data": {
           "host": "IP-adres of hostnaam",
           "port": "Modbuspoort",
@@ -47,7 +47,7 @@
           "modbus_timeout": "Modbus-timeout (seconden)",
           "modbus_debug": "Modbus-berichten loggen voor foutopsporing",
           "connect_upgrade": "Connect Upgrade geïnstalleerd",
-          "sensor_room": "Kamersensor koppelen (optioneel)"
+          "sensor_room": "Ruimte voor externe sensor (optioneel)"
         }
       },
       "source": {
@@ -132,7 +132,7 @@
           "connect_help": {
             "name": "Eigen temperatuursensor",
             "state": {
-              "own_temperature_sensor": "Met Connect Upgrade stuurt Home Assistant de gemeten kamertemperatuur van je eigen sensor naar Fonterra. Zet de kamer in Fonterra op ‘Extern gemeten’ en koppel de sensor via Configureren → Connect Upgrade. Voor die kamer heb je dan geen Viega-kamerthermostaat nodig."
+              "own_temperature_sensor": "Met Connect Upgrade stuurt Home Assistant de gemeten kamertemperatuur van je eigen sensor naar Fonterra. Zet de kamer in Fonterra op ‘Extern gemeten’. Kies daarna de kamer onder Configureren en selecteer de temperatuursensor uit Home Assistant. Voor die kamer heb je dan geen Viega-kamerthermostaat nodig."
             }
           }
         },
@@ -271,9 +271,11 @@
             "name": "Foutcode"
           }
         }
-      },
+      }
+    },
+    "binary_sensor": {
       "actuator_position": {
-        "name": "{room} klepstand actor {actor}"
+        "name": "Actor {actor}"
       },
       "circulation_pump": {
         "name": "Circulatiepomp"

@@ -38,7 +38,7 @@
     "step": {
       "init": {
         "title": "Settings",
-        "description": "Tick Connected Upgrade if it is installed. Select a room only to link, change or remove its sensor.",
+        "description": "Enable Connect Upgrade if it is installed. To link, change or remove a Home Assistant temperature sensor, select its room. The sensor settings open in the next step. Leave the room blank to save these settings only.",
         "data": {
           "host": "IP address or hostname",
           "port": "Modbus port",
@@ -47,7 +47,7 @@
           "modbus_timeout": "Modbus timeout (seconds)",
           "modbus_debug": "Enable Modbus frame debug logging",
           "connect_upgrade": "Connect Upgrade installed",
-          "sensor_room": "Room sensor (optional)"
+          "sensor_room": "Room for external sensor (optional)"
         }
       },
       "source": {
@@ -132,7 +132,7 @@
           "connect_help": {
             "name": "Using your own sensor",
             "state": {
-              "own_temperature_sensor": "Connect Upgrade lets Home Assistant send the measured room temperature from your own sensor to Fonterra. Set the room to external measurement (Extern gemeten) in Fonterra, then link the sensor under Configure → Connect Upgrade. That room can then work without a Viega room thermostat."
+              "own_temperature_sensor": "Connect Upgrade lets Home Assistant send the measured room temperature from your own sensor to Fonterra. Set the room to external measurement (Extern gemeten) in Fonterra, then select the room under Configure and choose its Home Assistant temperature sensor. That room can then work without a Viega room thermostat."
             }
           }
         },
@@ -271,9 +271,11 @@
             "name": "Error code"
           }
         }
-      },
+      }
+    },
+    "binary_sensor": {
       "actuator_position": {
-        "name": "{room} actuator {actor} position"
+        "name": "Actuator {actor}"
       },
       "circulation_pump": {
         "name": "Circulation pump"

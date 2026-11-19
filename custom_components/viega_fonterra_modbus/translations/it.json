@@ -38,7 +38,7 @@
     "step": {
       "init": {
         "title": "Impostazioni",
-        "description": "Seleziona Connect Upgrade se è installato. Scegli una stanza per associare, modificare o rimuovere il sensore.",
+        "description": "Seleziona Connect Upgrade se è installato. Per associare, modificare o rimuovere un sensore di temperatura di Home Assistant, scegli la stanza. Le impostazioni del sensore si aprono nel passaggio successivo. Lascia vuota la stanza per salvare solo queste impostazioni.",
         "data": {
           "host": "Indirizzo IP o nome host",
           "port": "Porta Modbus",
@@ -47,7 +47,7 @@
           "modbus_timeout": "Tempo massimo di risposta Modbus (secondi)",
           "modbus_debug": "Registra i frame Modbus per il debug",
           "connect_upgrade": "Connect Upgrade installato",
-          "sensor_room": "Associa un sensore alla stanza (facoltativo)"
+          "sensor_room": "Stanza per il sensore esterno (facoltativo)"
         }
       },
       "source": {
@@ -132,7 +132,7 @@
           "connect_help": {
             "name": "Usare il proprio sensore",
             "state": {
-              "own_temperature_sensor": "Con Connect Upgrade, Home Assistant invia a Fonterra la temperatura ambiente misurata dal tuo sensore. In Fonterra, seleziona « Sensore esterno » per la stanza, poi associa il sensore in Configura → Connect Upgrade. Per quella stanza non serve più un termostato ambiente Viega."
+              "own_temperature_sensor": "Con Connect Upgrade, Home Assistant invia a Fonterra la temperatura ambiente misurata dal tuo sensore. In Fonterra, seleziona « Sensore esterno » per la stanza, poi scegli la stanza in Configura e seleziona il suo sensore di temperatura in Home Assistant. Per quella stanza non serve più un termostato ambiente Viega."
             }
           }
         },
@@ -271,9 +271,11 @@
             "name": "Codice di errore"
           }
         }
-      },
+      }
+    },
+    "binary_sensor": {
       "actuator_position": {
-        "name": "{room} posizione dell’attuatore {actor}"
+        "name": "Attuatore {actor}"
       },
       "circulation_pump": {
         "name": "Pompa di circolazione"

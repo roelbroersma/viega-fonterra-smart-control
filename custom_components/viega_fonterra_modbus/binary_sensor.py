@@ -110,7 +110,6 @@ def _actor_position_sensors(
     for room_id, room_config in rooms.items():
         if not isinstance(room_config, dict):
             continue
-        room_name = room_config.get("name", room_id)
         for actor_number in room_actor_numbers(room_config):
             try:
                 registers = actor_registers(actor_number)
@@ -121,7 +120,6 @@ def _actor_position_sensors(
                     entry.entry_id,
                     room_id,
                     actor_number,
-                    room_name,
                     registers["position"],
                 )
             )
@@ -186,17 +184,13 @@ class ViegaActuatorPositionBinarySensor(ViegaCoordinatedEntity, BinarySensorEnti
         entry_id: str,
         room_id: str,
         actor_number: int,
-        room_name: str,
         address: int,
     ) -> None:
         self._entry_id = entry_id
         self._address = address
         self._attr_unique_id = f"{entry_id}_{room_id}_actor{actor_number}_position"
         self._attr_translation_key = "actuator_position"
-        self._attr_translation_placeholders = {
-            "room": str(room_name),
-            "actor": str(actor_number),
-        }
+        self._attr_translation_placeholders = {"actor": str(actor_number)}
         self._attr_is_on = None
 
     async def async_added_to_hass(self) -> None:

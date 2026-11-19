@@ -38,7 +38,7 @@
     "step": {
       "init": {
         "title": "Einstellungen",
-        "description": "Aktivieren Sie Connect Upgrade, wenn es installiert ist. Wählen Sie einen Raum, um dessen Sensor zu verknüpfen, zu ändern oder zu entfernen.",
+        "description": "Aktivieren Sie Connect Upgrade, wenn es installiert ist. Wählen Sie den Raum, um einen Temperatursensor aus Home Assistant zu verknüpfen, zu ändern oder zu entfernen. Die Sensoreinstellungen öffnen sich im nächsten Schritt. Lassen Sie die Raumauswahl leer, um nur diese Einstellungen zu speichern.",
         "data": {
           "host": "IP-Adresse oder Hostname",
           "port": "Modbus-Port",
@@ -47,7 +47,7 @@
           "modbus_timeout": "Modbus-Timeout (Sekunden)",
           "modbus_debug": "Modbus-Frame-Debug-Logging aktivieren",
           "connect_upgrade": "Connect Upgrade installiert",
-          "sensor_room": "Raumsensor verknüpfen (optional)"
+          "sensor_room": "Raum für externen Sensor (optional)"
         }
       },
       "source": {
@@ -132,7 +132,7 @@
           "connect_help": {
             "name": "Eigener Temperatursensor",
             "state": {
-              "own_temperature_sensor": "Mit dem Connect Upgrade sendet Home Assistant die gemessene Raumtemperatur Ihres eigenen Sensors an Fonterra. Stellen Sie den Raum in Fonterra auf „Extern gemessen“ und verknüpfen Sie den Sensor unter Konfigurieren → Connect Upgrade. In diesem Raum genügt dann Ihr eigener Temperatursensor."
+              "own_temperature_sensor": "Mit dem Connect Upgrade sendet Home Assistant die gemessene Raumtemperatur Ihres eigenen Sensors an Fonterra. Stellen Sie den Raum in Fonterra auf „Extern gemessen“. Wählen Sie dann unter Konfigurieren den Raum und den Temperatursensor aus Home Assistant. In diesem Raum genügt dann Ihr eigener Temperatursensor."
             }
           }
         },
@@ -271,9 +271,11 @@
             "name": "Fehlercode"
           }
         }
-      },
+      }
+    },
+    "binary_sensor": {
       "actuator_position": {
-        "name": "{room} Ventilstellung Stellantrieb {actor}"
+        "name": "Stellantrieb {actor}"
       },
       "circulation_pump": {
         "name": "Umwälzpumpe"
