@@ -29,10 +29,9 @@ from .registers import (
     room_registers,
 )
 
-# The host is a local LAN address, not a secret, but diagnostics dumps are
-# routinely pasted into public GitHub issues - redact it like any other
-# network-identifying detail per Home Assistant's own diagnostics guidance.
-TO_REDACT = {"host"}
+# Diagnostics are often attached to public issues. The WLAN serial also
+# identifies the controller in its local hostname.
+TO_REDACT = {"host", "wlan_module_serial_number", "base_unit_serial_number"}
 
 
 async def async_get_config_entry_diagnostics(
