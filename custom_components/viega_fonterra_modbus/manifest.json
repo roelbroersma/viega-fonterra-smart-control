@@ -19,7 +19,7 @@
     "custom_components.viega_fonterra_modbus"
   ],
   "requirements": [],
-  "version": "0.9.2",
+  "version": "0.9.3",
   "zeroconf": [
     {
       "type": "_modbus._tcp.local.",
