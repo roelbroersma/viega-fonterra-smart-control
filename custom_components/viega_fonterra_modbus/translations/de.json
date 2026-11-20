@@ -277,7 +277,7 @@
   },
   "services": {
     "rediscover": {
-      "name": "Gerät neu erkennen",
+      "name": "Räume erneut erkennen",
       "description": "Liest die Räume und die Zuordnung der Stellantriebe erneut aus dem Gerät und aktualisiert die Entitäten direkt.",
       "fields": {
         "device_id": {

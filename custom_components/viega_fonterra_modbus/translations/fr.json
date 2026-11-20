@@ -277,7 +277,7 @@
   },
   "services": {
     "rediscover": {
-      "name": "Détecter à nouveau l’appareil",
+      "name": "Relire les pièces",
       "description": "Relit les pièces et leurs actionneurs sur l’appareil et actualise les entités existantes.",
       "fields": {
         "device_id": {

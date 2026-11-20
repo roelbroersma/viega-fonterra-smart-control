@@ -277,7 +277,7 @@
   },
   "services": {
     "rediscover": {
-      "name": "Rileva di nuovo il dispositivo",
+      "name": "Rileva di nuovo le stanze",
       "description": "Rilegge dal dispositivo le stanze e i relativi attuatori e aggiorna le entità esistenti.",
       "fields": {
         "device_id": {

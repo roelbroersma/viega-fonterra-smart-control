@@ -277,7 +277,7 @@
   },
   "services": {
     "rediscover": {
-      "name": "Rediscover device",
+      "name": "Rediscover rooms",
       "description": "Re-reads the room and actuator topology from the device and updates entities in place.",
       "fields": {
         "device_id": {

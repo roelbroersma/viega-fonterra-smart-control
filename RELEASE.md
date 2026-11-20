@@ -1,12 +1,11 @@
 # Release en onderhoud
 
-**0.9.0** is de eerste publieke versie. De dashboardkaart ondersteunt vijf talen en toont de diagnose van de Fonterra-basisunit.
-
 ## Waar staat wat?
 
 - `room_mapping.py` leest de actorindeling en kamernamen. `registers.py` bewaart de registeradressen en vertaalbare diagnosecodes.
+- `rediscovery.py` werkt de actieve kamerentiteiten bij, inclusief de externe temperatuurinvoer. Na een lege uitlezing blijft de laatst bekende kamerindeling beschikbaar.
 - `coordinator.py` verzamelt registerwaarden per verdeler. Klimaatentiteiten, sensoren en diagnose delen dit resultaat.
-- `connect/` controleert de actualiteit van de Home Assistant-bron, de WLAN-identiteit en de kamerindeling voordat een meetwaarde wordt verstuurd.
+- `connect/number.py` biedt na inschakelen van Connect Upgrade per ruimte een standaard uitgeschakelde temperatuurinvoer. `connect/coordinator.py` controleert de WLAN-identiteit en de huidige actortoewijzing vóór het schrijven. Een ingestelde waarde wordt één keer verstuurd. Een bestaande automatische sensorkoppeling blijft actief zolang de invoer voor die ruimte op de standaardinstelling staat.
 - `card/` toont de bestaande entiteiten. De kaart vraagt temperatuur- en vermogenswijzigingen via normale Home Assistant-acties aan.
 - `docs/modbus_contract.json` legt het gebruikte registercontract vast.
 

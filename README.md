@@ -1,6 +1,6 @@
 # Viega Fonterra Smart
 
-[Nederlands](https://github.com/roelbroersma/viega-fonterra-smart-control#nederlands) · [For English, see below](https://github.com/roelbroersma/viega-fonterra-smart-control#english) · [Auf Deutsch weiterlesen](https://github.com/roelbroersma/viega-fonterra-smart-control#deutsch)
+[Nederlands](https://github.com/roelbroersma/viega-fonterra-smart-control#nederlands) · [For English, see below](https://github.com/roelbroersma/viega-fonterra-smart-control#english) · [Auf Deutsch weiterlesen](https://github.com/roelbroersma/viega-fonterra-smart-control#deutsch) · [Français](https://github.com/roelbroersma/viega-fonterra-smart-control#français) · [Italiano](https://github.com/roelbroersma/viega-fonterra-smart-control#italiano)
 
 ## Nederlands
 
@@ -62,7 +62,7 @@ Kopieer de kaart voor elke ruimte en vervang de titel en de klimaatentiteit.
 
 1. Zet de ruimte in Fonterra op **Extern gemeten**. Dit kan met de [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/).
 2. Vink **Connect Upgrade geïnstalleerd** aan onder **Configureren** in Home Assistant en sla op.
-3. Open de entiteiten van de verdeler. Zoek onder de uitgeschakelde entiteiten naar **Badkamer externe temperatuurinvoer** en schakel die in. Herhaal dit voor iedere ruimte die je extern meet.
+3. Open de verdeler via **Instellingen > Apparaten & diensten > Viega Fonterra Smart**. Zoek onder de uitgeschakelde entiteiten naar **Badkamer externe temperatuurinvoer** en schakel die in. Herhaal dit voor iedere ruimte die je extern meet.
 
 Test de invoer met een actuele meting. Gebruik daarna de actie **Getal instellen** in een automatisering. Dit voorbeeld stuurt elke minuut de waarde van een temperatuursensor in °C, zolang die in de afgelopen tien minuten een meting heeft gemeld. Vervang de twee entiteits-ID's door die van jouw installatie.
 
@@ -90,7 +90,11 @@ Had je al een sensor gekoppeld via de integratie? Die blijft werken totdat je de
 
 ### Kamers en verbinding
 
-Wijzig kamernamen en de actorindeling in Fonterra. Kies daarna **Herladen** of gebruik **Ruimten opnieuw ontdekken** in Home Assistant. Verwarmen, koelen en stand-by gelden voor de hele basisunit.
+Voeg ruimtes toe, hernoem of verwijder ze in de Fonterra-webinterface onder **Groepen en actoren**. Home Assistant leest de ruimtes met een gekoppelde actor en hun namen bij het laden uit. Meerdere actoren kunnen bij dezelfde ruimte horen.
+
+Kies na een wijziging **Herladen** in het menu van de integratievermelding. Je kunt ook onder **Ontwikkelaarstools > Acties** de actie **Ruimten opnieuw ontdekken** uitvoeren voor de verdeler. Nieuwe ruimtes komen erbij en verwijderde ruimtes vallen uit de actieve indeling. Bij nul gevonden ruimtes bewaart de integratie de laatst bekende indeling.
+
+Verwarmen, koelen en stand-by gelden voor de hele basisunit.
 
 Home Assistant controleert het WLAN-serienummer voordat het bij een bekende verdeler een nieuw adres overneemt. Je kunt het adres ook handmatig aanpassen bij **Configureren**.
 
@@ -158,7 +162,7 @@ Duplicate the card for each room and change its title and climate entity.
 
 1. Set the room to **External measured** in Fonterra. This option is available with the [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/).
 2. Under **Configure** in Home Assistant, tick **Connect Upgrade installed** and save.
-3. Open the controller's entities. Find **Bathroom external temperature input** among the disabled entities and enable it. Repeat for each room you measure externally.
+3. Open the controller under **Settings > Devices & services > Viega Fonterra Smart**. Find **Bathroom external temperature input** among the disabled entities and enable it. Repeat for each room you measure externally.
 
 Test the input with a current reading, then use **Set value** in an automation. This example sends a reading in °C once per minute if the sensor has reported within the last ten minutes. Replace both entity IDs with your own.
 
@@ -186,7 +190,11 @@ If you already linked a sensor through this integration, it keeps working until 
 
 ### Rooms and connectivity
 
-Change room names and actuator assignments in Fonterra. Then **Reload** the integration entry or use the **Rediscover rooms** action in Home Assistant. Heating, cooling and standby apply to the entire base unit.
+Add, rename or remove rooms in Fonterra's web interface under **Groups and actuators**. When the integration loads, Home Assistant reads rooms with a linked actuator and their names. A room can have multiple actuators.
+
+After a change, select **Reload** in the integration entry menu. You can also run **Rediscover rooms** for the controller under **Developer tools > Actions**. Home Assistant adds new rooms and removes deleted rooms from the active layout. If no rooms are found, the integration keeps the last known layout.
+
+Heating, cooling and standby apply to the entire base unit.
 
 Home Assistant verifies the Wi-Fi module serial before adopting a new address for a known controller. You can also change the address manually under **Configure**.
 
@@ -254,7 +262,7 @@ Kopieren Sie die Karte für jeden Raum und ändern Sie den Titel und die Klimaen
 
 1. Stellen Sie die Temperaturquelle des Raums in Fonterra auf **Extern gemessen**. Diese Option ist mit dem [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/) verfügbar.
 2. Aktivieren Sie in Home Assistant unter **Konfigurieren** die Option **Connect Upgrade installiert** und speichern Sie.
-3. Öffnen Sie die Entitäten des Verteilers. Suchen Sie unter den deaktivierten Entitäten nach **Badezimmer externe Temperatureingabe** und aktivieren Sie sie. Wiederholen Sie dies für jeden Raum mit externer Messung.
+3. Öffnen Sie den Verteiler unter **Einstellungen > Geräte & Dienste > Viega Fonterra Smart**. Suchen Sie unter den deaktivierten Entitäten nach **Badezimmer externe Temperatureingabe** und aktivieren Sie sie. Wiederholen Sie dies für jeden Raum mit externer Messung.
 
 Testen Sie die Eingabe mit einem aktuellen Messwert und verwenden Sie anschließend die Aktion **Wert setzen** in einer Automation. Das Beispiel sendet jede Minute den Messwert in °C, sofern der Sensor in den letzten zehn Minuten gemeldet hat. Ersetzen Sie beide Entitäts-IDs durch Ihre eigenen.
 
@@ -282,7 +290,11 @@ Eine bereits in der Integration eingerichtete Sensorverknüpfung bleibt aktiv, b
 
 ### Räume und Verbindung
 
-Ändern Sie Raumnamen und Stellantriebszuordnung in Fonterra. Wählen Sie anschließend in Home Assistant **Neu laden** oder führen Sie die Aktion **Räume erneut erkennen** aus. Heizen, Kühlen und Stand-by gelten für die gesamte Basiseinheit.
+Legen Sie Räume in der Fonterra-Weboberfläche unter **Gruppen und Aktoren** an, benennen Sie sie um oder entfernen Sie sie. Beim Laden liest Home Assistant die Namen und die Räume mit zugeordnetem Stellantrieb aus. Ein Raum kann mehrere Stellantriebe haben.
+
+Wählen Sie nach einer Änderung im Menü des Integrationseintrags **Neu laden**. Alternativ führen Sie unter **Entwicklerwerkzeuge > Aktionen** für den Verteiler **Räume erneut erkennen** aus. Neue Räume werden hinzugefügt und entfernte Räume aus der aktiven Raumaufteilung genommen. Wenn keine Räume gefunden werden, bleibt die zuletzt bekannte Raumaufteilung erhalten.
+
+Heizen, Kühlen und Stand-by gelten für die gesamte Basiseinheit.
 
 Home Assistant prüft die Seriennummer des WLAN-Moduls, bevor es eine neue Adresse für einen bekannten Verteiler übernimmt. Sie können die Adresse auch unter **Konfigurieren** manuell ändern.
 
@@ -291,3 +303,191 @@ Home Assistant prüft die Seriennummer des WLAN-Moduls, bevor es eine neue Adres
 Karte und Integration folgen der Spracheinstellung von Home Assistant. Niederländisch, Englisch, Deutsch, Französisch und Italienisch sind verfügbar. Melden Sie Probleme über [GitHub Issues](https://github.com/roelbroersma/viega-fonterra-smart-control/issues) und geben Sie Ihre Home-Assistant-Version und die relevante Fehlermeldung an.
 
 [Tests, Build-Anleitung und Release-Informationen](RELEASE.md) · [Quellen und Lizenzen](THIRD_PARTY_NOTICES.md)
+
+## Français
+
+Pilotez votre plancher chauffant Viega Fonterra Smart Control depuis Home Assistant. L’intégration trouve vos collecteurs sur le réseau et lit la configuration des pièces. La carte affiche les températures, la position des vannes et les diagnostics. Vous pouvez y régler la température de consigne.
+
+Vous pouvez utiliser un capteur Home Assistant, par exemple un capteur mural KNX, pour mesurer la température de chaque pièce. Fonterra règle le chauffage en fonction des mesures reçues. Le [Connected Upgrade de Gigaweb](https://www.gigaweb.nl/fonterra-smart-control-upgrade/) est nécessaire pour cette fonction. Le pilotage par Modbus TCP est disponible avec l’installation standard.
+
+**Sommaire**
+
+- [Configuration requise](https://github.com/roelbroersma/viega-fonterra-smart-control#configuration-requise)
+- [Installer Viega Fonterra](https://github.com/roelbroersma/viega-fonterra-smart-control#installer-viega-fonterra)
+- [Carte du tableau de bord](https://github.com/roelbroersma/viega-fonterra-smart-control#carte-du-tableau-de-bord)
+- [Utiliser son propre capteur](https://github.com/roelbroersma/viega-fonterra-smart-control#utiliser-son-propre-capteur)
+- [Pièces et connexion](https://github.com/roelbroersma/viega-fonterra-smart-control#pièces-et-connexion)
+- [Aide et développement](https://github.com/roelbroersma/viega-fonterra-smart-control#aide-et-développement)
+
+### Configuration requise
+
+Home Assistant 2026.11.0 ou version ultérieure. Activez Modbus TCP dans Fonterra. Home Assistant doit pouvoir joindre le collecteur sur le port 502.
+
+### Installer Viega Fonterra
+
+1. Cherchez **Viega Fonterra Smart** dans **Paramètres > Marketplace** ou [ouvrez l’intégration dans Marketplace](https://my.home-assistant.io/redirect/marketplace_repository/?owner=roelbroersma&repository=viega-fonterra-smart-control&category=integration). Vous pouvez aussi ajouter le lien du dépôt GitHub dans Marketplace.
+2. Sélectionnez **Installer**, puis redémarrez Home Assistant si nécessaire.
+3. Ouvrez **Paramètres > Appareils et services** et confirmez le collecteur détecté. Vous pouvez aussi ajouter **Viega Fonterra Smart** avec son adresse IP ou son nom d’hôte. Chaque collecteur a sa propre entrée.
+
+Pour une installation manuelle, extrayez l’archive ZIP de la [version GitHub](https://github.com/roelbroersma/viega-fonterra-smart-control/releases/latest). Copiez `custom_components/viega_fonterra_modbus` dans le dossier correspondant de votre configuration Home Assistant, puis redémarrez.
+
+### Carte du tableau de bord
+
+Actualisez le navigateur après le redémarrage. Sélectionnez **Modifier le tableau de bord > Ajouter une carte > Viega Fonterra Smart**. Affichez toutes les pièces ou sélectionnez-en une. Ajustez la consigne ou la puissance d’un actionneur indépendant qui accepte ce réglage. La carte affiche la position de la vanne et la température de retour de chaque actionneur. Les défauts signalés par Fonterra apparaissent dans **Diagnostic**. [Voir la carte](docs/dashboard.png)
+
+```yaml
+type: custom:viega-fonterra-card
+entity: climate.exemple_salle_de_bain
+```
+
+Remplacez l’entité par celle de votre thermostat. Omettez `entity` pour afficher toutes les pièces.
+
+#### Historique par pièce
+
+Ajoutez un **Graphique d’historique** sous la carte de la pièce et sélectionnez son entité de thermostat Fonterra. Le graphique utilise l’historique de Home Assistant pour afficher la température mesurée, la consigne et les périodes de chauffe.
+
+```yaml
+type: history-graph
+title: Salle de bain
+hours_to_show: 24
+entities:
+  - climate.exemple_salle_de_bain
+```
+
+### Utiliser son propre capteur
+
+1. Dans Fonterra, réglez la source de température de la pièce sur la mesure externe (**Extern gemeten** dans l’interface néerlandaise).
+2. Dans Home Assistant, ouvrez **Configurer**, cochez **Connect Upgrade installé** et enregistrez.
+3. Ouvrez le collecteur dans **Paramètres > Appareils et services > Viega Fonterra Smart**. Parmi les entités désactivées, cherchez **Salle de bain entrée de température externe** et activez-la. Procédez de même pour chaque pièce équipée d’un capteur externe.
+
+Testez l’entrée avec une mesure actuelle, puis utilisez l’action `number.set_value` dans une automatisation. L’exemple transmet chaque minute une mesure en °C si le capteur a envoyé une valeur dans les dix dernières minutes. Remplacez les deux identifiants d’entité.
+
+```yaml
+alias: Transmettre la température de la salle de bain
+triggers:
+  - trigger: time_pattern
+    minutes: "/1"
+conditions:
+  - condition: template
+    value_template: >
+      {{ is_number(states('sensor.temperature_salle_de_bain'))
+          and as_timestamp(now()) - as_timestamp(states.sensor.temperature_salle_de_bain.last_reported, 0) < 600 }}
+actions:
+  - action: number.set_value
+    target:
+      entity_id: number.fonterra_salle_de_bain_entree_de_temperature_externe
+    data:
+      value: "{{ states('sensor.temperature_salle_de_bain') | float }}"
+```
+
+Choisissez un capteur qui envoie des mesures même quand la température reste stable. Pour KNX, vous pouvez configurer `always_callback` et `sync_state` sur un capteur qui répond aux demandes de lecture. Chaque appel transmet une mesure. Réglez la température de consigne sur la carte du thermostat.
+
+Si vous aviez déjà associé un capteur dans l’intégration, il continue de fonctionner jusqu’à l’activation de l’entrée pour cette pièce. Préparez l’automatisation avant de l’activer. Si vous désactivez ensuite l’entrée, Home Assistant cesse d’envoyer des mesures pour cette pièce.
+
+### Pièces et connexion
+
+Ajoutez, renommez ou retirez les pièces dans l’interface Fonterra sous **Groupes et actionneurs** (**Groepen en actoren** en néerlandais). Au chargement, Home Assistant lit les noms des pièces auxquelles un actionneur est associé. Une pièce peut avoir plusieurs actionneurs.
+
+Après une modification, choisissez **Recharger** dans le menu de l’intégration. Vous pouvez aussi lancer **Relire les pièces** pour le collecteur dans **Outils de développement > Actions**. Les nouvelles pièces s’affichent et les pièces retirées quittent la configuration active. Si aucune pièce n’est détectée, la dernière configuration connue est conservée.
+
+Le chauffage, le refroidissement et la veille s’appliquent à l’ensemble de l’unité de base. Home Assistant vérifie le numéro de série du module Wi-Fi avant de prendre en compte une nouvelle adresse pour un collecteur connu. Vous pouvez aussi modifier l’adresse dans **Configurer**.
+
+### Aide et développement
+
+La carte et l’intégration suivent la langue de Home Assistant. Le néerlandais, l’anglais, l’allemand, le français et l’italien sont disponibles. Pour signaler un problème, indiquez votre version de Home Assistant et le message d’erreur. [Signaler un problème](https://github.com/roelbroersma/viega-fonterra-smart-control/issues)
+
+[Tests et publication](RELEASE.md) · [Sources et licences](THIRD_PARTY_NOTICES.md)
+
+## Italiano
+
+Controlla il riscaldamento a pavimento Viega Fonterra Smart Control da Home Assistant. L’integrazione rileva i collettori in rete e legge la configurazione delle stanze. La scheda mostra temperature, posizione delle valvole e diagnostica. Puoi anche impostare la temperatura desiderata.
+
+Puoi usare un sensore di Home Assistant, ad esempio un sensore a parete KNX, per misurare la temperatura in ogni stanza. Fonterra regola il riscaldamento in base ai valori che riceve. Per questa funzione serve il [Connected Upgrade di Gigaweb](https://www.gigaweb.nl/fonterra-smart-control-upgrade/). Il controllo tramite Modbus TCP è disponibile con l’impianto standard.
+
+**Indice**
+
+- [Requisiti](https://github.com/roelbroersma/viega-fonterra-smart-control#requisiti)
+- [Installare Viega Fonterra](https://github.com/roelbroersma/viega-fonterra-smart-control#installare-viega-fonterra)
+- [Scheda del pannello](https://github.com/roelbroersma/viega-fonterra-smart-control#scheda-del-pannello)
+- [Usare il proprio sensore](https://github.com/roelbroersma/viega-fonterra-smart-control#usare-il-proprio-sensore)
+- [Stanze e connessione](https://github.com/roelbroersma/viega-fonterra-smart-control#stanze-e-connessione)
+- [Assistenza e sviluppo](https://github.com/roelbroersma/viega-fonterra-smart-control#assistenza-e-sviluppo)
+
+### Requisiti
+
+Home Assistant 2026.11.0 o successivo. Abilita Modbus TCP in Fonterra. Home Assistant deve poter raggiungere il collettore sulla porta 502.
+
+### Installare Viega Fonterra
+
+1. Cerca **Viega Fonterra Smart** in **Impostazioni > Marketplace** oppure [apri l’integrazione nel Marketplace](https://my.home-assistant.io/redirect/marketplace_repository/?owner=roelbroersma&repository=viega-fonterra-smart-control&category=integration). Puoi anche aggiungere il link al repository GitHub nel Marketplace.
+2. Seleziona **Installa** e riavvia Home Assistant se richiesto.
+3. Apri **Impostazioni > Dispositivi e servizi** e conferma il collettore rilevato. Puoi anche aggiungere **Viega Fonterra Smart** tramite indirizzo IP o nome host. Ogni collettore ha la propria voce.
+
+Per l’installazione manuale, estrai lo ZIP dalla [versione su GitHub](https://github.com/roelbroersma/viega-fonterra-smart-control/releases/latest). Copia `custom_components/viega_fonterra_modbus` nella cartella corrispondente della configurazione di Home Assistant e riavvia.
+
+### Scheda del pannello
+
+Aggiorna il browser dopo il riavvio. Seleziona **Modifica pannello > Aggiungi scheda > Viega Fonterra Smart**. Mostra tutte le stanze o scegline una. Regola la temperatura desiderata o il livello di potenza per un attuatore indipendente che supporta questa funzione. Per ogni attuatore vedi la posizione della valvola e la temperatura di ritorno. I guasti segnalati da Fonterra appaiono in **Diagnostica**. [Vedi la scheda](docs/dashboard.png)
+
+```yaml
+type: custom:viega-fonterra-card
+entity: climate.esempio_bagno
+```
+
+Sostituisci l’entità con quella del termostato. Ometti `entity` per visualizzare tutte le stanze.
+
+#### Cronologia per stanza
+
+Aggiungi un **Grafico cronologico** sotto la scheda della stanza e seleziona l’entità del termostato Fonterra. Il grafico usa la cronologia di Home Assistant per mostrare la temperatura misurata, quella impostata e i periodi di riscaldamento.
+
+```yaml
+type: history-graph
+title: Bagno
+hours_to_show: 24
+entities:
+  - climate.esempio_bagno
+```
+
+### Usare il proprio sensore
+
+1. In Fonterra, seleziona la misurazione esterna come sorgente di temperatura della stanza (**Extern gemeten** nell’interfaccia olandese).
+2. In Home Assistant, apri **Configura**, seleziona **Connect Upgrade installato** e salva.
+3. Apri il collettore da **Impostazioni > Dispositivi e servizi > Viega Fonterra Smart**. Cerca **Bagno ingresso temperatura esterna** tra le entità disabilitate e abilitalo. Ripeti per ogni stanza con misurazione esterna.
+
+Prova l’ingresso con una misurazione attuale e poi usa l’azione `number.set_value` in un’automazione. L’esempio invia ogni minuto la temperatura in °C se il sensore ha ricevuto un valore negli ultimi dieci minuti. Sostituisci entrambi gli ID delle entità con i tuoi.
+
+```yaml
+alias: Invia la temperatura del bagno
+triggers:
+  - trigger: time_pattern
+    minutes: "/1"
+conditions:
+  - condition: template
+    value_template: >
+      {{ is_number(states('sensor.temperatura_bagno'))
+          and as_timestamp(now()) - as_timestamp(states.sensor.temperatura_bagno.last_reported, 0) < 600 }}
+actions:
+  - action: number.set_value
+    target:
+      entity_id: number.fonterra_bagno_ingresso_temperatura_esterna
+    data:
+      value: "{{ states('sensor.temperatura_bagno') | float }}"
+```
+
+Il sensore deve inviare misurazioni anche quando la temperatura rimane invariata. Per KNX puoi impostare `always_callback` e `sync_state` se il sensore risponde alle richieste di lettura. Ogni chiamata invia una misurazione. Imposta la temperatura desiderata sulla scheda del termostato.
+
+Se avevi già collegato un sensore tramite l’integrazione, resterà attivo fino a quando abiliti l’ingresso per quella stanza. Prepara prima l’automazione. Se poi disabiliti l’ingresso, Home Assistant smette di inviare misurazioni per la stanza.
+
+### Stanze e connessione
+
+Aggiungi, rinomina o rimuovi le stanze nell’interfaccia web di Fonterra, sotto **Gruppi e attuatori** (**Groepen en actoren** in olandese). Quando l’integrazione si carica, Home Assistant legge i nomi delle stanze con almeno un attuatore associato. Ogni stanza può avere più attuatori.
+
+Dopo una modifica, scegli **Ricarica** nel menu dell’integrazione. Puoi anche eseguire **Rileva di nuovo le stanze** per il collettore in **Strumenti per sviluppatori > Azioni**. Le nuove stanze vengono aggiunte e quelle rimosse escono dalla configurazione attiva. Se non viene rilevata alcuna stanza, l’integrazione conserva l’ultima configurazione nota.
+
+Riscaldamento, raffrescamento e standby si applicano all’intera unità di base. Home Assistant verifica il numero di serie del modulo Wi-Fi prima di utilizzare un nuovo indirizzo per un collettore noto. Puoi anche modificare l’indirizzo da **Configura**.
+
+### Assistenza e sviluppo
+
+La scheda e l’integrazione seguono la lingua di Home Assistant. Sono disponibili olandese, inglese, tedesco, francese e italiano. Per segnalare un problema, indica la versione di Home Assistant e il messaggio di errore. [Segnala un problema](https://github.com/roelbroersma/viega-fonterra-smart-control/issues)
+
+[Test e pubblicazione](RELEASE.md) · [Fonti e licenze](THIRD_PARTY_NOTICES.md)
