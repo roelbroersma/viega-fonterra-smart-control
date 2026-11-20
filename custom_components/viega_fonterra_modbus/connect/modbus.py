@@ -102,7 +102,7 @@ class SharedModbus:
         if type(room) is not int or not 1 <= room <= 12:
             raise ValueError("Invalid room ID")
 
-    async def write_measurement(self, room: int, value: float) -> None:
+    async def write_measurement(self, room: int, value: float) -> float:
         self._validate_room(room)
         if type(value) not in (float, int) or not math.isfinite(value) or not 5 <= value <= 40:
             raise ValueError("Invalid measured temperature")
@@ -119,3 +119,4 @@ class SharedModbus:
             )
         except Exception as err:
             raise ModbusError("Could not write the external temperature") from err
+        return raw / 10

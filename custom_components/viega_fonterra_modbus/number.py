@@ -1,4 +1,4 @@
-"""Writable room power-level entities."""
+"""Writable actuator power levels and external room temperatures."""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry as er
 
+from .connect.number import build_room_input
 from .const import DOMAIN, WRITE_CONFIRM_GRACE
 from .device import build_device_info
 from .entity import ViegaCoordinatedEntity
@@ -28,6 +29,11 @@ async def async_setup_entry(
     coordinator = runtime["polling"]
     platform = register_platform(hass, entry.entry_id, "number", async_add_entities)
     registry = er.async_get(hass)
+
+    if runtime.get("connect") is not None:
+        inputs = register_platform(hass, entry.entry_id, "external_temperature", async_add_entities)
+        for room_id, room_config in runtime["rooms"].items():
+            inputs.add_room(room_id, build_room_input(entry.entry_id, room_id, room_config))
 
     @callback
     def sync_power_controls() -> None:

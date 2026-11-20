@@ -61,18 +61,8 @@ def options_flow(hass, entry):
     return flow
 
 
-def configured_room(hass, entry):
-    hass.data[DOMAIN] = {
-        entry.entry_id: {
-            "client": AsyncMock(),
-            "rooms": {"room_1": {"name": "Badkamer", "room_number": 1, "actor": [2, 4]}},
-        }
-    }
-
-
-async def test_first_form_contains_connection_settings_and_saved_connect_flag(hass):
+async def test_settings_show_connection_settings_and_saved_connect_flag(hass):
     entry = make_entry(data={"host": "fonterra.example", "port": 502, "connect_upgrade": True})
-    configured_room(hass, entry)
     flow = options_flow(hass, entry)
     form = await flow.async_step_init()
     assert form["type"] == "form"
@@ -85,31 +75,25 @@ async def test_first_form_contains_connection_settings_and_saved_connect_flag(ha
         "polling_interval",
         "modbus_timeout",
         "connect_upgrade",
-        "sensor_room",
     }
     assert schema({})["connect_upgrade"] is True
-    assert "sensor_room" not in schema({})
-    choice = schema.schema["sensor_room"]
-    assert choice.config["options"] == [{"value": "1", "label": "Badkamer"}]
 
     disabled = make_entry(data=dict(entry.data), options={"connect_upgrade": False})
     flow = options_flow(hass, disabled)
     assert (await flow.async_step_init())["data_schema"]({})["connect_upgrade"] is False
 
 
-async def test_sensor_link_saves_connection_and_options_together(hass):
+async def test_connection_change_verifies_identity_and_preserves_options(hass):
     previous = {
         "rooms": {"room_1": {"name": "Badkamer", "room_number": 1, "actor": [2, 4]}},
         "device_id": "original",
-        "future_option": 42,
+        "sources": {"1": {"entity_id": "sensor.room"}},
         "_identity": {"wlan_serial_number": "TEST000001"},
     }
     entry = make_entry(data={"host": "old.example", "port": 502}, options=previous)
-    configured_room(hass, entry)
     flow = options_flow(hass, entry)
     schema = (await flow.async_step_init())["data_schema"]
     client = AsyncMock()
-    client.read_input_registers.return_value = [1]
     with (
         patch(
             "custom_components.viega_fonterra_modbus.config_flow.ViegaModbusClient",
@@ -120,34 +104,17 @@ async def test_sensor_link_saves_connection_and_options_together(hass):
             AsyncMock(return_value="TEST000001"),
         ),
     ):
-        step = await flow.async_step_init(
-            schema(
-                {
-                    "host": "new.example",
-                    "port": 1502,
-                    "connect_upgrade": True,
-                    "sensor_room": "1",
-                }
-            )
+        result = await flow.async_step_init(
+            schema({"host": "new.example", "port": 1502, "connect_upgrade": True})
         )
-        assert step["step_id"] == "source"
-        assert step["description_placeholders"] == {"room": "Badkamer"}
-        hass.config_entries.async_update_entry.assert_not_called()
-        hass.states.async_set(
-            "sensor.room", "20", {"unit_of_measurement": "°C", "device_class": "temperature"}
-        )
-        invalid = await flow.async_step_source(
-            {"entity_id": "sensor.room", "max_age": 600, "external_confirmed": False}
-        )
-        assert invalid["errors"] == {"base": "external_required"}
-        result = await flow.async_step_source(
-            {"entity_id": "sensor.room", "max_age": 600, "external_confirmed": True}
-        )
-        assert result["type"] == "create_entry"
-        factory.assert_called_with("new.example", 1502, timeout=5)
-    assert result["data"]["sources"] == {"1": {"entity_id": "sensor.room", "max_age": 600}}
-    assert result["data"]["_connect_wifi_serial"] == "TEST000001"
-    assert all(result["data"][key] == value for key, value in previous.items())
+        factory.assert_called_once_with("new.example", 1502, timeout=5)
+
+    assert result["type"] == "create_entry"
+    assert result["data"] == {
+        **previous,
+        "connect_upgrade": True,
+        "_connect_wifi_serial": "TEST000001",
+    }
     updated = hass.config_entries.async_update_entry.call_args.kwargs
     assert updated["options"] == result["data"]
     assert updated["data"]["host"] == "new.example"
@@ -171,48 +138,19 @@ async def test_turn_off_connect_without_contacting_an_offline_controller(hass):
     client.assert_not_called()
 
 
-async def test_room_choice_requires_the_connect_checkbox(hass):
-    entry = make_entry(data={"host": "fonterra.example", "port": 502})
-    configured_room(hass, entry)
-    flow = options_flow(hass, entry)
-    schema = (await flow.async_step_init())["data_schema"]
-    result = await flow.async_step_init(schema({"connect_upgrade": False, "sensor_room": "1"}))
-    assert result["errors"] == {"sensor_room": "connect_required"}
-    hass.config_entries.async_update_entry.assert_not_called()
-
-
-async def test_normal_settings_preserve_discovered_rooms_and_sensor_sources(hass):
-    options = {
-        "rooms": {"room_7": {"room_number": 7, "name": "Room", "actor": [2, 4]}},
-        "sources": {"7": {"entity_id": "sensor.room"}},
-    }
-    entry = make_entry(data={"host": "fonterra.example", "port": 502}, options=options)
-    flow = options_flow(hass, entry)
-    form = await flow.async_step_init()
-    assert set(form["data_schema"].schema) == {
-        "host",
-        "port",
-        "device_name",
-        "polling_interval",
-        "modbus_timeout",
-        "connect_upgrade",
-    }
-    result = await flow.async_step_init(form["data_schema"]({"device_name": "Test module"}))
-    assert result["data"] == {**options, "connect_upgrade": False}
-
-
-async def test_settings_change_while_linking_does_not_overwrite_the_entry(hass):
+async def test_concurrent_settings_change_does_not_overwrite_the_entry(hass):
     entry = make_entry(
         data={"host": "fonterra.example", "port": 502},
         options={"connect_upgrade": True},
     )
-    configured_room(hass, entry)
     flow = options_flow(hass, entry)
     schema = (await flow.async_step_init())["data_schema"]
-    result = await flow.async_step_init(schema({"sensor_room": "1"}))
-    assert result["step_id"] == "source"
-    object.__setattr__(entry, "options", MappingProxyType({"connect_upgrade": False}))
-    result = await flow.async_step_source({})
+
+    async def validate(data, options):
+        object.__setattr__(entry, "options", MappingProxyType({"connect_upgrade": False}))
+
+    with patch.object(flow, "_validate_endpoint", side_effect=validate):
+        result = await flow.async_step_init(schema({"host": "new.example"}))
     assert result["reason"] == "settings_changed"
     hass.config_entries.async_update_entry.assert_not_called()
 

@@ -60,25 +60,33 @@ Kopieer de kaart voor elke ruimte en vervang de titel en de klimaatentiteit.
 
 ### Je eigen temperatuursensor
 
-Stel dat `sensor.badkamer_temperatuur` in Home Assistant de temperatuur van een KNX Tastsensor 4 ontvangt.
+1. Zet de ruimte in Fonterra op **Extern gemeten**. Dit kan met de [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/).
+2. Vink **Connect Upgrade geïnstalleerd** aan onder **Configureren** in Home Assistant en sla op.
+3. Open de entiteiten van de verdeler. Zoek onder de uitgeschakelde entiteiten naar **Badkamer externe temperatuurinvoer** en schakel die in. Herhaal dit voor iedere ruimte die je extern meet.
 
-1. Kies voor de badkamer in Fonterra **Extern gemeten**. Deze optie is beschikbaar met [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/).
-2. Open **Configureren** bij de verdeler in Home Assistant. Vink **Connect Upgrade geïnstalleerd** aan en kies **Badkamer** bij **Ruimte voor externe sensor (optioneel)**.
-3. Selecteer `sensor.badkamer_temperatuur`, bevestig de externe bron en sla op. Controleer de gemeten temperatuur in Fonterra. Een meting van **21,8 °C** gaat naar de gemeten temperatuur. De gewenste temperatuur stel je afzonderlijk in.
-
-Als je de KNX-sensor in YAML aanmaakt, gebruik dan je eigen groepsadres. De sensor moet leesverzoeken kunnen beantwoorden.
+Test de invoer met een actuele meting. Gebruik daarna de actie **Getal instellen** in een automatisering. Dit voorbeeld stuurt elke minuut de waarde van een temperatuursensor in °C, zolang die in de afgelopen tien minuten een meting heeft gemeld. Vervang de twee entiteits-ID's door die van jouw installatie.
 
 ```yaml
-knx:
-  sensor:
-    - name: Badkamer temperatuur
-      state_address: "1/2/3"
-      type: temperature
-      always_callback: true
-      sync_state: "expire 5"
+alias: Badkamer temperatuur doorgeven
+triggers:
+  - trigger: time_pattern
+    minutes: "/1"
+conditions:
+  - condition: template
+    value_template: >
+      {{ is_number(states('sensor.badkamer_temperatuur'))
+          and as_timestamp(now()) - as_timestamp(states.sensor.badkamer_temperatuur.last_reported, 0) < 600 }}
+actions:
+  - action: number.set_value
+    target:
+      entity_id: number.fonterra_badkamer_externe_temperatuurinvoer
+    data:
+      value: "{{ states('sensor.badkamer_temperatuur') | float }}"
 ```
 
-`always_callback` verwerkt ook een gelijke meting. `sync_state` vraagt na vijf minuten zonder telegram een waarde op. Home Assistant stopt met doorgeven als de sensor uitvalt of te lang geen nieuwe meting meldt. Onder **Diagnose** zie je de foutcodes die Fonterra meldt.
+Laat je sensor ook bij een gelijkblijvende temperatuur metingen melden. Voor KNX kun je daarvoor bijvoorbeeld de sensor laten antwoorden op leesverzoeken en `always_callback` en `sync_state` instellen. De invoer stuurt per aanroep één meting. De gewenste temperatuur stel je in via de thermostaatkaart.
+
+Had je al een sensor gekoppeld via de integratie? Die blijft werken totdat je de invoer voor die ruimte inschakelt. Zet daarvoor eerst je automatisering klaar. Schakel je de invoer later uit, dan stopt het doorgeven voor die ruimte.
 
 ### Kamers en verbinding
 
@@ -148,25 +156,33 @@ Duplicate the card for each room and change its title and climate entity.
 
 ### Using your own temperature sensor
 
-Suppose `sensor.bathroom_temperature` in Home Assistant receives readings from a KNX Tastsensor 4.
+1. Set the room to **External measured** in Fonterra. This option is available with the [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/).
+2. Under **Configure** in Home Assistant, tick **Connect Upgrade installed** and save.
+3. Open the controller's entities. Find **Bathroom external temperature input** among the disabled entities and enable it. Repeat for each room you measure externally.
 
-1. In Fonterra, select **External measured** for the bathroom. This option is available with [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/).
-2. Open **Configure** on the controller in Home Assistant. Tick **Connect Upgrade installed** and select **Bathroom** under **Room for external sensor (optional)**.
-3. Select `sensor.bathroom_temperature`, confirm the external source and save. Check the reading in Fonterra. A reading of **21.8 °C** is sent as the measured temperature. The setpoint is set separately.
-
-When setting up the KNX sensor in YAML, use your own group address. The sensor must respond to read requests.
+Test the input with a current reading, then use **Set value** in an automation. This example sends a reading in °C once per minute if the sensor has reported within the last ten minutes. Replace both entity IDs with your own.
 
 ```yaml
-knx:
-  sensor:
-    - name: Bathroom temperature
-      state_address: "1/2/3"
-      type: temperature
-      always_callback: true
-      sync_state: "expire 5"
+alias: Send bathroom temperature
+triggers:
+  - trigger: time_pattern
+    minutes: "/1"
+conditions:
+  - condition: template
+    value_template: >
+      {{ is_number(states('sensor.bathroom_temperature'))
+          and as_timestamp(now()) - as_timestamp(states.sensor.bathroom_temperature.last_reported, 0) < 600 }}
+actions:
+  - action: number.set_value
+    target:
+      entity_id: number.fonterra_bathroom_external_temperature_input
+    data:
+      value: "{{ states('sensor.bathroom_temperature') | float }}"
 ```
 
-`always_callback` also processes identical readings. `sync_state` requests a value after five minutes without a telegram. Home Assistant stops sending when the sensor is unavailable or stops reporting for too long. **Diagnostics** shows the fault codes reported by Fonterra.
+Use a sensor that also reports when its value stays the same. For KNX, for example, configure the sensor to answer read requests and set `always_callback` and `sync_state`. Each action sends one reading. Set the target temperature on the thermostat card.
+
+If you already linked a sensor through this integration, it keeps working until you enable the input for that room. Prepare your automation before enabling the input. Disabling the input later stops sending measurements for that room.
 
 ### Rooms and connectivity
 
@@ -236,25 +252,33 @@ Kopieren Sie die Karte für jeden Raum und ändern Sie den Titel und die Klimaen
 
 ### Eigenen Temperatursensor verwenden
 
-Angenommen, `sensor.badezimmertemperatur` in Home Assistant erhält Messwerte von einem KNX Tastsensor 4.
+1. Stellen Sie die Temperaturquelle des Raums in Fonterra auf **Extern gemessen**. Diese Option ist mit dem [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/) verfügbar.
+2. Aktivieren Sie in Home Assistant unter **Konfigurieren** die Option **Connect Upgrade installiert** und speichern Sie.
+3. Öffnen Sie die Entitäten des Verteilers. Suchen Sie unter den deaktivierten Entitäten nach **Badezimmer externe Temperatureingabe** und aktivieren Sie sie. Wiederholen Sie dies für jeden Raum mit externer Messung.
 
-1. Wählen Sie für das Badezimmer in Fonterra die externe Messung (**Extern gemessen**). Diese Option ist mit dem [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/) verfügbar.
-2. Öffnen Sie in Home Assistant **Konfigurieren** beim Verteiler. Aktivieren Sie **Connect Upgrade installiert** und wählen Sie **Badezimmer** unter **Raum für externen Sensor (optional)**.
-3. Wählen Sie `sensor.badezimmertemperatur`, bestätigen Sie die externe Messquelle und speichern Sie. Prüfen Sie die gemessene Temperatur in Fonterra. Ein Messwert von **21,8 °C** wird als gemessene Raumtemperatur übertragen. Die Solltemperatur stellen Sie separat ein.
-
-Wenn Sie den KNX-Sensor in YAML einrichten, verwenden Sie Ihre eigene Gruppenadresse. Der Sensor muss auf Leseanfragen antworten.
+Testen Sie die Eingabe mit einem aktuellen Messwert und verwenden Sie anschließend die Aktion **Wert setzen** in einer Automation. Das Beispiel sendet jede Minute den Messwert in °C, sofern der Sensor in den letzten zehn Minuten gemeldet hat. Ersetzen Sie beide Entitäts-IDs durch Ihre eigenen.
 
 ```yaml
-knx:
-  sensor:
-    - name: Badezimmertemperatur
-      state_address: "1/2/3"
-      type: temperature
-      always_callback: true
-      sync_state: "expire 5"
+alias: Badezimmertemperatur übertragen
+triggers:
+  - trigger: time_pattern
+    minutes: "/1"
+conditions:
+  - condition: template
+    value_template: >
+      {{ is_number(states('sensor.badezimmertemperatur'))
+          and as_timestamp(now()) - as_timestamp(states.sensor.badezimmertemperatur.last_reported, 0) < 600 }}
+actions:
+  - action: number.set_value
+    target:
+      entity_id: number.fonterra_badezimmer_externe_temperatureingabe
+    data:
+      value: "{{ states('sensor.badezimmertemperatur') | float }}"
 ```
 
-`always_callback` verarbeitet auch identische Messwerte. `sync_state` fordert nach fünf Minuten ohne Telegramm einen Messwert an. Home Assistant stoppt die Übertragung, wenn der Sensor ausfällt oder zu lange keinen neuen Messwert meldet. Unter **Diagnose** sehen Sie die von Fonterra gemeldeten Fehlercodes.
+Der Sensor sollte auch bei unveränderter Temperatur Messwerte melden. Bei KNX kann der Sensor beispielsweise auf Leseanfragen antworten. Stellen Sie dafür `always_callback` und `sync_state` ein. Jeder Aufruf überträgt einen Messwert. Die Solltemperatur stellen Sie auf der Thermostatkarte ein.
+
+Eine bereits in der Integration eingerichtete Sensorverknüpfung bleibt aktiv, bis Sie die Eingabe für den Raum einschalten. Bereiten Sie vorher die Automation vor. Wenn Sie die Eingabe später deaktivieren, endet die Übertragung für diesen Raum.
 
 ### Räume und Verbindung
 

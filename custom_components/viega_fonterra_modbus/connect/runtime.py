@@ -1,7 +1,7 @@
 """Optional Connect sender using the integration's existing client and entry."""
 
 from ..const import DOMAIN
-from .const import CONF_CONNECT
+from .const import CONF_CONNECT, CONF_MAPPINGS
 from .coordinator import ConnectCoordinator
 from .modbus import SharedModbus
 
@@ -18,10 +18,10 @@ async def async_setup_connect(hass, entry):
     bus = SharedModbus(hass, entry.entry_id, entry.options.get(CONF_PIN))
     coordinator = ConnectCoordinator(hass, entry, bus)
     runtime["connect"] = coordinator
-    await coordinator.async_refresh()
-    # The sender has no entities of its own. A listener keeps HA's polling
-    # interval active until the config entry is unloaded.
-    entry.async_on_unload(coordinator.async_add_listener(lambda: None))
+    if entry.options.get(CONF_MAPPINGS):
+        # Only existing sensor links need periodic updates. Number inputs send on demand.
+        await coordinator.async_refresh()
+        entry.async_on_unload(coordinator.async_add_listener(lambda: None))
 
 
 async def async_stop_connect(hass, entry):

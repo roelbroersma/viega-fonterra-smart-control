@@ -38,7 +38,7 @@
     "step": {
       "init": {
         "title": "Paramètres",
-        "description": "Cochez Connect Upgrade s’il est installé. Pour associer, modifier ou retirer un capteur de température de Home Assistant, sélectionnez sa pièce. Les réglages du capteur s’ouvrent à l’étape suivante. Laissez la pièce vide pour enregistrer uniquement ces réglages.",
+        "description": "Activez cette option si Connect Upgrade est installé pour obtenir une entrée de température mesurée par pièce.",
         "data": {
           "host": "Adresse IP ou nom d’hôte",
           "port": "Port Modbus",
@@ -46,18 +46,7 @@
           "polling_interval": "Intervalle de lecture (secondes)",
           "modbus_timeout": "Délai de réponse Modbus (secondes)",
           "modbus_debug": "Journaliser les trames Modbus pour le débogage",
-          "connect_upgrade": "Connect Upgrade installé",
-          "sensor_room": "Pièce pour le capteur externe (facultatif)"
-        }
-      },
-      "source": {
-        "title": "Capteur de température",
-        "description": "Choisissez le capteur de température pour la pièce {room}. Sélectionnez d’abord « Capteur externe » dans Fonterra. Le capteur doit envoyer des mesures régulièrement, même à température constante. Après un démarrage ou un rechargement, une nouvelle mesure est nécessaire.",
-        "data": {
-          "entity_id": "Capteur de température",
-          "max_age": "Âge maximal d’une mesure (secondes)",
-          "external_confirmed": "Cette pièce est réglée sur « Capteur externe » dans Fonterra",
-          "remove": "Retirer le capteur associé à cette pièce"
+          "connect_upgrade": "Connect Upgrade installé"
         }
       }
     },
@@ -68,15 +57,10 @@
       "invalid_timeout": "Choisissez un délai entre 1 et 30 secondes.",
       "invalid_polling_interval": "Choisissez un intervalle de lecture entre 5 et 300 secondes.",
       "cannot_connect": "Connexion Modbus indisponible. Vérifiez l’adresse de Fonterra, le port et le réglage Modbus.",
-      "invalid_sensor": "Sélectionnez un capteur de température existant.",
-      "external_required": "Sélectionnez « Capteur externe » pour cette pièce dans Fonterra, puis confirmez.",
       "identity_unverified": "Le numéro de série du module Wi-Fi Fonterra n’a pas pu être vérifié. Vérifiez l’adresse dans les paramètres de connexion du module.",
-      "address_in_use": "Un autre module utilise déjà cette adresse et ce port.",
-      "connect_required": "Activez Connect Upgrade pour associer le capteur d’une pièce.",
-      "room_changed": "L’affectation des actionneurs a changé. Relancez la détection des pièces, puis réessayez."
+      "address_in_use": "Un autre module utilise déjà cette adresse et ce port."
     },
     "abort": {
-      "no_rooms": "Aucune pièce affectée n’a été trouvée. Vérifiez les affectations, puis rechargez l’intégration Viega.",
       "already_configured": "Ce module Fonterra est déjà configuré.",
       "settings_changed": "Les paramètres du module ont changé pendant que ce formulaire était ouvert. Rouvrez le formulaire.",
       "address_in_use": "Un autre module utilise déjà cette adresse et ce port."
@@ -132,7 +116,7 @@
           "connect_help": {
             "name": "Utiliser son propre capteur",
             "state": {
-              "own_temperature_sensor": "Avec Connect Upgrade, Home Assistant transmet à Fonterra la température ambiante mesurée par votre propre capteur. Dans Fonterra, réglez la pièce sur « Capteur externe », puis choisissez la pièce dans Configurer et sélectionnez son capteur de température dans Home Assistant. Le thermostat d’ambiance Viega devient facultatif pour cette pièce."
+              "own_temperature_sensor": "Dans Fonterra, réglez la pièce sur « Capteur externe ». Activez ensuite son entrée de température externe dans Home Assistant et transmettez les mesures de votre capteur via une automatisation."
             }
           }
         },
@@ -285,6 +269,9 @@
       "power_level": {
         "name": "{room} niveau de puissance manuel",
         "unit_of_measurement": "niveau"
+      },
+      "external_temperature": {
+        "name": "{room} entrée de température externe"
       }
     }
   },
@@ -340,6 +327,12 @@
     },
     "target_temperature_unavailable": {
       "message": "Fonterra ne fournit aucune température de consigne réglable pour {room}. Vérifiez le thermostat d’ambiance ou le capteur de température configuré."
+    },
+    "external_temperature_range": {
+      "message": "Saisissez une température mesurée entre 5 et 40 °C."
+    },
+    "external_temperature_write_failed": {
+      "message": "La mesure pour {room} n’a pas pu être envoyée. Vérifiez la connexion et assurez-vous que la pièce est réglée sur « Capteur externe » dans Fonterra."
     }
   },
   "issues": {

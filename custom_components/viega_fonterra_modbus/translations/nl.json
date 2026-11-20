@@ -38,7 +38,7 @@
     "step": {
       "init": {
         "title": "Instellingen",
-        "description": "Vink Connect Upgrade aan als die is geïnstalleerd. Kies een kamer als je een temperatuursensor uit Home Assistant wilt koppelen, wijzigen of verwijderen. De sensorinstellingen openen in de volgende stap. Laat de kamerkeuze leeg om alleen deze instellingen op te slaan.",
+        "description": "Vink Connect Upgrade aan als die is geïnstalleerd. Dan krijg je per ruimte een invoer voor de gemeten temperatuur.",
         "data": {
           "host": "IP-adres of hostnaam",
           "port": "Modbuspoort",
@@ -46,18 +46,7 @@
           "polling_interval": "Uitleesinterval (seconden)",
           "modbus_timeout": "Modbus-timeout (seconden)",
           "modbus_debug": "Modbus-berichten loggen voor foutopsporing",
-          "connect_upgrade": "Connect Upgrade geïnstalleerd",
-          "sensor_room": "Ruimte voor externe sensor (optioneel)"
-        }
-      },
-      "source": {
-        "title": "Temperatuursensor",
-        "description": "Kies de temperatuursensor voor kamer {room}. Zet deze kamer eerst in Fonterra op Extern gemeten. Een echte sensormelding moet regelmatig binnenkomen, ook bij gelijke temperatuur. Na starten of herladen wacht de koppeling op een nieuwe melding.",
-        "data": {
-          "entity_id": "Temperatuursensor",
-          "max_age": "Maximale ouderdom sensormelding (seconden)",
-          "external_confirmed": "Deze kamer staat in Fonterra op Extern gemeten",
-          "remove": "Sensor voor deze kamer verwijderen"
+          "connect_upgrade": "Connect Upgrade geïnstalleerd"
         }
       }
     },
@@ -68,15 +57,10 @@
       "invalid_timeout": "Kies een time-out tussen 1 en 30 seconden.",
       "invalid_polling_interval": "Kies een uitleesinterval tussen 5 en 300 seconden.",
       "cannot_connect": "Geen Modbusverbinding. Controleer het adres, de poort en de Modbusinstelling van je Fonterra.",
-      "invalid_sensor": "Kies een bestaande temperatuursensor.",
-      "external_required": "Zet de kamer op Extern gemeten en bevestig dit.",
       "identity_unverified": "Het WLAN-serienummer van Fonterra kon niet worden bevestigd. Controleer het adres bij Verbindingsinstellingen van deze hub.",
-      "address_in_use": "Een andere hub gebruikt dit adres en deze poort al.",
-      "connect_required": "Vink Connect Upgrade aan om een kamersensor te koppelen.",
-      "room_changed": "De actorindeling is gewijzigd. Ontdek de ruimtes opnieuw en probeer het nog eens."
+      "address_in_use": "Een andere hub gebruikt dit adres en deze poort al."
     },
     "abort": {
-      "no_rooms": "Geen ingedeelde kamer gevonden. Controleer de indeling en herlaad de Viega-integratie.",
       "already_configured": "Deze Fonterra-module is al ingesteld.",
       "settings_changed": "De hubinstellingen zijn gewijzigd. Open het formulier opnieuw.",
       "address_in_use": "Een andere hub gebruikt dit adres en deze poort al."
@@ -132,7 +116,7 @@
           "connect_help": {
             "name": "Eigen temperatuursensor",
             "state": {
-              "own_temperature_sensor": "Met Connect Upgrade stuurt Home Assistant de gemeten kamertemperatuur van je eigen sensor naar Fonterra. Zet de kamer in Fonterra op ‘Extern gemeten’. Kies daarna de kamer onder Configureren en selecteer de temperatuursensor uit Home Assistant. Voor die kamer heb je dan geen Viega-kamerthermostaat nodig."
+              "own_temperature_sensor": "Zet de ruimte in Fonterra op Extern gemeten. Schakel daarna de externe temperatuurinvoer van die ruimte in Home Assistant in. Stuur de metingen van je eigen sensor via een automatisering naar die invoer."
             }
           }
         },
@@ -285,6 +269,9 @@
       "power_level": {
         "name": "{room} handmatige vermogensstand",
         "unit_of_measurement": "stand"
+      },
+      "external_temperature": {
+        "name": "{room} externe temperatuurinvoer"
       }
     }
   },
@@ -340,6 +327,12 @@
     },
     "target_temperature_unavailable": {
       "message": "Fonterra geeft voor {room} geen instelbare temperatuur terug. Controleer de kamerthermostaat of de ingestelde temperatuursensor."
+    },
+    "external_temperature_range": {
+      "message": "Vul een gemeten temperatuur in tussen 5 en 40 °C."
+    },
+    "external_temperature_write_failed": {
+      "message": "De meting voor {room} kon niet worden verstuurd. Controleer de verbinding en of de ruimte in Fonterra op Extern gemeten staat."
     }
   },
   "issues": {

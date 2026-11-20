@@ -181,6 +181,30 @@ async def test_power_control_is_listed_only_when_a_single_group_has_a_valid_leve
     assert added.call_args.args[0][0].unique_id == thermostat.unique_id
 
 
+@pytest.mark.usefixtures("loaded_registries")
+@pytest.mark.parametrize("connect_enabled", [False, True])
+async def test_number_platform_adds_one_external_input_per_discovered_room(hass, connect_enabled):
+    entry = make_entry()
+    rooms = {
+        "room_1": {"name": "Living", "room_number": 1, "actor": [2, 4]},
+        "room_7": {"name": "Bath", "room_number": 7, "actor": 1},
+    }
+    hass.data[DOMAIN] = {
+        entry.entry_id: {
+            "rooms": rooms,
+            "polling": Mock(data={}),
+            "connect": Mock() if connect_enabled else None,
+        }
+    }
+    added = Mock()
+    await setup_power_controls(hass, entry, added)
+    assert [call.args[0][0].unique_id for call in added.call_args_list] == (
+        ["connect_room_1_external_temperature", "connect_room_7_external_temperature"]
+        if connect_enabled
+        else []
+    )
+
+
 async def test_missing_measurement_is_not_a_default_or_restored_temperature(hass):
     climate = build_room_entities("original", "room_1", {"name": "Living"})[0]
     assert climate.native_current_temperature is None

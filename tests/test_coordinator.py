@@ -10,6 +10,7 @@ from custom_components.viega_fonterra_modbus.connect.coordinator import ConnectC
 from custom_components.viega_fonterra_modbus.connect.modbus import ModbusError
 
 CLOCK = "custom_components.viega_fonterra_modbus.connect.coordinator.dt_util.utcnow"
+pytestmark = pytest.mark.usefixtures("loaded_registries")
 
 
 def mock_bus():

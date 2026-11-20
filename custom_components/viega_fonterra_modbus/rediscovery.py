@@ -20,6 +20,7 @@ from homeassistant.core import HomeAssistant
 from . import binary_sensor as binary_sensor_platform
 from . import climate as climate_platform
 from . import sensor as sensor_platform
+from .connect.number import build_room_input
 from .const import DOMAIN
 from .registers import room_actor_numbers
 from .room_mapping import RoomMappingDiscovery
@@ -32,6 +33,7 @@ _BUILDERS = {
     "climate": climate_platform.build_room_entities,
     "sensor": sensor_platform.build_room_entities,
     "binary_sensor": binary_sensor_platform.build_room_entities,
+    "external_temperature": build_room_input,
 }
 
 

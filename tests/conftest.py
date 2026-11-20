@@ -3,8 +3,10 @@
 from types import MappingProxyType
 
 import pytest
-from homeassistant.config_entries import ConfigEntry, ConfigEntryState
+from homeassistant.config_entries import ConfigEntries, ConfigEntry, ConfigEntryState
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import entity_registry as er
 
 from custom_components.viega_fonterra_modbus.connect.const import CONF_CONNECT
 from custom_components.viega_fonterra_modbus.const import DOMAIN
@@ -40,6 +42,15 @@ async def hass(tmp_path):
     hass = HomeAssistant(str(tmp_path))
     yield hass
     await hass.async_block_till_done()
+
+
+@pytest.fixture
+async def loaded_registries(hass):
+    hass.config_entries = ConfigEntries(hass, {})
+    await hass.config_entries.async_initialize()
+    dr.async_setup(hass)
+    await dr.async_load(hass, load_empty=True)
+    await er.async_load(hass, load_empty=True)
 
 
 @pytest.fixture

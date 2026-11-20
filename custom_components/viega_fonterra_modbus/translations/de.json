@@ -38,7 +38,7 @@
     "step": {
       "init": {
         "title": "Einstellungen",
-        "description": "Aktivieren Sie Connect Upgrade, wenn es installiert ist. Wählen Sie den Raum, um einen Temperatursensor aus Home Assistant zu verknüpfen, zu ändern oder zu entfernen. Die Sensoreinstellungen öffnen sich im nächsten Schritt. Lassen Sie die Raumauswahl leer, um nur diese Einstellungen zu speichern.",
+        "description": "Aktivieren Sie diese Option, wenn das Connect Upgrade installiert ist. Für jeden Raum wird dann eine Eingabe für die gemessene Temperatur angelegt.",
         "data": {
           "host": "IP-Adresse oder Hostname",
           "port": "Modbus-Port",
@@ -46,18 +46,7 @@
           "polling_interval": "Polling-Intervall (Sekunden)",
           "modbus_timeout": "Modbus-Timeout (Sekunden)",
           "modbus_debug": "Modbus-Frame-Debug-Logging aktivieren",
-          "connect_upgrade": "Connect Upgrade installiert",
-          "sensor_room": "Raum für externen Sensor (optional)"
-        }
-      },
-      "source": {
-        "title": "Temperatursensor",
-        "description": "Temperatursensor für Raum {room} auswählen. Den Raum vorher in Fonterra auf Extern gemessen einstellen. Auch gleiche Messwerte müssen regelmäßig neu gemeldet werden. Nach Start/Neuladen wird auf eine neue Sensormeldung gewartet.",
-        "data": {
-          "entity_id": "Temperatursensor",
-          "max_age": "Maximales Alter der Sensormeldung (Sekunden)",
-          "external_confirmed": "Dieser Raum ist in Fonterra auf Extern gemessen eingestellt",
-          "remove": "Sensorzuordnung entfernen"
+          "connect_upgrade": "Connect Upgrade installiert"
         }
       }
     },
@@ -68,15 +57,10 @@
       "invalid_timeout": "Bitte einen Timeout zwischen 1 und 30 Sekunden eingeben.",
       "invalid_polling_interval": "Bitte ein Polling-Intervall zwischen 5 und 300 Sekunden eingeben.",
       "cannot_connect": "Keine Modbusverbindung. Adresse, Port und Modbuseinstellung der Fonterra prüfen.",
-      "invalid_sensor": "Vorhandenen Temperatursensor auswählen.",
-      "external_required": "Raum auf Extern gemessen einstellen und bestätigen.",
       "identity_unverified": "Die WLAN-Seriennummer konnte nicht bestätigt werden. Adresse in den Verbindungseinstellungen des vorhandenen Hubs prüfen.",
-      "address_in_use": "Ein anderer Hub verwendet diese Adresse und diesen Port bereits.",
-      "connect_required": "Aktivieren Sie Connect Upgrade, um einen Raumsensor zu verknüpfen.",
-      "room_changed": "Die Stellantriebe wurden neu zugeordnet. Ermitteln Sie die Räume erneut und versuchen Sie es noch einmal."
+      "address_in_use": "Ein anderer Hub verwendet diese Adresse und diesen Port bereits."
     },
     "abort": {
-      "no_rooms": "Kein zugeordneter Raum gefunden. Zuordnung prüfen und Viega-Integration neu laden.",
       "already_configured": "Dieses Fonterra-Modul ist bereits eingerichtet.",
       "settings_changed": "Die Hub-Einstellungen wurden geändert. Öffnen Sie das Formular erneut.",
       "address_in_use": "Ein anderer Hub verwendet diese Adresse und diesen Port bereits."
@@ -132,7 +116,7 @@
           "connect_help": {
             "name": "Eigener Temperatursensor",
             "state": {
-              "own_temperature_sensor": "Mit dem Connect Upgrade sendet Home Assistant die gemessene Raumtemperatur Ihres eigenen Sensors an Fonterra. Stellen Sie den Raum in Fonterra auf „Extern gemessen“. Wählen Sie dann unter Konfigurieren den Raum und den Temperatursensor aus Home Assistant. In diesem Raum genügt dann Ihr eigener Temperatursensor."
+              "own_temperature_sensor": "Wählen Sie für den Raum in Fonterra « Extern gemessen ». Aktivieren Sie dann seine externe Temperatureingabe in Home Assistant und übertragen Sie die Messwerte Ihres Sensors per Automation."
             }
           }
         },
@@ -285,6 +269,9 @@
       "power_level": {
         "name": "{room} manuelle Leistungsstufe",
         "unit_of_measurement": "Stufe"
+      },
+      "external_temperature": {
+        "name": "{room} externe Temperatureingabe"
       }
     }
   },
@@ -340,6 +327,12 @@
     },
     "target_temperature_unavailable": {
       "message": "Fonterra meldet für {room} keine einstellbare Temperatur. Prüfen Sie den Raumthermostat oder den eingestellten Temperatursensor."
+    },
+    "external_temperature_range": {
+      "message": "Geben Sie eine gemessene Temperatur zwischen 5 und 40 °C ein."
+    },
+    "external_temperature_write_failed": {
+      "message": "Der Messwert für {room} konnte nicht übertragen werden. Prüfen Sie die Verbindung und ob der Raum in Fonterra auf « Extern gemessen » eingestellt ist."
     }
   },
   "issues": {

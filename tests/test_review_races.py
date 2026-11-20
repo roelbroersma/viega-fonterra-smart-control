@@ -9,6 +9,8 @@ from test_coordinator import mock_bus
 
 from custom_components.viega_fonterra_modbus.connect.coordinator import ConnectCoordinator
 
+pytestmark = pytest.mark.usefixtures("loaded_registries")
+
 
 async def test_shutdown_during_read_must_not_send_a_measurement(hass, entry):
     bus = mock_bus()

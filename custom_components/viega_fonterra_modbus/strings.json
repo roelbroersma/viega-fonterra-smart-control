@@ -38,7 +38,7 @@
     "step": {
       "init": {
         "title": "Settings",
-        "description": "Enable Connect Upgrade if it is installed. To link, change or remove a Home Assistant temperature sensor, select its room. The sensor settings open in the next step. Leave the room blank to save these settings only.",
+        "description": "Enable Connect Upgrade if installed to get an external temperature input for each room.",
         "data": {
           "host": "IP address or hostname",
           "port": "Modbus port",
@@ -46,18 +46,7 @@
           "polling_interval": "Polling interval (seconds)",
           "modbus_timeout": "Modbus timeout (seconds)",
           "modbus_debug": "Enable Modbus frame debug logging",
-          "connect_upgrade": "Connect Upgrade installed",
-          "sensor_room": "Room for external sensor (optional)"
-        }
-      },
-      "source": {
-        "title": "Temperature sensor",
-        "description": "Choose the temperature sensor for room {room}. First set the room to Extern gemeten (External measured) in Fonterra. Real sensor reports must arrive regularly, even at equal temperature. After startup/reload, a new report is required.",
-        "data": {
-          "entity_id": "Temperature sensor",
-          "max_age": "Maximum sensor report age (seconds)",
-          "external_confirmed": "This room is set to External measured in Fonterra",
-          "remove": "Remove this room's sensor mapping"
+          "connect_upgrade": "Connect Upgrade installed"
         }
       }
     },
@@ -68,15 +57,10 @@
       "invalid_timeout": "Enter a timeout between 1 and 30 seconds.",
       "invalid_polling_interval": "Enter a polling interval between 5 and 300 seconds.",
       "cannot_connect": "No Modbus connection. Check your Fonterra address, port and Modbus setting.",
-      "invalid_sensor": "Choose an existing temperature sensor.",
-      "external_required": "Set the room to External measured and confirm.",
       "identity_unverified": "Could not verify the Fonterra WLAN serial. Check the address in the existing hub connection settings.",
-      "address_in_use": "Another hub already uses this address and port.",
-      "connect_required": "Enable Connected Upgrade to link a room sensor.",
-      "room_changed": "The actuator assignment has changed. Rediscover the rooms and try again."
+      "address_in_use": "Another hub already uses this address and port."
     },
     "abort": {
-      "no_rooms": "No assigned room found. Check room assignment and reload the Viega integration.",
       "already_configured": "This Fonterra module is already configured.",
       "settings_changed": "The hub settings changed while this form was open. Open the form again.",
       "address_in_use": "Another hub already uses this address and port."
@@ -132,7 +116,7 @@
           "connect_help": {
             "name": "Using your own sensor",
             "state": {
-              "own_temperature_sensor": "Connect Upgrade lets Home Assistant send the measured room temperature from your own sensor to Fonterra. Set the room to external measurement (Extern gemeten) in Fonterra, then select the room under Configure and choose its Home Assistant temperature sensor. That room can then work without a Viega room thermostat."
+              "own_temperature_sensor": "Set the room to External measured in Fonterra, then enable its external temperature input in Home Assistant. Use the input in an automation to send readings from your own sensor."
             }
           }
         },
@@ -285,6 +269,9 @@
       "power_level": {
         "name": "{room} manual power level",
         "unit_of_measurement": "level"
+      },
+      "external_temperature": {
+        "name": "{room} external temperature input"
       }
     }
   },
@@ -340,6 +327,12 @@
     },
     "target_temperature_unavailable": {
       "message": "Fonterra reports no adjustable temperature for {room}. Check the room thermostat or the configured temperature sensor."
+    },
+    "external_temperature_range": {
+      "message": "Enter a measured temperature between 5 and 40 °C."
+    },
+    "external_temperature_write_failed": {
+      "message": "Could not send the measurement for {room}. Check the connection and make sure the room is set to External measured in Fonterra."
     }
   },
   "issues": {

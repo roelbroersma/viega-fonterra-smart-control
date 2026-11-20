@@ -5,11 +5,17 @@ Reference source and its MIT license are in tests/vendor; no device contacted.
 
 import asyncio
 import struct
+from unittest.mock import Mock
 
 import pytest
+from conftest import make_entry
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import entity_registry as er
 
 from custom_components.viega_fonterra_modbus import modbus_handler as reference
+from custom_components.viega_fonterra_modbus.connect.coordinator import ConnectCoordinator
 from custom_components.viega_fonterra_modbus.connect.modbus import ModbusError, SharedModbus
+from custom_components.viega_fonterra_modbus.connect.number import build_room_input
 from custom_components.viega_fonterra_modbus.const import DOMAIN
 from custom_components.viega_fonterra_modbus.sensor import ViegaConnectUpgradeSensor
 
@@ -54,9 +60,9 @@ async def server():
                 elif function == 16:
                     assert count == 1 and pdu[5] == 2
                     value = struct.unpack(">H", pdu[6:8])[0]
-                    if address == 106:
+                    if 100 <= address <= 111:
                         # As on the reserve: the room input changes, the write register doesn't.
-                        fixture.inputs[62] = value
+                        fixture.inputs[50 + 2 * (address - 100)] = value
                     else:
                         fixture.holding[address] = value
                     if fixture.drop_write:
@@ -161,6 +167,75 @@ async def test_real_upstream_lost_write_reply_is_not_retried(hass, server):
         assert len(writes) == 1
         assert server.inputs[62] == 197
     finally:
+        await client.disconnect()
+
+
+@pytest.mark.usefixtures("loaded_registries")
+async def test_room_inputs_write_independently_and_take_over_existing_sensor_links(hass, server):
+    registry = er.async_get(hass)
+    entry = make_entry(
+        entry_id="modbus", options={"sources": {"7": {"entity_id": "sensor.existing"}}}
+    )
+    client = reference.ViegaModbusClient("127.0.0.1", port=server.port)
+    await client.connect()
+    server.inputs[252] = 3
+    rooms = {
+        "room_7": {"room_number": 7, "name": "Living", "actor": [3]},
+        "room_3": {"room_number": 3, "name": "Bath", "actor": [1]},
+    }
+    coordinator = ConnectCoordinator(hass, entry, SharedModbus(hass, entry.entry_id, "TEST000001"))
+    hass.data[DOMAIN] = {
+        entry.entry_id: {
+            "client": client,
+            "identity": {"wlan_serial_number": "TEST000001"},
+            "rooms": rooms,
+            "connect": coordinator,
+        }
+    }
+    inputs = {}
+    try:
+        for room_id, config in rooms.items():
+            (entity,) = build_room_input(entry.entry_id, room_id, config)
+            assert not entity.entity_registry_enabled_default
+            registered = registry.async_get_or_create(
+                "number", DOMAIN, entity.unique_id, disabled_by=er.RegistryEntryDisabler.INTEGRATION
+            )
+            entity.hass = hass
+            entity.entity_id = registered.entity_id
+            entity.async_write_ha_state = Mock()
+            inputs[room_id] = entity
+
+        living, bath = inputs["room_7"], inputs["room_3"]
+        with pytest.raises(HomeAssistantError):
+            await living.async_set_native_value(20.1)
+        hass.states.async_set("sensor.existing", "19.7", {"unit_of_measurement": "°C"})
+        await coordinator._async_update_data()
+        assert server.inputs[62] == 197
+
+        registry.async_update_entity(living.entity_id, disabled_by=None)
+        registry.async_update_entity(bath.entity_id, disabled_by=None)
+        await asyncio.gather(living.async_set_native_value(20.1), bath.async_set_native_value(23.2))
+        assert (server.inputs[62], server.inputs[54]) == (201, 232)
+        assert (living.native_value, bath.native_value) == (20.1, 23.2)
+        assert server.holding[63] == 210
+        hass.states.async_set("sensor.existing", "21.5", {"unit_of_measurement": "°C"})
+        await coordinator._async_update_data()
+        assert server.inputs[62] == 201
+
+        # Repeated measurements are writes, even when the display did not change.
+        await bath.async_set_native_value(23.2)
+        assert sum(pdu == bytes.fromhex("10006600010200e8") for _, _, pdu in server.frames) == 2
+
+        server.inputs[252] = 4
+        with pytest.raises(HomeAssistantError):
+            await bath.async_set_native_value(22)
+        assert server.inputs[54] == 232
+
+        registry.async_update_entity(living.entity_id, disabled_by=er.RegistryEntryDisabler.USER)
+        await coordinator._async_update_data()
+        assert server.inputs[62] == 201
+    finally:
+        await coordinator.async_shutdown()
         await client.disconnect()
 
 

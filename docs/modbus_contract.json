@@ -202,10 +202,10 @@
   "connect_gate": {
     "safe_modbus_capability_register": null,
     "safe_modbus_source_register": null,
-    "policy": "Explicit user Connect Upgrade opt-in and confirmation that chosen rooms already use Extern gemeten; no probe writes",
+    "policy": "Explicit Connect Upgrade opt-in. Enable the Home Assistant input only for rooms already set to Extern gemeten. Previously confirmed sensor links remain active until their room input is enabled. No probe writes.",
     "external_mode_selection": "Existing Fonterra web UI; no new Modbus register or automatic fallback"
   },
-  "write_failure": "No immediate retry after a lost acknowledgement. Verify WLAN identity and actor assignment before sending on a later poll. Stop on missing, invalid or expired readings. The native diagnostics report device faults.",
+  "write_failure": "Verify WLAN identity and actor assignment before sending. The number input sends once per action. Existing sensor links stop on missing, invalid or expired readings and do not immediately retry a lost acknowledgement. The native diagnostics report device faults.",
   "proof": [
     "https://www.gigaweb.nl/fonterra-smart-control-upgrade/ (Connected Upgrade and published documentation)",
     "https://github.com/mikefogel/homeassistant-viega-fonterra-modbus/tree/820c51bc02aaa6f471d1d8853db52c55d1099829/custom_components/viega_fonterra_modbus",
