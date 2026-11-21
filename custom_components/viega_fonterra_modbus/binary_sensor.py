@@ -287,20 +287,19 @@ class ActuatorStatistics:
 
 
 class ViegaCirculationPumpBinarySensor(ViegaCoordinatedEntity, BinarySensorEntity, RestoreEntity):
-    """Derived on/off indicator for an externally controlled circulation pump.
+    """Heat demand derived from the confirmed actuator positions.
 
-    The Viega register map has no dedicated pump register - this is a
-    computed indicator, not a device read/write (spec.md 5c). It is on
+    The Viega register map has no dedicated pump feedback register. It is on
     whenever any used actuator is open and off once every one of them is
     confirmed closed. Each actuator's own raw position reading is debounced
     (`PUMP_DEBOUNCE_READS` identical consecutive reads) before it is allowed
     to affect the aggregate, so one noisy/transitional read cannot toggle
-    the pump. Intended to drive the user's own automation for a physically
-    separate pump relay, not to write anything back to the base unit.
+    the indication. An automation can use this demand for a separate pump
+    relay. The entity itself does not write anything back to the base unit.
+    Keep the existing unique ID and translation key for installed entities.
     """
 
     _attr_has_entity_name = True
-    _attr_device_class = BinarySensorDeviceClass.RUNNING
 
     #: Number of consecutive identical raw reads an actuator's position
     #: register must produce before that value is accepted into the

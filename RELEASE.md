@@ -6,6 +6,7 @@
 - `rediscovery.py` werkt de actieve kamerentiteiten bij, inclusief de externe temperatuurinvoer. Na een lege uitlezing blijft de laatst bekende kamerindeling beschikbaar.
 - `coordinator.py` verzamelt registerwaarden per verdeler. Klimaatentiteiten, sensoren en diagnose delen dit resultaat.
 - `connect/number.py` biedt na inschakelen van Connect Upgrade per ruimte een direct beschikbare temperatuurinvoer. `connect/coordinator.py` controleert de WLAN-identiteit en de huidige actortoewijzing vóór het schrijven. Een ingestelde waarde wordt één keer verstuurd. Een bestaande automatische sensorkoppeling blijft actief tot de eerste geslaagde directe invoer voor die ruimte. Die invoer verwijdert de eerdere koppeling uit de opgeslagen instellingen. Een bestaande sensorkoppeling stuurt een gewijzigde temperatuur of de eerste meting na een nieuwe verbinding. De Connect-firmware verzorgt het intern herhalen richting de PIC.
+- `binary_sensor.py` leidt **Warmtevraag** af uit de bevestigde klepstanden. De bestaande entiteits-ID blijft behouden. De diagnose **Bevestigde tijd open** toont hele seconden en bewaart intern de nauwkeurige som.
 - `card/` toont de bestaande entiteiten. De kaart vraagt temperatuur- en vermogenswijzigingen via normale Home Assistant-acties aan.
 - `docs/modbus_contract.json` legt het gebruikte registercontract vast.
 

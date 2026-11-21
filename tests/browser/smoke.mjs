@@ -26,7 +26,7 @@ html[data-theme="dark"] body { --primary-text-color:#edf2f7; --secondary-text-co
 </style><script type="module">
 import "/card/fonterra-card.js";
 class Icon extends HTMLElement {
-  connectedCallback() { this.textContent = {"mdi:water-thermometer":"≋", "mdi:pump":"⟳", "mdi:valve":"◇",
+  connectedCallback() { this.textContent = {"mdi:water-thermometer":"≋", "mdi:radiator":"♨", "mdi:valve":"◇",
     "mdi:chevron-right":"›"}[this.getAttribute("icon")] ?? ""; }
 }
 customElements.define("ha-icon",Icon);
@@ -109,6 +109,7 @@ try {
   const overview=page.locator("#overview");
   assert.equal(await overview.locator(".tile").count(),4);
   assert.equal(await overview.locator('[data-kind="power"]').count(),1);
+  await overview.getByText(/Warmtevraag\s+Actief/).waitFor();
   if (output) await page.screenshot({path:resolve(output,"Fonterra-dashboardkaart.png")});
   assert.equal(await page.getByText("Sensorstatus", { exact:true }).count(), 0);
   await page.evaluate(() => {

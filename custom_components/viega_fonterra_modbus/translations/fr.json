@@ -262,7 +262,7 @@
         "name": "Actionneur {actor}"
       },
       "circulation_pump": {
-        "name": "Pompe de circulation"
+        "name": "Demande de chauffage"
       }
     },
     "number": {

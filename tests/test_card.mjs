@@ -63,6 +63,12 @@ test("selects a room, hides controls when unavailable and clamps steps", () => {
 
 test("provides the full same set of labels in the five integration languages", () => {
   const base = Object.keys(labels({ language: "en" }));
+  for (const [language, demand] of Object.entries({
+    en: "Heat demand", nl: "Warmtevraag", de: "Wärmebedarf",
+    fr: "Demande de chauffage", it: "Richiesta di riscaldamento",
+  })) {
+    assert.equal(labels({ language }).pump, demand);
+  }
   for (const language of ["nl", "de", "fr", "it", "nl-BE", "fr-BE"]) {
     const translated = labels({ language });
     assert.deepEqual(Object.keys(translated), base);

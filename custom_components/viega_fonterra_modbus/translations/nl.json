@@ -262,7 +262,7 @@
         "name": "Actor {actor}"
       },
       "circulation_pump": {
-        "name": "Circulatiepomp"
+        "name": "Warmtevraag"
       }
     },
     "number": {

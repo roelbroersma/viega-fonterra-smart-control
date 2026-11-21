@@ -262,7 +262,7 @@
         "name": "Stellantrieb {actor}"
       },
       "circulation_pump": {
-        "name": "Umwälzpumpe"
+        "name": "Wärmebedarf"
       }
     },
     "number": {

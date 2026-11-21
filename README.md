@@ -37,7 +37,9 @@ Voor een handmatige installatie pak je de ZIP van de [GitHub-release](https://gi
 
 Vernieuw je browser na de herstart. Kies **Dashboard bewerken > Kaart toevoegen > Viega Fonterra Smart**. Gebruik het overzicht voor alle ruimtes of kies één kamer. Stel de doeltemperatuur bij of wijzig de vermogensstand voor een losse actor die deze bediening ondersteunt. Per actor zie je de klepstand en retourtemperatuur. Een kamerfout verschijnt onder **Diagnose**, op basis van de foutcode van Fonterra.
 
-![Vloerverwarmingsoverzicht en ruimtekaart voor de badkamer](docs/dashboard.png)
+**Warmtevraag** is actief zodra een gebruikte actor bevestigd openstaat. De indicatie is afgeleid van de klepstanden. **Bevestigde tijd open** toont hele seconden.
+
+![Vloerverwarmingsoverzicht en ruimtekaart voor de badkamer](https://raw.githubusercontent.com/roelbroersma/viega-fonterra-smart-control/main/docs/dashboard.png)
 
 Gebruik deze YAML voor een ruimtekaart.
 
@@ -143,7 +145,11 @@ For manual installation, extract the ZIP from the [GitHub release](https://githu
 
 ### Dashboard card
 
-Refresh your browser after restarting. Go to **Edit dashboard > Add card > Viega Fonterra Smart**. Use the overview for all rooms or select a single room. Adjust the setpoint or change the power level for a standalone actuator that supports it. The card shows the valve position and return temperature for each actuator. Room faults appear under **Diagnostics**, based on the code reported by Fonterra. [View the dashboard screenshot](docs/dashboard.png)
+Refresh your browser after restarting. Go to **Edit dashboard > Add card > Viega Fonterra Smart**. Use the overview for all rooms or select a single room. Adjust the setpoint or change the power level for a standalone actuator that supports it. The card shows the valve position and return temperature for each actuator. Room faults appear under **Diagnostics**, based on the code reported by Fonterra.
+
+**Heat demand** is active when a used actuator is confirmed open. The indication is derived from the valve positions. **Confirmed open time** shows whole seconds.
+
+![Heating overview and bathroom room card](https://raw.githubusercontent.com/roelbroersma/viega-fonterra-smart-control/main/docs/dashboard.png)
 
 Use this YAML to add a room card.
 
@@ -249,7 +255,11 @@ Für die manuelle Installation entpacken Sie die ZIP-Datei aus dem [GitHub-Relea
 
 ### Dashboard-Karte
 
-Laden Sie die Browserseite nach dem Neustart neu. Wählen Sie **Dashboard bearbeiten > Karte hinzufügen > Viega Fonterra Smart**. Verwenden Sie die Übersicht für alle Räume oder wählen Sie einen einzelnen Raum. Stellen Sie die Solltemperatur ein oder ändern Sie die Leistungsstufe eines einzelnen Stellantriebs, sofern diese Funktion verfügbar ist. Für jeden Stellantrieb zeigt die Karte die Ventilstellung und Rücklauftemperatur an. Raumfehler erscheinen unter **Diagnose** mit der von Fonterra gemeldeten Störung. [Dashboard ansehen](docs/dashboard.png)
+Laden Sie die Browserseite nach dem Neustart neu. Wählen Sie **Dashboard bearbeiten > Karte hinzufügen > Viega Fonterra Smart**. Verwenden Sie die Übersicht für alle Räume oder wählen Sie einen einzelnen Raum. Stellen Sie die Solltemperatur ein oder ändern Sie die Leistungsstufe eines einzelnen Stellantriebs, sofern diese Funktion verfügbar ist. Für jeden Stellantrieb zeigt die Karte die Ventilstellung und Rücklauftemperatur an. Raumfehler erscheinen unter **Diagnose** mit der von Fonterra gemeldeten Störung.
+
+**Wärmebedarf** ist aktiv, sobald ein verwendeter Stellantrieb bestätigt geöffnet ist. Die Anzeige wird aus den Ventilstellungen abgeleitet. **Bestätigte Öffnungsdauer** wird in ganzen Sekunden angezeigt.
+
+![Heizungsübersicht und Raumkarte für das Badezimmer](https://raw.githubusercontent.com/roelbroersma/viega-fonterra-smart-control/main/docs/dashboard.png)
 
 Mit diesem YAML-Beispiel fügen Sie eine Raumkarte hinzu.
 
@@ -355,7 +365,11 @@ Pour une installation manuelle, extrayez l’archive ZIP de la [version GitHub](
 
 ### Carte du tableau de bord
 
-Actualisez le navigateur après le redémarrage. Sélectionnez **Modifier le tableau de bord > Ajouter une carte > Viega Fonterra Smart**. Affichez toutes les pièces ou sélectionnez-en une. Ajustez la consigne ou la puissance d’un actionneur indépendant qui accepte ce réglage. La carte affiche la position de la vanne et la température de retour de chaque actionneur. Les défauts signalés par Fonterra apparaissent dans **Diagnostic**. [Voir la carte](docs/dashboard.png)
+Actualisez le navigateur après le redémarrage. Sélectionnez **Modifier le tableau de bord > Ajouter une carte > Viega Fonterra Smart**. Affichez toutes les pièces ou sélectionnez-en une. Ajustez la consigne ou la puissance d’un actionneur indépendant qui accepte ce réglage. La carte affiche la position de la vanne et la température de retour de chaque actionneur. Les défauts signalés par Fonterra apparaissent dans **Diagnostic**.
+
+La **demande de chauffage** est active dès qu’un actionneur utilisé est confirmé ouvert. Cette indication est calculée à partir des positions des vannes. La **durée d’ouverture confirmée** est affichée en secondes entières.
+
+![Vue du chauffage et carte de la salle de bains](https://raw.githubusercontent.com/roelbroersma/viega-fonterra-smart-control/main/docs/dashboard.png)
 
 ```yaml
 type: custom:viega-fonterra-card
@@ -455,7 +469,11 @@ Per l’installazione manuale, estrai lo ZIP dalla [versione su GitHub](https://
 
 ### Scheda del pannello
 
-Aggiorna il browser dopo il riavvio. Seleziona **Modifica pannello > Aggiungi scheda > Viega Fonterra Smart**. Mostra tutte le stanze o scegline una. Regola la temperatura desiderata o il livello di potenza per un attuatore indipendente che supporta questa funzione. Per ogni attuatore vedi la posizione della valvola e la temperatura di ritorno. I guasti segnalati da Fonterra appaiono in **Diagnostica**. [Vedi la scheda](docs/dashboard.png)
+Aggiorna il browser dopo il riavvio. Seleziona **Modifica pannello > Aggiungi scheda > Viega Fonterra Smart**. Mostra tutte le stanze o scegline una. Regola la temperatura desiderata o il livello di potenza per un attuatore indipendente che supporta questa funzione. Per ogni attuatore vedi la posizione della valvola e la temperatura di ritorno. I guasti segnalati da Fonterra appaiono in **Diagnostica**.
+
+La **richiesta di riscaldamento** è attiva quando un attuatore utilizzato risulta aperto con conferma. L’indicazione è ricavata dalle posizioni delle valvole. Il **tempo di apertura confermato** è mostrato in secondi interi.
+
+![Panoramica del riscaldamento e scheda del bagno](https://raw.githubusercontent.com/roelbroersma/viega-fonterra-smart-control/main/docs/dashboard.png)
 
 ```yaml
 type: custom:viega-fonterra-card

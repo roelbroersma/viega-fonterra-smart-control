@@ -107,7 +107,7 @@ class FonterraCard extends HTMLElement {
         ${!single && module.name ? `<h3>${escapeHTML(module.name)}</h3>` : ""}
         <div class="hub-metrics">
           ${flow ? `<span>${icon("water-thermometer")} ${t.flow} <b>${escapeHTML(flow)}</b></span>` : ""}
-          ${pump ? `<span>${icon("pump")} ${t.pump} <b>${escapeHTML(pump)}</b></span>` : ""}
+          ${pump ? `<span>${icon("radiator")} ${t.pump} <b>${escapeHTML(pump)}</b></span>` : ""}
         </div>
       </div>` : ""}
       <div class="rooms" data-count="${module.rooms.length}">${module.rooms.map((room) => this._tile(room, t, single)).join("")}</div>

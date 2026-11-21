@@ -32,4 +32,4 @@ async def test_actor_positions_have_numbered_binary_sensor_translations(hass, tm
         for actor in positions
     ] == ["Actor 1", "Actor 2"]
     assert all(actor.device_class == BinarySensorDeviceClass.OPENING for actor in positions)
-    assert translations[f"{prefix}.circulation_pump.name"] == "Circulatiepomp"
+    assert translations[f"{prefix}.circulation_pump.name"] == "Warmtevraag"

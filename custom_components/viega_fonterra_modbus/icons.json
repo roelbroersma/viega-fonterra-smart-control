@@ -8,9 +8,9 @@
         }
       },
       "circulation_pump": {
-        "default": "mdi:pump-off",
+        "default": "mdi:radiator-off",
         "state": {
-          "on": "mdi:pump"
+          "on": "mdi:radiator"
         }
       }
     },

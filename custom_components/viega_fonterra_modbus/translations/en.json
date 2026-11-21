@@ -262,7 +262,7 @@
         "name": "Actuator {actor}"
       },
       "circulation_pump": {
-        "name": "Circulation pump"
+        "name": "Heat demand"
       }
     },
     "number": {
