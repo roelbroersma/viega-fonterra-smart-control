@@ -116,7 +116,7 @@
           "connect_help": {
             "name": "Utiliser son propre capteur",
             "state": {
-              "own_temperature_sensor": "Dans Fonterra, réglez la pièce sur « Capteur externe ». Activez ensuite son entrée de température externe dans Home Assistant et transmettez les mesures de votre capteur via une automatisation."
+              "own_temperature_sensor": "Activez Connect Upgrade sous Configurer. Chaque pièce dispose alors d’une entrée de température externe. Dans Fonterra, réglez la pièce sur « Capteur externe » et transmettez les mesures par une automatisation."
             }
           }
         },

@@ -33,7 +33,14 @@ async def async_setup_entry(
     if runtime.get("connect") is not None:
         inputs = register_platform(hass, entry.entry_id, "external_temperature", async_add_entities)
         for room_id, room_config in runtime["rooms"].items():
-            inputs.add_room(room_id, build_room_input(entry.entry_id, room_id, room_config))
+            entities = build_room_input(entry.entry_id, room_id, room_config)
+            for entity in entities:
+                entity_id = registry.async_get_entity_id("number", DOMAIN, entity.unique_id)
+                registered = registry.async_get(entity_id) if entity_id else None
+                # Upgrade the former default while preserving the user's own disable choice.
+                if registered and registered.disabled_by == er.RegistryEntryDisabler.INTEGRATION:
+                    registry.async_update_entity(registered.entity_id, disabled_by=None)
+            inputs.add_room(room_id, entities)
 
     @callback
     def sync_power_controls() -> None:

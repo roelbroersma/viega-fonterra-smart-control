@@ -81,10 +81,13 @@ class ConnectCoordinator(DataUpdateCoordinator[None]):
         return registered is not None and not registered.disabled
 
     def _uses_sensor_link(self, room: int) -> bool:
-        # An untouched input is disabled by the integration. Disabling an input
-        # manually must stop sending instead of silently reviving an old link.
+        # Existing links keep sending after inputs become enabled by default.
+        # A user-disabled input still stops every sender for that room.
         registered = self._input_entry(room)
-        return registered is None or registered.disabled_by == er.RegistryEntryDisabler.INTEGRATION
+        return registered is None or registered.disabled_by in (
+            None,
+            er.RegistryEntryDisabler.INTEGRATION,
+        )
 
     async def async_write_input(self, room: int, value: float) -> float:
         """Send one explicit measurement to a verified unit and room."""
@@ -96,7 +99,22 @@ class ConnectCoordinator(DataUpdateCoordinator[None]):
                 raise ModbusError("The room is no longer assigned to its actuators")
             if self._stopping or not self._input_enabled(room):
                 raise ModbusError("External temperature input unavailable")
-            return await self.bus.write_measurement(room, value)
+            measured = await self.bus.write_measurement(room, value)
+            # The first successful explicit input replaces the former sensor link.
+            # Persist that choice so a restart cannot reintroduce competing writes.
+            mappings = dict(self.entry.options.get(CONF_MAPPINGS, {}))
+            if str(room) in mappings:
+                mappings.pop(str(room))
+                options = {**self.entry.options, CONF_MAPPINGS: mappings}
+                runtime = self.hass.data[DOMAIN][self.entry.entry_id]
+                if runtime.get("applied_config") == (
+                    dict(self.entry.data),
+                    dict(self.entry.options),
+                ):
+                    # The running sender reads these options on every cycle.
+                    runtime["applied_config"] = (dict(self.entry.data), options)
+                self.hass.config_entries.async_update_entry(self.entry, options=options)
+            return measured
 
     async def _send_sample(self, room, entity_id, max_age, value) -> None:
         # The actor check awaited Modbus. A sensor may have changed in the meantime.
@@ -145,7 +163,7 @@ class ConnectCoordinator(DataUpdateCoordinator[None]):
             return
 
         try:
-            # Preserve existing links until the user enables the room's new input.
+            # Preserve existing links until the first successful explicit room input.
             rooms = [
                 room
                 for room in self.bus.rooms()

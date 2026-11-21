@@ -116,7 +116,7 @@
           "connect_help": {
             "name": "Eigener Temperatursensor",
             "state": {
-              "own_temperature_sensor": "Wählen Sie für den Raum in Fonterra « Extern gemessen ». Aktivieren Sie dann seine externe Temperatureingabe in Home Assistant und übertragen Sie die Messwerte Ihres Sensors per Automation."
+              "own_temperature_sensor": "Aktivieren Sie das Connect Upgrade unter Konfigurieren. Jeder Raum erhält eine externe Temperatureingabe. Wählen Sie für den Raum in Fonterra « Extern gemessen » und übertragen Sie die Messwerte Ihres Sensors per Automation."
             }
           }
         },

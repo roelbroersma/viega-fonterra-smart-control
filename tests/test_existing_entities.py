@@ -10,6 +10,7 @@ from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
 
+from custom_components.viega_fonterra_modbus.binary_sensor import ActuatorStatistics
 from custom_components.viega_fonterra_modbus.climate import (
     ViegaRoomClimateEntity,
     build_room_entities,
@@ -21,6 +22,7 @@ from custom_components.viega_fonterra_modbus.number import (
 from custom_components.viega_fonterra_modbus.number import (
     async_setup_entry as setup_power_controls,
 )
+from custom_components.viega_fonterra_modbus.sensor import ViegaActuatorStatisticsSensor
 
 
 def test_existing_control_ids_and_registers_are_preserved():
@@ -203,6 +205,63 @@ async def test_number_platform_adds_one_external_input_per_discovered_room(hass,
         if connect_enabled
         else []
     )
+
+
+@pytest.mark.usefixtures("loaded_registries")
+async def test_external_inputs_upgrade_the_old_default_and_preserve_user_settings(hass):
+    entry = make_entry()
+    registry = er.async_get(hass)
+    previous = registry.async_get_or_create(
+        "number",
+        DOMAIN,
+        "connect_room_1_external_temperature",
+        disabled_by=er.RegistryEntryDisabler.INTEGRATION,
+    )
+    disabled = registry.async_get_or_create(
+        "number",
+        DOMAIN,
+        "connect_room_2_external_temperature",
+        disabled_by=er.RegistryEntryDisabler.USER,
+    )
+    hass.data[DOMAIN] = {
+        entry.entry_id: {
+            "rooms": {
+                "room_1": {"room_number": 1, "actor": 1},
+                "room_2": {"room_number": 2, "actor": 2},
+            },
+            "polling": Mock(data={}),
+            "connect": Mock(),
+        }
+    }
+    added = Mock()
+    await setup_power_controls(hass, entry, added)
+    assert registry.async_get(previous.entity_id).disabled_by is None
+    assert registry.async_get(disabled.entity_id).disabled_by == er.RegistryEntryDisabler.USER
+    assert all(call.args[0][0].entity_registry_enabled_default for call in added.call_args_list)
+
+
+async def test_confirmed_open_time_exposes_whole_seconds_and_preserves_fractional_total(hass):
+    sensor = ViegaActuatorStatisticsSensor("original", "confirmed_open_seconds")
+    sensor.hass = hass
+    previous = State("sensor.open_time", "3109.982349834")
+    hass.data[DOMAIN] = {"original": {}}
+    with (
+        patch(
+            "custom_components.viega_fonterra_modbus.entity.ViegaCoordinatedEntity.async_added_to_hass",
+            AsyncMock(),
+        ),
+        patch.object(sensor, "async_get_last_state", AsyncMock(return_value=previous)),
+    ):
+        await sensor.async_added_to_hass()
+    assert sensor.native_value == 3109
+    assert type(sensor.native_value) is int
+    assert sensor.suggested_display_precision == 0
+    statistics = hass.data[DOMAIN]["original"]["actuator_statistics"]
+    assert isinstance(statistics, ActuatorStatistics)
+    assert statistics.confirmed_open_seconds == float(previous.state)
+    statistics.confirmed_open_seconds += 0.1
+    await sensor.async_update()
+    assert sensor.native_value == 3110
 
 
 async def test_missing_measurement_is_not_a_default_or_restored_temperature(hass):

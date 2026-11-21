@@ -116,7 +116,7 @@
           "connect_help": {
             "name": "Eigen temperatuursensor",
             "state": {
-              "own_temperature_sensor": "Zet de ruimte in Fonterra op Extern gemeten. Schakel daarna de externe temperatuurinvoer van die ruimte in Home Assistant in. Stuur de metingen van je eigen sensor via een automatisering naar die invoer."
+              "own_temperature_sensor": "Vink Connect Upgrade aan onder Configureren. Elke ruimte krijgt dan een externe temperatuurinvoer. Zet de ruimte in Fonterra op Extern gemeten en stuur de metingen van je sensor via een automatisering naar die invoer."
             }
           }
         },

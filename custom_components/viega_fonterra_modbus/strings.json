@@ -116,7 +116,7 @@
           "connect_help": {
             "name": "Using your own sensor",
             "state": {
-              "own_temperature_sensor": "Set the room to External measured in Fonterra, then enable its external temperature input in Home Assistant. Use the input in an automation to send readings from your own sensor."
+              "own_temperature_sensor": "Enable Connect Upgrade under Configure. Each room then has an external temperature input. Set the room to External measured in Fonterra and send sensor readings to its input from an automation."
             }
           }
         },

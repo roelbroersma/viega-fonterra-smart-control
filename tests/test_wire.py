@@ -5,13 +5,14 @@ Reference source and its MIT license are in tests/vendor; no device contacted.
 
 import asyncio
 import struct
-from unittest.mock import Mock
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 from conftest import make_entry
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry as er
 
+from custom_components.viega_fonterra_modbus import async_reload_entry
 from custom_components.viega_fonterra_modbus import modbus_handler as reference
 from custom_components.viega_fonterra_modbus.connect.coordinator import ConnectCoordinator
 from custom_components.viega_fonterra_modbus.connect.modbus import ModbusError, SharedModbus
@@ -176,6 +177,9 @@ async def test_room_inputs_write_independently_and_take_over_existing_sensor_lin
     entry = make_entry(
         entry_id="modbus", options={"sources": {"7": {"entity_id": "sensor.existing"}}}
     )
+    with patch.object(hass.config_entries, "async_setup", AsyncMock(return_value=True)):
+        await hass.config_entries.async_add(entry)
+    entry.add_update_listener(async_reload_entry)
     client = reference.ViegaModbusClient("127.0.0.1", port=server.port)
     await client.connect()
     server.inputs[252] = 3
@@ -190,37 +194,57 @@ async def test_room_inputs_write_independently_and_take_over_existing_sensor_lin
             "identity": {"wlan_serial_number": "TEST000001"},
             "rooms": rooms,
             "connect": coordinator,
+            "applied_config": (dict(entry.data), dict(entry.options)),
         }
     }
     inputs = {}
     try:
         for room_id, config in rooms.items():
             (entity,) = build_room_input(entry.entry_id, room_id, config)
-            assert not entity.entity_registry_enabled_default
-            registered = registry.async_get_or_create(
-                "number", DOMAIN, entity.unique_id, disabled_by=er.RegistryEntryDisabler.INTEGRATION
-            )
+            assert entity.entity_registry_enabled_default
+            registered = registry.async_get_or_create("number", DOMAIN, entity.unique_id)
             entity.hass = hass
             entity.entity_id = registered.entity_id
             entity.async_write_ha_state = Mock()
             inputs[room_id] = entity
 
         living, bath = inputs["room_7"], inputs["room_3"]
+        registry.async_update_entity(living.entity_id, disabled_by=er.RegistryEntryDisabler.USER)
         with pytest.raises(HomeAssistantError):
             await living.async_set_native_value(20.1)
+        registry.async_update_entity(living.entity_id, disabled_by=None)
         hass.states.async_set("sensor.existing", "19.7", {"unit_of_measurement": "°C"})
         await coordinator._async_update_data()
         assert server.inputs[62] == 197
 
-        registry.async_update_entity(living.entity_id, disabled_by=None)
-        registry.async_update_entity(bath.entity_id, disabled_by=None)
-        await asyncio.gather(living.async_set_native_value(20.1), bath.async_set_native_value(23.2))
+        server.drop_write = True
+        with pytest.raises(HomeAssistantError):
+            await living.async_set_native_value(20.1)
+        assert entry.options["sources"]["7"]["entity_id"] == "sensor.existing"
+        server.drop_write = False
+
+        with patch.object(hass.config_entries, "async_schedule_reload") as reload_entry:
+            await asyncio.gather(
+                living.async_set_native_value(20.1), bath.async_set_native_value(23.2)
+            )
+            await hass.async_block_till_done()
+            reload_entry.assert_not_called()
+        assert not entry.options["sources"]
         assert (server.inputs[62], server.inputs[54]) == (201, 232)
         assert (living.native_value, bath.native_value) == (20.1, 23.2)
         assert server.holding[63] == 210
         hass.states.async_set("sensor.existing", "21.5", {"unit_of_measurement": "°C"})
         await coordinator._async_update_data()
         assert server.inputs[62] == 201
+
+        # Persisted takeover survives reloading the sender.
+        restarted = ConnectCoordinator(hass, entry, coordinator.bus)
+        try:
+            hass.states.async_set("sensor.existing", "24", {"unit_of_measurement": "°C"})
+            await restarted._async_update_data()
+            assert server.inputs[62] == 201
+        finally:
+            await restarted.async_shutdown()
 
         # Repeated measurements are writes, even when the display did not change.
         await bath.async_set_native_value(23.2)

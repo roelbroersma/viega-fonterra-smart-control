@@ -116,7 +116,7 @@
           "connect_help": {
             "name": "Usare il proprio sensore",
             "state": {
-              "own_temperature_sensor": "Imposta la stanza su « Sensore esterno » in Fonterra. Poi attiva il relativo ingresso della temperatura esterna in Home Assistant e invia le misurazioni con un’automazione."
+              "own_temperature_sensor": "Attiva Connect Upgrade da Configura. Ogni stanza avrà un ingresso della temperatura esterna. Imposta la stanza su « Sensore esterno » in Fonterra e invia le misurazioni con un’automazione."
             }
           }
         },

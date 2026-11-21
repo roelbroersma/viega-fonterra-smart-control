@@ -599,6 +599,8 @@ class ViegaActuatorStatisticsSensor(ViegaCoordinatedEntity, SensorEntity, Restor
         self._attr_device_class = self._DEVICE_CLASS.get(metric_key)
         self._attr_native_unit_of_measurement = self._UNIT.get(metric_key)
         self._attr_state_class = self._STATE_CLASS.get(metric_key)
+        if metric_key == "confirmed_open_seconds":
+            self._attr_suggested_display_precision = 0
         self._attr_native_value = None
 
     async def async_added_to_hass(self) -> None:
@@ -617,9 +619,12 @@ class ViegaActuatorStatisticsSensor(ViegaCoordinatedEntity, SensorEntity, Restor
         else:
             try:
                 value = float(last_state.state)
-            except TypeError, ValueError:
+                native_value = int(value) if self._metric_key == "confirmed_open_seconds" else value
+            except TypeError, ValueError, OverflowError:
                 return
-        self._attr_native_value = value
+        self._attr_native_value = (
+            value if self._metric_key == "last_transition_time" else native_value
+        )
         # Seed the shared statistics so the first cycle after a restart
         # continues from this value instead of resetting it (spec.md 16f).
         if self.hass is not None:
@@ -638,7 +643,13 @@ class ViegaActuatorStatisticsSensor(ViegaCoordinatedEntity, SensorEntity, Restor
         statistics = self.hass.data[DOMAIN][self._entry_id].get("actuator_statistics")
         if statistics is None:
             return
-        self._attr_native_value = getattr(statistics, self._metric_key, None)
+        value = getattr(statistics, self._metric_key, None)
+        # Accumulate fractional seconds internally, expose completed seconds in HA.
+        self._attr_native_value = (
+            int(value)
+            if self._metric_key == "confirmed_open_seconds" and value is not None
+            else value
+        )
 
     @property
     def device_info(self):

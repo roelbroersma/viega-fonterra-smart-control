@@ -28,8 +28,8 @@ class ExternalTemperatureInput(NumberEntity):
     """Send a measurement on each call. Never restore or replay a previous value."""
 
     _attr_has_entity_name = True
-    # Modbus cannot report the room's source. Enable only for rooms set to external.
-    _attr_entity_registry_enabled_default = False
+    # Creating an input sends nothing. Fonterra owns the room's temperature source.
+    _attr_entity_registry_enabled_default = True
     _attr_device_class = NumberDeviceClass.TEMPERATURE
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
     _attr_native_min_value = 5
@@ -46,6 +46,7 @@ class ExternalTemperatureInput(NumberEntity):
         self._room_name = name
         self._attr_unique_id = temperature_input_id(entry_id, room)
         self._attr_translation_placeholders = {"room": name}
+        self._attr_extra_state_attributes = {"room_id": room}
 
     async def async_set_native_value(self, value: float) -> None:
         """Send the caller's current measurement, including repeated equal values."""

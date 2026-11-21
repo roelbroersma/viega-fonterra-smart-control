@@ -66,7 +66,7 @@ Kopieer de kaart voor elke ruimte en vervang de titel en de klimaatentiteit.
 
 1. Zet de ruimte in Fonterra op **Extern gemeten**. Dit kan met de [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/).
 2. Vink **Connect Upgrade geïnstalleerd** aan onder **Configureren** in Home Assistant en sla op.
-3. Open de verdeler via **Instellingen > Apparaten & diensten > Viega Fonterra Smart**. Zoek onder de uitgeschakelde entiteiten naar **Badkamer externe temperatuurinvoer** en schakel die in. Herhaal dit voor iedere ruimte die je extern meet.
+3. Open de verdeler via **Instellingen > Apparaten & diensten > Viega Fonterra Smart**. De invoer **Badkamer externe temperatuurinvoer** is direct beschikbaar. Elke ontdekte ruimte krijgt een eigen invoer.
 
 Test de invoer met een actuele meting. Gebruik daarna de actie **Getal instellen** in een automatisering. Dit voorbeeld stuurt elke minuut de waarde van een temperatuursensor in °C, zolang die in de afgelopen tien minuten een meting heeft gemeld. Vervang de twee entiteits-ID's door die van jouw installatie.
 
@@ -90,7 +90,7 @@ actions:
 
 Laat je sensor ook bij een gelijkblijvende temperatuur metingen melden. Voor KNX kun je daarvoor bijvoorbeeld de sensor laten antwoorden op leesverzoeken en `always_callback` en `sync_state` instellen. De invoer stuurt per aanroep één meting. De gewenste temperatuur stel je in via de thermostaatkaart.
 
-Had je al een sensor gekoppeld via de integratie? Die blijft werken totdat je de invoer voor die ruimte inschakelt. Zet daarvoor eerst je automatisering klaar. Schakel je de invoer later uit, dan stopt het doorgeven voor die ruimte.
+Had je al een sensor gekoppeld via de integratie? Die blijft werken tot de eerste geslaagde meting via de nieuwe invoer. Vanaf dat moment levert je automatisering de metingen aan. Schakel je de invoer uit, dan stopt het doorgeven voor die ruimte.
 
 ### Kamers en verbinding
 
@@ -170,7 +170,7 @@ Duplicate the card for each room and change its title and climate entity.
 
 1. Set the room to **External measured** in Fonterra. This option is available with the [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/).
 2. Under **Configure** in Home Assistant, tick **Connect Upgrade installed** and save.
-3. Open the controller under **Settings > Devices & services > Viega Fonterra Smart**. Find **Bathroom external temperature input** among the disabled entities and enable it. Repeat for each room you measure externally.
+3. Open the controller under **Settings > Devices & services > Viega Fonterra Smart**. **Bathroom external temperature input** is ready to use. Each discovered room has its own input.
 
 Test the input with a current reading, then use **Set value** in an automation. This example sends a reading in °C once per minute if the sensor has reported within the last ten minutes. Replace both entity IDs with your own.
 
@@ -194,7 +194,7 @@ actions:
 
 Use a sensor that also reports when its value stays the same. For KNX, for example, configure the sensor to answer read requests and set `always_callback` and `sync_state`. Each action sends one reading. Set the target temperature on the thermostat card.
 
-If you already linked a sensor through this integration, it keeps working until you enable the input for that room. Prepare your automation before enabling the input. Disabling the input later stops sending measurements for that room.
+An existing sensor link keeps working until the first successful measurement through the new input. Your automation supplies subsequent readings. Disabling the input stops sending measurements for that room.
 
 ### Rooms and connectivity
 
@@ -274,7 +274,7 @@ Kopieren Sie die Karte für jeden Raum und ändern Sie den Titel und die Klimaen
 
 1. Stellen Sie die Temperaturquelle des Raums in Fonterra auf **Extern gemessen**. Diese Option ist mit dem [Connected Upgrade](https://www.gigaweb.nl/fonterra-smart-control-upgrade/) verfügbar.
 2. Aktivieren Sie in Home Assistant unter **Konfigurieren** die Option **Connect Upgrade installiert** und speichern Sie.
-3. Öffnen Sie den Verteiler unter **Einstellungen > Geräte & Dienste > Viega Fonterra Smart**. Suchen Sie unter den deaktivierten Entitäten nach **Badezimmer externe Temperatureingabe** und aktivieren Sie sie. Wiederholen Sie dies für jeden Raum mit externer Messung.
+3. Öffnen Sie den Verteiler unter **Einstellungen > Geräte & Dienste > Viega Fonterra Smart**. **Badezimmer externe Temperatureingabe** ist sofort verfügbar. Jeder erkannte Raum erhält eine eigene Eingabe.
 
 Testen Sie die Eingabe mit einem aktuellen Messwert und verwenden Sie anschließend die Aktion **Wert setzen** in einer Automation. Das Beispiel sendet jede Minute den Messwert in °C, sofern der Sensor in den letzten zehn Minuten gemeldet hat. Ersetzen Sie beide Entitäts-IDs durch Ihre eigenen.
 
@@ -298,7 +298,7 @@ actions:
 
 Der Sensor sollte auch bei unveränderter Temperatur Messwerte melden. Bei KNX kann der Sensor beispielsweise auf Leseanfragen antworten. Stellen Sie dafür `always_callback` und `sync_state` ein. Jeder Aufruf überträgt einen Messwert. Die Solltemperatur stellen Sie auf der Thermostatkarte ein.
 
-Eine bereits in der Integration eingerichtete Sensorverknüpfung bleibt aktiv, bis Sie die Eingabe für den Raum einschalten. Bereiten Sie vorher die Automation vor. Wenn Sie die Eingabe später deaktivieren, endet die Übertragung für diesen Raum.
+Eine bestehende Sensorverknüpfung bleibt bis zur ersten erfolgreichen Übertragung über die neue Eingabe aktiv. Danach liefert Ihre Automation die Messwerte. Wenn Sie die Eingabe deaktivieren, endet die Übertragung für diesen Raum.
 
 ### Räume und Verbindung
 
@@ -374,7 +374,7 @@ entities:
 
 1. Dans Fonterra, réglez la source de température de la pièce sur la mesure externe (**Extern gemeten** dans l’interface néerlandaise).
 2. Dans Home Assistant, ouvrez **Configurer**, cochez **Connect Upgrade installé** et enregistrez.
-3. Ouvrez le collecteur dans **Paramètres > Appareils et services > Viega Fonterra Smart**. Parmi les entités désactivées, cherchez **Salle de bain entrée de température externe** et activez-la. Procédez de même pour chaque pièce équipée d’un capteur externe.
+3. Ouvrez le collecteur dans **Paramètres > Appareils et services > Viega Fonterra Smart**. **Salle de bain entrée de température externe** est directement disponible. Chaque pièce détectée dispose de sa propre entrée.
 
 Testez l’entrée avec une mesure actuelle, puis utilisez l’action `number.set_value` dans une automatisation. L’exemple transmet chaque minute une mesure en °C si le capteur a envoyé une valeur dans les dix dernières minutes. Remplacez les deux identifiants d’entité.
 
@@ -398,7 +398,7 @@ actions:
 
 Choisissez un capteur qui envoie des mesures même quand la température reste stable. Pour KNX, vous pouvez configurer `always_callback` et `sync_state` sur un capteur qui répond aux demandes de lecture. Chaque appel transmet une mesure. Réglez la température de consigne sur la carte du thermostat.
 
-Si vous aviez déjà associé un capteur dans l’intégration, il continue de fonctionner jusqu’à l’activation de l’entrée pour cette pièce. Préparez l’automatisation avant de l’activer. Si vous désactivez ensuite l’entrée, Home Assistant cesse d’envoyer des mesures pour cette pièce.
+Un capteur déjà associé continue de fonctionner jusqu’à la première transmission réussie via la nouvelle entrée. Votre automatisation fournit ensuite les mesures. La désactivation de l’entrée arrête l’envoi pour cette pièce.
 
 ### Pièces et connexion
 
@@ -472,7 +472,7 @@ entities:
 
 1. In Fonterra, seleziona la misurazione esterna come sorgente di temperatura della stanza (**Extern gemeten** nell’interfaccia olandese).
 2. In Home Assistant, apri **Configura**, seleziona **Connect Upgrade installato** e salva.
-3. Apri il collettore da **Impostazioni > Dispositivi e servizi > Viega Fonterra Smart**. Cerca **Bagno ingresso temperatura esterna** tra le entità disabilitate e abilitalo. Ripeti per ogni stanza con misurazione esterna.
+3. Apri il collettore da **Impostazioni > Dispositivi e servizi > Viega Fonterra Smart**. **Bagno ingresso temperatura esterna** è subito disponibile. Ogni stanza rilevata ha il proprio ingresso.
 
 Prova l’ingresso con una misurazione attuale e poi usa l’azione `number.set_value` in un’automazione. L’esempio invia ogni minuto la temperatura in °C se il sensore ha ricevuto un valore negli ultimi dieci minuti. Sostituisci entrambi gli ID delle entità con i tuoi.
 
@@ -496,7 +496,7 @@ actions:
 
 Il sensore deve inviare misurazioni anche quando la temperatura rimane invariata. Per KNX puoi impostare `always_callback` e `sync_state` se il sensore risponde alle richieste di lettura. Ogni chiamata invia una misurazione. Imposta la temperatura desiderata sulla scheda del termostato.
 
-Se avevi già collegato un sensore tramite l’integrazione, resterà attivo fino a quando abiliti l’ingresso per quella stanza. Prepara prima l’automazione. Se poi disabiliti l’ingresso, Home Assistant smette di inviare misurazioni per la stanza.
+Un sensore già collegato continua a funzionare fino al primo invio riuscito tramite il nuovo ingresso. Da quel momento l’automazione fornisce le misurazioni. Disabilitando l’ingresso, l’invio per la stanza si interrompe.
 
 ### Stanze e connessione
 

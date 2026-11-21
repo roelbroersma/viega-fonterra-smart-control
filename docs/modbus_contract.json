@@ -202,7 +202,7 @@
   "connect_gate": {
     "safe_modbus_capability_register": null,
     "safe_modbus_source_register": null,
-    "policy": "Explicit Connect Upgrade opt-in. Enable the Home Assistant input only for rooms already set to Extern gemeten. Previously confirmed sensor links remain active until their room input is enabled. No probe writes.",
+    "policy": "Explicit Connect Upgrade opt-in creates enabled room inputs. Set a room to Extern gemeten before sending measurements. Previously confirmed sensor links keep sending until the first successful direct input for their room. No probe writes.",
     "external_mode_selection": "Existing Fonterra web UI; no new Modbus register or automatic fallback"
   },
   "write_failure": "Verify WLAN identity and actor assignment before sending. The number input sends once per action. Existing sensor links stop on missing, invalid or expired readings and do not immediately retry a lost acknowledgement. The native diagnostics report device faults.",
