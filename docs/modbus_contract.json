@@ -216,5 +216,12 @@
     "21": "No thermostat connection",
     "22": "Thermostat battery low",
     "24": "Thermostat radio connection weak"
+  },
+  "external_measured_temperature_retention": {
+    "device": "Connected Upgrade retains the last accepted external measurement in RAM and refreshes it towards the PIC through the existing native UART worker.",
+    "homeassistant_input": "Each action sends one measurement. An automation can forward sensor value changes and the first current reading after startup.",
+    "existing_sensor_links": "Send a changed value or one initial reading after a verified Modbus reconnection. An acknowledged unchanged value is not periodically sent. Failed attempts may be retried on a later poll after identity and room checks.",
+    "device_restart": "Supply one current measurement again after Fonterra restarts.",
+    "evidence": "The current first-install firmware source includes ram-hold-source/src/hold.go and ram-hold-tests/test_hold.py in first-install-webresume-bronnen.zip. Physical acceptance remains separate from that source evidence."
   }
 }

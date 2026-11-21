@@ -68,18 +68,20 @@ Kopieer de kaart voor elke ruimte en vervang de titel en de klimaatentiteit.
 2. Vink **Connect Upgrade geïnstalleerd** aan onder **Configureren** in Home Assistant en sla op.
 3. Open de verdeler via **Instellingen > Apparaten & diensten > Viega Fonterra Smart**. De invoer **Badkamer externe temperatuurinvoer** is direct beschikbaar. Elke ontdekte ruimte krijgt een eigen invoer.
 
-Test de invoer met een actuele meting. Gebruik daarna de actie **Getal instellen** in een automatisering. Dit voorbeeld stuurt elke minuut de waarde van een temperatuursensor in °C, zolang die in de afgelopen tien minuten een meting heeft gemeld. Vervang de twee entiteits-ID's door die van jouw installatie.
+Test de invoer met een actuele meting. Gebruik daarna de actie **Getal instellen** in een automatisering. Dit voorbeeld stuurt een nieuwe temperatuurwaarde in °C wanneer de sensorwaarde verandert en bij het starten van Home Assistant. Vervang de twee entiteits-ID's door die van jouw installatie.
 
 ```yaml
 alias: Badkamer temperatuur doorgeven
 triggers:
-  - trigger: time_pattern
-    minutes: "/1"
+  - trigger: state
+    entity_id: sensor.badkamer_temperatuur
+    to: null
+  - trigger: homeassistant
+    event: start
 conditions:
   - condition: template
     value_template: >
-      {{ is_number(states('sensor.badkamer_temperatuur'))
-          and as_timestamp(now()) - as_timestamp(states.sensor.badkamer_temperatuur.last_reported, 0) < 600 }}
+      {{ is_number(states('sensor.badkamer_temperatuur')) }}
 actions:
   - action: number.set_value
     target:
@@ -88,7 +90,7 @@ actions:
       value: "{{ states('sensor.badkamer_temperatuur') | float }}"
 ```
 
-Laat je sensor ook bij een gelijkblijvende temperatuur metingen melden. Voor KNX kun je daarvoor bijvoorbeeld de sensor laten antwoorden op leesverzoeken en `always_callback` en `sync_state` instellen. De invoer stuurt per aanroep één meting. De gewenste temperatuur stel je in via de thermostaatkaart.
+De Connect Upgrade houdt de laatst ontvangen externe meting intern bij en ververst die richting de PIC. Na een herstart van Fonterra stuur je opnieuw één actuele meting. De invoer stuurt per aanroep één meting. De gewenste temperatuur stel je in via de thermostaatkaart.
 
 Had je al een sensor gekoppeld via de integratie? Die blijft werken tot de eerste geslaagde meting via de nieuwe invoer. Vanaf dat moment levert je automatisering de metingen aan. Schakel je de invoer uit, dan stopt het doorgeven voor die ruimte.
 
@@ -172,18 +174,20 @@ Duplicate the card for each room and change its title and climate entity.
 2. Under **Configure** in Home Assistant, tick **Connect Upgrade installed** and save.
 3. Open the controller under **Settings > Devices & services > Viega Fonterra Smart**. **Bathroom external temperature input** is ready to use. Each discovered room has its own input.
 
-Test the input with a current reading, then use **Set value** in an automation. This example sends a reading in °C once per minute if the sensor has reported within the last ten minutes. Replace both entity IDs with your own.
+Test the input with a current reading, then use **Set value** in an automation. This example sends a temperature reading in °C when the sensor value changes and when Home Assistant starts. Replace both entity IDs with your own.
 
 ```yaml
 alias: Send bathroom temperature
 triggers:
-  - trigger: time_pattern
-    minutes: "/1"
+  - trigger: state
+    entity_id: sensor.bathroom_temperature
+    to: null
+  - trigger: homeassistant
+    event: start
 conditions:
   - condition: template
     value_template: >
-      {{ is_number(states('sensor.bathroom_temperature'))
-          and as_timestamp(now()) - as_timestamp(states.sensor.bathroom_temperature.last_reported, 0) < 600 }}
+      {{ is_number(states('sensor.bathroom_temperature')) }}
 actions:
   - action: number.set_value
     target:
@@ -192,7 +196,7 @@ actions:
       value: "{{ states('sensor.bathroom_temperature') | float }}"
 ```
 
-Use a sensor that also reports when its value stays the same. For KNX, for example, configure the sensor to answer read requests and set `always_callback` and `sync_state`. Each action sends one reading. Set the target temperature on the thermostat card.
+Connect Upgrade retains the last received external measurement internally and refreshes it towards the PIC. Send one current measurement again after Fonterra restarts. Each action sends one reading. Set the target temperature on the thermostat card.
 
 An existing sensor link keeps working until the first successful measurement through the new input. Your automation supplies subsequent readings. Disabling the input stops sending measurements for that room.
 
@@ -276,18 +280,20 @@ Kopieren Sie die Karte für jeden Raum und ändern Sie den Titel und die Klimaen
 2. Aktivieren Sie in Home Assistant unter **Konfigurieren** die Option **Connect Upgrade installiert** und speichern Sie.
 3. Öffnen Sie den Verteiler unter **Einstellungen > Geräte & Dienste > Viega Fonterra Smart**. **Badezimmer externe Temperatureingabe** ist sofort verfügbar. Jeder erkannte Raum erhält eine eigene Eingabe.
 
-Testen Sie die Eingabe mit einem aktuellen Messwert und verwenden Sie anschließend die Aktion **Wert setzen** in einer Automation. Das Beispiel sendet jede Minute den Messwert in °C, sofern der Sensor in den letzten zehn Minuten gemeldet hat. Ersetzen Sie beide Entitäts-IDs durch Ihre eigenen.
+Testen Sie die Eingabe mit einem aktuellen Messwert und verwenden Sie anschließend die Aktion **Wert setzen** in einer Automation. Das Beispiel sendet den Messwert in °C bei einer Änderung des Sensorwerts und beim Start von Home Assistant. Ersetzen Sie beide Entitäts-IDs durch Ihre eigenen.
 
 ```yaml
 alias: Badezimmertemperatur übertragen
 triggers:
-  - trigger: time_pattern
-    minutes: "/1"
+  - trigger: state
+    entity_id: sensor.badezimmertemperatur
+    to: null
+  - trigger: homeassistant
+    event: start
 conditions:
   - condition: template
     value_template: >
-      {{ is_number(states('sensor.badezimmertemperatur'))
-          and as_timestamp(now()) - as_timestamp(states.sensor.badezimmertemperatur.last_reported, 0) < 600 }}
+      {{ is_number(states('sensor.badezimmertemperatur')) }}
 actions:
   - action: number.set_value
     target:
@@ -296,7 +302,7 @@ actions:
       value: "{{ states('sensor.badezimmertemperatur') | float }}"
 ```
 
-Der Sensor sollte auch bei unveränderter Temperatur Messwerte melden. Bei KNX kann der Sensor beispielsweise auf Leseanfragen antworten. Stellen Sie dafür `always_callback` und `sync_state` ein. Jeder Aufruf überträgt einen Messwert. Die Solltemperatur stellen Sie auf der Thermostatkarte ein.
+Das Connect Upgrade hält den zuletzt empfangenen externen Messwert intern vor und aktualisiert ihn gegenüber dem PIC. Senden Sie nach einem Neustart von Fonterra erneut einen aktuellen Messwert. Jeder Aufruf überträgt einen Messwert. Die Solltemperatur stellen Sie auf der Thermostatkarte ein.
 
 Eine bestehende Sensorverknüpfung bleibt bis zur ersten erfolgreichen Übertragung über die neue Eingabe aktiv. Danach liefert Ihre Automation die Messwerte. Wenn Sie die Eingabe deaktivieren, endet die Übertragung für diesen Raum.
 
@@ -376,18 +382,20 @@ entities:
 2. Dans Home Assistant, ouvrez **Configurer**, cochez **Connect Upgrade installé** et enregistrez.
 3. Ouvrez le collecteur dans **Paramètres > Appareils et services > Viega Fonterra Smart**. **Salle de bain entrée de température externe** est directement disponible. Chaque pièce détectée dispose de sa propre entrée.
 
-Testez l’entrée avec une mesure actuelle, puis utilisez l’action `number.set_value` dans une automatisation. L’exemple transmet chaque minute une mesure en °C si le capteur a envoyé une valeur dans les dix dernières minutes. Remplacez les deux identifiants d’entité.
+Testez l’entrée avec une mesure actuelle, puis utilisez l’action `number.set_value` dans une automatisation. L’exemple transmet une température en °C lorsque la valeur du capteur change et au démarrage de Home Assistant. Remplacez les deux identifiants d’entité.
 
 ```yaml
 alias: Transmettre la température de la salle de bain
 triggers:
-  - trigger: time_pattern
-    minutes: "/1"
+  - trigger: state
+    entity_id: sensor.temperature_salle_de_bain
+    to: null
+  - trigger: homeassistant
+    event: start
 conditions:
   - condition: template
     value_template: >
-      {{ is_number(states('sensor.temperature_salle_de_bain'))
-          and as_timestamp(now()) - as_timestamp(states.sensor.temperature_salle_de_bain.last_reported, 0) < 600 }}
+      {{ is_number(states('sensor.temperature_salle_de_bain')) }}
 actions:
   - action: number.set_value
     target:
@@ -396,7 +404,7 @@ actions:
       value: "{{ states('sensor.temperature_salle_de_bain') | float }}"
 ```
 
-Choisissez un capteur qui envoie des mesures même quand la température reste stable. Pour KNX, vous pouvez configurer `always_callback` et `sync_state` sur un capteur qui répond aux demandes de lecture. Chaque appel transmet une mesure. Réglez la température de consigne sur la carte du thermostat.
+Connect Upgrade conserve la dernière mesure externe reçue et la rafraîchit en interne vers le PIC. Après un redémarrage de Fonterra, transmettez à nouveau une mesure actuelle. Chaque appel transmet une mesure. Réglez la température de consigne sur la carte du thermostat.
 
 Un capteur déjà associé continue de fonctionner jusqu’à la première transmission réussie via la nouvelle entrée. Votre automatisation fournit ensuite les mesures. La désactivation de l’entrée arrête l’envoi pour cette pièce.
 
@@ -474,18 +482,20 @@ entities:
 2. In Home Assistant, apri **Configura**, seleziona **Connect Upgrade installato** e salva.
 3. Apri il collettore da **Impostazioni > Dispositivi e servizi > Viega Fonterra Smart**. **Bagno ingresso temperatura esterna** è subito disponibile. Ogni stanza rilevata ha il proprio ingresso.
 
-Prova l’ingresso con una misurazione attuale e poi usa l’azione `number.set_value` in un’automazione. L’esempio invia ogni minuto la temperatura in °C se il sensore ha ricevuto un valore negli ultimi dieci minuti. Sostituisci entrambi gli ID delle entità con i tuoi.
+Prova l’ingresso con una misurazione attuale e poi usa l’azione `number.set_value` in un’automazione. L’esempio invia la temperatura in °C quando il valore del sensore cambia e all’avvio di Home Assistant. Sostituisci entrambi gli ID delle entità con i tuoi.
 
 ```yaml
 alias: Invia la temperatura del bagno
 triggers:
-  - trigger: time_pattern
-    minutes: "/1"
+  - trigger: state
+    entity_id: sensor.temperatura_bagno
+    to: null
+  - trigger: homeassistant
+    event: start
 conditions:
   - condition: template
     value_template: >
-      {{ is_number(states('sensor.temperatura_bagno'))
-          and as_timestamp(now()) - as_timestamp(states.sensor.temperatura_bagno.last_reported, 0) < 600 }}
+      {{ is_number(states('sensor.temperatura_bagno')) }}
 actions:
   - action: number.set_value
     target:
@@ -494,7 +504,7 @@ actions:
       value: "{{ states('sensor.temperatura_bagno') | float }}"
 ```
 
-Il sensore deve inviare misurazioni anche quando la temperatura rimane invariata. Per KNX puoi impostare `always_callback` e `sync_state` se il sensore risponde alle richieste di lettura. Ogni chiamata invia una misurazione. Imposta la temperatura desiderata sulla scheda del termostato.
+Connect Upgrade mantiene internamente l’ultima misurazione esterna ricevuta e la aggiorna verso il PIC. Dopo un riavvio di Fonterra, invia nuovamente una misurazione attuale. Ogni chiamata invia una misurazione. Imposta la temperatura desiderata sulla scheda del termostato.
 
 Un sensore già collegato continua a funzionare fino al primo invio riuscito tramite il nuovo ingresso. Da quel momento l’automazione fornisce le misurazioni. Disabilitando l’ingresso, l’invio per la stanza si interrompe.
 

@@ -20,7 +20,7 @@ from .const import (
     CONF_MAX_AGE,
     DEFAULT_MAX_AGE,
     POLL_SECONDS,
-    REFRESH_SECONDS,
+    RETRY_SECONDS,
     temperature_input_id,
 )
 from .modbus import ModbusError, SharedModbus
@@ -42,6 +42,7 @@ class ConnectCoordinator(DataUpdateCoordinator[None]):
         self.entry = entry
         self.started = dt_util.utcnow()
         self.last_sent = {}
+        self._connection = None
         self._updates = set()
         self._write_lock = asyncio.Lock()
         self._stopping = False
@@ -76,6 +77,13 @@ class ConnectCoordinator(DataUpdateCoordinator[None]):
         )
         return registry.async_get(entity_id) if entity_id else None
 
+    async def _check_connection(self) -> None:
+        connection = await self.bus.check_connection()
+        if connection != self._connection:
+            # Supply the first measurement again after the socket reconnects.
+            self.last_sent.clear()
+            self._connection = connection
+
     def _input_enabled(self, room: int) -> bool:
         registered = self._input_entry(room)
         return registered is not None and not registered.disabled
@@ -94,7 +102,7 @@ class ConnectCoordinator(DataUpdateCoordinator[None]):
         async with self._write_lock:
             if self._stopping or not self._input_enabled(room):
                 raise ModbusError("External temperature input unavailable")
-            await self.bus.check_connection()
+            await self._check_connection()
             if not await self.bus.room_present(room):
                 raise ModbusError("The room is no longer assigned to its actuators")
             if self._stopping or not self._input_enabled(room):
@@ -138,13 +146,14 @@ class ConnectCoordinator(DataUpdateCoordinator[None]):
 
         unsubscribe = async_track_state_change_event(self.hass, [entity_id], changed)
         # Count an attempted write even if its acknowledgement is lost.
-        self.last_sent[room] = (value, now)
+        self.last_sent[room] = (value, now, False)
         operation = asyncio.create_task(self.bus.write_measurement(room, value))
         try:
             # Climate operations share this socket; cancel if this sample
             # expires or is replaced before its turn in the queue.
             async with asyncio.timeout(remaining):
                 await operation
+            self.last_sent[room] = (value, now, True)
         except TimeoutError:
             pass
         except asyncio.CancelledError:
@@ -171,7 +180,7 @@ class ConnectCoordinator(DataUpdateCoordinator[None]):
             ]
             if not rooms:
                 return
-            await self.bus.check_connection()
+            await self._check_connection()
         except ModbusError as err:
             raise UpdateFailed("Could not verify the Fonterra Modbus connection") from err
 
@@ -187,7 +196,7 @@ class ConnectCoordinator(DataUpdateCoordinator[None]):
             if (
                 previous
                 and previous[0] == value
-                and (now - previous[1]).total_seconds() < REFRESH_SECONDS
+                and (previous[2] or (now - previous[1]).total_seconds() < RETRY_SECONDS)
             ):
                 continue
             try:

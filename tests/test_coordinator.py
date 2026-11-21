@@ -17,10 +17,11 @@ def mock_bus():
     bus = AsyncMock()
     bus.rooms = lambda: {1: {"room_number": 1, "actor": 4}}
     bus.room_present.return_value = True
+    bus.check_connection.return_value = ("connection", 1)
     return bus
 
 
-async def test_periodic_unchanged_value_until_source_expires(hass, entry):
+async def test_unchanged_value_is_not_repeated_and_changed_measurement_is_sent(hass, entry):
     bus = mock_bus()
     coordinator = ConnectCoordinator(hass, entry, bus)
     hass.states.async_set("sensor.room", "19.7", {"unit_of_measurement": "°C"})
@@ -30,9 +31,29 @@ async def test_periodic_unchanged_value_until_source_expires(hass, entry):
     assert bus.write_measurement.await_count == 1
     with patch(CLOCK, return_value=dt_util.utcnow() + timedelta(seconds=61)):
         await coordinator._async_update_data()
-    assert bus.write_measurement.await_count == 2
+    assert bus.write_measurement.await_count == 1
     with patch(CLOCK, return_value=dt_util.utcnow() + timedelta(seconds=901)):
         await coordinator._async_update_data()
+    assert bus.write_measurement.await_count == 1
+    hass.states.async_set("sensor.room", "20.1", {"unit_of_measurement": "°C"})
+    await coordinator._async_update_data()
+    assert bus.write_measurement.await_count == 2
+    bus.write_measurement.assert_awaited_with(1, 20.1)
+    await coordinator.async_shutdown()
+
+
+async def test_reconnect_sends_first_measurement_again(hass, entry):
+    bus = mock_bus()
+    coordinator = ConnectCoordinator(hass, entry, bus)
+    hass.states.async_set("sensor.room", "19.7", {"unit_of_measurement": "°C"})
+    await coordinator._async_update_data()
+    await coordinator._async_update_data()
+    assert bus.write_measurement.await_count == 1
+    bus.check_connection.return_value = ("connection", 2)
+    await coordinator._async_update_data()
+    assert bus.write_measurement.await_count == 2
+    bus.write_measurement.assert_awaited_with(1, 19.7)
+    await coordinator._async_update_data()
     assert bus.write_measurement.await_count == 2
     await coordinator.async_shutdown()
 

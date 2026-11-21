@@ -65,7 +65,7 @@ class SharedModbus:
             # The upstream owns protocol validation, reconnects and its shared lock.
             raise ModbusError("Modbus request failed; check connection and Modbus setting") from err
 
-    async def check_connection(self) -> None:
+    async def check_connection(self) -> tuple[object, int]:
         self._verified = None
         runtime = self.runtime()
         client = runtime["client"]
@@ -78,6 +78,7 @@ class SharedModbus:
         if actual != expected:
             raise ModbusError("The WiFi module at this address has changed")
         self._verified = (client, client.reconnect_count)
+        return self._verified
 
     async def room_present(self, room: int) -> bool:
         """Re-read real actor association before sending, not screen/slot order."""
